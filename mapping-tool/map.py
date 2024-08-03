@@ -1,7 +1,8 @@
 import folium
 import numpy as np
+import os
 
-\
+
 def initialise_map():
     """
     Initialises a map with various arguments
@@ -23,7 +24,7 @@ def create_trail(m):
         (-31.968996, 116.258408),
         (-31.968852, 116.255267),
         (-31.965284, 116.249019),
-        (-31.970103, 116.249641),
+        (-31.970103, 116.249647),
     ]
     # Ensure smooth factor is at 0 so you can see the points
     folium.PolyLine(trail_coords, tooltip="trail", color="red", smoothfactor=0).add_to(m)
@@ -87,6 +88,9 @@ create_grid(m)
 
 # Adds layer control to enable viewing groups of markers
 folium.LayerControl().add_to(m)
+
 # Saves the map to HTML file in this directory (open using browser)
+current_dir = os.path.dirname(__file__)
+file_path = os.path.join(current_dir, "footprint.html")
 print("Done, saving map...")
-m.save("footprint.html")
+m.save(file_path)
