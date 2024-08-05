@@ -25,29 +25,26 @@ def get_node_ids():
         if start_idx is None:
             raise ValueError("Table header not found in the output.")
         
-        # extract node names and IDs
-        nodes = []
+        # extract node names and IDs into a dict
+        nodes = {}
         for line in lines[start_idx:]:
-            if line.startswith("╘═════╧"):  # end of table
+            if line.startswith("╘═════╧"):  # End of table
                 break
             parts = line.split("│")
             if len(parts) > 3:
                 name = parts[2].strip()
                 node_id = parts[3].strip()
-                nodes.append((name, node_id))
+                nodes[name] = node_id
         
         return nodes
 
     except subprocess.CalledProcessError as e:
-        print(f"error occurred: {e}")
+        print(f"An error occurred: {e}")
         return None
 
 # example usage:
-"""
-node_list = get_node_ids()
-for name, node_id in node_list:
-    print(f"Name: {name}, ID: {node_id}")
-"""
+node_dict = get_node_ids()
+print(node_dict)
 
 def request_telemetry(node_id):
     try:
@@ -87,8 +84,7 @@ def request_telemetry(node_id):
         return None
 
 # example usage:
-print(request_telemetry('!33677de8'))   
-
+#print(request_telemetry('!33677de8'))   
 
 """
 Wrapper for Meshtastic CLI `meshtastic --sendtext <message> --dest <dest_id> --ack`
@@ -113,6 +109,4 @@ def send_text_ack(message, dest_id):
         print(f"An error occurred: {e}", file=sys.stderr)
 
 # example usage:
-"""
-send_text_ack('hello!', '!33677de8')
-"""
+#send_text_ack('hello!', '!33677de8')
