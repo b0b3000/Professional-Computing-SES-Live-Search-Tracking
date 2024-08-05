@@ -4,13 +4,9 @@ import subprocess
 import sys
 
 def get_nodes(interface):
-    # Create an interface to the Meshtastic device
-
-
-    # Retrieve the node info
     nodes = interface.nodes
     
-# Create a dictionary to store the node details
+# create dict to store the node details
     node_details = {}
     for node_id, node in nodes.items():
         user_name = node.get('user', {}).get('userName', 'Unnamed')
@@ -20,12 +16,9 @@ def get_nodes(interface):
             'long_name': long_name
         }
     
-    # Close the interface
-    interface.close()
-    
     return node_details
 
-# Example usage:
+# example usage:
 interface = meshtastic.serial_interface.SerialInterface()
 node_details = get_nodes(interface)
 for node_id, details in node_details.items():
