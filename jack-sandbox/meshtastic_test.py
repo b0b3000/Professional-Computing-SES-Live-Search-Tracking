@@ -43,9 +43,33 @@ def get_node_ids():
         return None
 
 # example usage:
+"""
 node_list = get_node_ids()
 for name, node_id in node_list:
     print(f"Name: {name}, ID: {node_id}")
+"""
+
+def request_telemetry(node_id):
+    try:
+        # construct command
+        command = [
+            'meshtastic',
+            '--request-telemetry',
+            '--dest', node_id
+        ]
+        
+        # run command
+        result = subprocess.run(command, check=True, text=True, capture_output=True)
+        
+        print(result.stdout)
+    
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}", file=sys.stderr)
+
+# example usage:
+"""
+request_telemetry('!33677de8')    
+"""
 
 """
 Wrapper for Meshtastic CLI `meshtastic --sendtext <message> --dest <dest_id> --ack`
@@ -70,5 +94,6 @@ def send_text_ack(message, dest_id):
         print(f"An error occurred: {e}", file=sys.stderr)
 
 # example usage:
+"""
 send_text_ack('hello!', '!33677de8')
-
+"""
