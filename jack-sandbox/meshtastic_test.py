@@ -60,16 +60,35 @@ def request_telemetry(node_id):
         
         # run command
         result = subprocess.run(command, check=True, text=True, capture_output=True)
+        output = result.stdout
         
-        print(result.stdout)
+        # parse telemetry data
+        telemetry_data = {}
+        
+        lines = output.splitlines()
+        telemetry_start = False
+        
+        for line in lines:
+            if 'Telemetry received:' in line:
+                telemetry_start = True
+                continue
+            
+            if telemetry_start:
+                key_value = line.split(':', 1)
+                if len(key_value) == 2:
+                    key = key_value[0].strip()
+                    value = key_value[1].strip()
+                    telemetry_data[key] = value
+        
+        return telemetry_data
     
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}", file=sys.stderr)
+        return None
 
 # example usage:
-"""
-request_telemetry('!33677de8')    
-"""
+print(request_telemetry('!33677de8'))   
+
 
 """
 Wrapper for Meshtastic CLI `meshtastic --sendtext <message> --dest <dest_id> --ack`
