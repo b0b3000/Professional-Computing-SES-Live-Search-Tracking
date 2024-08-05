@@ -1,9 +1,12 @@
 import meshtastic
 import meshtastic.serial_interface
 import subprocess
+import serial
 import sys
 
-def get_nodes(interface):
+
+def get_nodes():
+    interface = meshtastic.serial_interface.SerialInterface()
     nodes = interface.nodes
     
 # create dict to store the node details
@@ -15,57 +18,13 @@ def get_nodes(interface):
             'user_name': user_name,
             'long_name': long_name
         }
-    
+    interface.close()
     return node_details
 
 # example usage:
-interface = meshtastic.serial_interface.SerialInterface()
-node_details = get_nodes(interface)
-for node_id, details in node_details.items():
-    print(f"ID: {node_id}, User Name: {details['user_name']}, Long Name: {details['long_name']}")
-
-"""
-Wrapper for Meshtastic CLI `meshtastic --nodes`
-Takes the table of known nodes, and uses string manipulation to format these nodes into a list
-of tuples - (name, id)
-"""
-def get_node_ids():
-    try:
-        # run the `meshtastic --nodes` command
-        result = subprocess.run(['meshtastic', '--nodes'], capture_output=True, text=True, check=True)
-        output = result.stdout
-
-        lines = output.splitlines()
-
-        start_idx = None
-        for idx, line in enumerate(lines):
-            if line.startswith("╒═════╤"):
-                start_idx = idx + 2  # the data starts two lines after the header
-                break
-        
-        if start_idx is None:
-            raise ValueError("Table header not found in the output.")
-        
-        # extract node names and IDs into a dict
-        nodes = {}
-        for line in lines[start_idx:]:
-            if line.startswith("╘═════╧"):  # End of table
-                break
-            parts = line.split("│")
-            if len(parts) > 3:
-                name = parts[2].strip()
-                node_id = parts[3].strip()
-                nodes[name] = node_id
-        
-        return nodes
-
-    except subprocess.CalledProcessError as e:
-        print(f"An error occurred: {e}")
-        return None
-
-# example usage:
-#node_dict = get_node_ids()
-#print(node_dict)
+#node_details = get_nodes()
+#for node_id, details in node_details.items():
+#    print(f"ID: {node_id}, User Name: {details['user_name']}, Long Name: {details['long_name']}")
 
 def request_telemetry(node_id):
     try:
