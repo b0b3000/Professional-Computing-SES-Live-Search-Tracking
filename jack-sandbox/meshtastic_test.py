@@ -6,6 +6,13 @@ import json
 from datetime import datetime, timezone, timedelta
 
 def get_nodes():
+    """
+    retrieves dict of nodes currently known to the Meshtastic device.
+
+    returns:
+        dict: A dictionary where the keys are node IDs and the values are dictionaries
+              containing details such as the node's name.
+    """
     interface = meshtastic.serial_interface.SerialInterface()
     nodes = interface.nodes
     
@@ -25,6 +32,17 @@ def get_nodes():
 #    print(f"ID: {node_id}, Name: {details['name']}")
 
 def request_telemetry(node_id):
+    """
+    requests telemetry data from a specific node using the Meshtastic CLI.
+
+    args:
+        node_id (str): The ID of the node from which telemetry data is requested.
+
+    returns:
+        dict: dictionary containing the telemetry data where the keys are data labels
+              and the values are the corresponding data values.
+        None: if an error occurs during the subprocess execution.
+    """
     try:
         # construct command
         command = [
@@ -65,6 +83,16 @@ def request_telemetry(node_id):
 #print(request_telemetry('!33677de8'))   
 
 def request_position(node_id):
+    """
+    requests GPS position of a specific node using the Meshtastic CLI and formats it as TimestampedGeoJSON.
+
+    args:
+        node_id (str): The ID of the node from which the GPS position is requested.
+
+    returns:
+        str: string representing the position data formatted as TimestampedGeoJSON.
+        None: if an error occurs during the subprocess execution or if the GPS coordinates cannot be extracted.
+    """
     try:
         # construct command
         command = [
@@ -123,12 +151,17 @@ def request_position(node_id):
 geojson_output = request_position('!33677de8')
 print(geojson_output)
 
-
-"""
-Wrapper for Meshtastic CLI `meshtastic --sendtext <message> --dest <dest_id> --ack`
-Sends a message to a destination node, and awaits an ACK.
-"""
 def send_text_ack(message, dest_id):
+    """
+    sends a text message to a destination node and waits for an acknowledgment (ACK) using the Meshtastic CLI.
+
+    args:
+        message (str): The text message to be sent.
+        dest_id (str): The ID of the destination node.
+
+    returns:
+        None
+    """
     try:
         # construct command
         command = [
