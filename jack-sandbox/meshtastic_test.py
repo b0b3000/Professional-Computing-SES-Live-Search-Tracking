@@ -1,22 +1,20 @@
 import meshtastic
 import meshtastic.serial_interface
 import subprocess
-import serial
 import sys
-
+import json
+from datetime import datetime, timezone, timedelta
 
 def get_nodes():
     interface = meshtastic.serial_interface.SerialInterface()
     nodes = interface.nodes
     
-# create dict to store the node details
     node_details = {}
+
     for node_id, node in nodes.items():
-        user_name = node.get('user', {}).get('userName', 'Unnamed')
-        long_name = node.get('user', {}).get('longName', 'Unnamed')
+        name = node.get('user', {}).get('longName', 'Unnamed')
         node_details[node_id] = {
-            'user_name': user_name,
-            'long_name': long_name
+            'name': name,
         }
     interface.close()
     return node_details
@@ -24,7 +22,7 @@ def get_nodes():
 # example usage:
 #node_details = get_nodes()
 #for node_id, details in node_details.items():
-#    print(f"ID: {node_id}, User Name: {details['user_name']}, Long Name: {details['long_name']}")
+#    print(f"ID: {node_id}, Name: {details['name']}")
 
 def request_telemetry(node_id):
     try:
@@ -65,6 +63,66 @@ def request_telemetry(node_id):
 
 # example usage:
 #print(request_telemetry('!33677de8'))   
+
+def request_position(node_id):
+    try:
+        # construct command
+        command = [
+            'meshtastic',
+            '--request-position',
+            '--dest', node_id
+        ]
+        
+        # run command
+        result = subprocess.run(command, check=True, text=True, capture_output=True)
+        output = result.stdout
+        
+        # parse output and extract coords
+        latitude = None
+        longitude = None
+        
+        lines = output.splitlines()
+        for line in lines:
+            if 'Position received' in line:
+                # line containing coordinates is like: Position received: (lat, lon) 45949000m full precision
+                # extracting lat and lon from the line
+                try:
+                    lat_long = line.split('received: ')[1].split(')')[0].strip('(')
+                    latitude, longitude = [float(coord) for coord in lat_long.split(',')]
+                except ValueError:
+                    print(f"Error parsing coordinates from line: {line}", file=sys.stderr)
+        
+        if latitude is not None and longitude is not None:
+            # get current timestamp
+            gmt_plus_8 = timezone(timedelta(hours=8))
+            timestamp = datetime.now(gmt_plus_8).isoformat()
+
+            # format as TimestampedGeoJSON
+            geojson = {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [longitude, latitude]
+                },
+                "properties": {
+                    "timestamp": timestamp,
+                    "altitude": None
+                }
+            }
+            
+            return json.dumps(geojson, indent=2)
+        else:
+            print("could not extract GPS coordinates.", file=sys.stderr)
+            return None
+    
+    except subprocess.CalledProcessError as e:
+        print(f"error occurred: {e}", file=sys.stderr)
+        return None
+
+# example usage:
+geojson_output = request_position('!33677de8')
+print(geojson_output)
+
 
 """
 Wrapper for Meshtastic CLI `meshtastic --sendtext <message> --dest <dest_id> --ack`
