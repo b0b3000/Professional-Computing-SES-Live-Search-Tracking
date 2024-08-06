@@ -1,96 +1,91 @@
+# Following the Google Python style guide, especially for docstrings:
+# https://google.github.io/styleguide/pyguide.html
+
 import folium
 import numpy as np
 import os
 
+def startup():
+    """Starts the program, initialises the map, then listens for input from the server.
+    
+    Because we haven't got the server running yet, the input will just be simulated.
+    """
+    devices = []
+    trails = []
 
-def initialise_map():
-    """
-    Initialises a map with various arguments
-    :return: map object
-    """
-    # For a more monochrome map: tiles="cartodb positron"
-    m = folium.Map((-31.9714, 116.2562), control_scale=True, zoom_start=15)
-    return m
+    current_dir = os.path.dirname(__file__)
+    path = os.path.join(current_dir, 'footprint.html')      # Find correct location to store map.
+
+    # For a more monochrome map: tiles="cartodb positron".
+    map1 = folium.Map((-31.870650, 116.095986), control_scale=True, zoom_start=16)    # Arbitrary location in John Forrest National Park.
+    # Enables viewing controls for different groups of markers.
+    folium.LayerControl().add_to(map1)
+
+    # Creates the grid overlay.
+    grid = []
+    lat_interval, lon_interval = 0.01, 0.01     # Change for different grid sizes.
+    for lat in np.arange(-33, -30, lat_interval):
+        grid.append([[lat, -180], [lat, 180]])
+    for lon in np.arange(114, 118, lon_interval):
+        grid.append([[-90, lon], [90, lon]])
+    for g in grid:
+        folium.PolyLine(g, color='black', weight=0.5, opacity=0.5).add_to(map1)
+
+    map1.save(path)
+    print('\nMap initialised.\n')
+    
+    # Simulates the server input:
+
+    print('Connected to a device: Device 0, <more device details>.\n')
+    devices.append(("Device 1", "<device_details>"))        # Add a tuple of device details to the list of all devices.
+    print('Ping from <device_name>: "-31.872236, 116.093924".\n')
+    
+    # This part doesn't work right now!
+    # map1, new_trail = create_trail(map1, path, 0, 0, (-31.872236, 116.093924))    # Create a new trail for this search.
+    # trails.append(new_trail)
 
 
-def create_trail(m):
+def create_trail(map1, path: str, device_num: int, trail_num: int, trail_start: tuple):
+    """Creates a new trail start and adds it to the map
+    
+    Returns:
+        A tuple of the device number, the trail number, a new group object, 
+        and a list of trail coordinates containing just the first point.
     """
-    Creates a trail
-    """
-    trail_coords = [
-        (-31.969518, 116.259844),
-        (-31.969388, 116.259662),
-        (-31.969133, 116.259061),
-        (-31.968996, 116.258408),
-        (-31.968852, 116.255267),
-        (-31.965284, 116.249019),
-        (-31.970103, 116.249647),
-    ]
-    # Ensure smooth factor is at 0 so you can see the points
-    folium.PolyLine(trail_coords, tooltip="trail", color="red", smoothfactor=0).add_to(m)
+    group_0 = folium.FeatureGroup(name='Group 0').add_to(map1)
+    
+    folium.Marker(
+        location=(-31.872236, 116.093924),
+        tooltip='Marker 1',
+        icon=folium.Icon('orange')
+    ).add_to(group_0)
+    
+    trail = (device_num, trail_num, group_0, trail_start)
+    return map1, trail
+
+def extend_trail(m, trail_extend: tuple) -> list:
+    # folium.PolyLine(trail_coords, tooltip='trail', color='red', smoothfactor=0).add_to(m)
+    return 0
 
 
 def create_markers(m):
     """
-    Creates a group of markers
+    Creates a group of markers.
     """
-    group_1 = folium.FeatureGroup(name="Group 1").add_to(m)
+    group_1 = folium.FeatureGroup(name='Group 1').add_to(m)
 
     folium.Marker(
         location=(-31.973088, 116.257886),
-        tooltip="Marker 1",
-        icon=folium.Icon("orange")
+        tooltip='Marker 1',
+        icon=folium.Icon('orange')
     ).add_to(group_1)
 
     folium.Marker(
         location=(-31.973489, 116.254536),
-        tooltip="Marker 2",
-        icon=folium.Icon("orange")
+        tooltip='Marker 2',
+        icon=folium.Icon('range')
     ).add_to(group_1)
 
-    group_2 = folium.FeatureGroup(name="Group 2").add_to(m)
 
-    folium.Marker(
-        location=[-31.971145, 116.256362],
-        tooltip="Marker 3",
-        icon=folium.Icon(color="red")
-    ).add_to(group_2)
-
-    folium.Marker(
-        location=[-31.971851, 116.257929],
-        tooltip="Marker 4",
-        icon=folium.Icon(color="red")
-    ).add_to(group_2)
-
-
-def create_grid(m):
-    """
-    Creates a grid overlaying the map
-    """
-    grid = []
-    # Change these values for different grid sizes
-    lat_interval, lon_interval = 0.01, 0.01
-
-    for lat in np.arange(-33, -30, lat_interval):
-        grid.append([[lat, -180], [lat, 180]])
-
-    for lon in np.arange(114, 118, lon_interval):
-        grid.append([[-90, lon], [90, lon]])
-
-    for g in grid:
-        folium.PolyLine(g, color="black", weight=0.5, opacity=0.5).add_to(m)
-
-
-m = initialise_map()
-create_trail(m)
-create_markers(m)
-create_grid(m)
-
-# Adds layer control to enable viewing groups of markers
-folium.LayerControl().add_to(m)
-
-# Saves the map to HTML file in this directory (open using browser)
-current_dir = os.path.dirname(__file__)
-file_path = os.path.join(current_dir, "footprint.html")
-print("Done, saving map...")
-m.save(file_path)
+# Startup the program.
+startup()
