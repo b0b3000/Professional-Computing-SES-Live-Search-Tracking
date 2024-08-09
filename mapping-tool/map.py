@@ -19,7 +19,7 @@ def startup():
     # For a more monochrome map: tiles="cartodb positron".
     map1 = folium.Map((-31.870650, 116.095986), control_scale=True, zoom_start=16)    # Arbitrary location in John Forrest National Park.
     # Enables viewing controls for different groups of markers.
-    # folium.LayerControl().add_to(map1)
+    folium.LayerControl().add_to(map1)
 
     # Creates the grid overlay.
     grid = []
@@ -43,7 +43,6 @@ def startup():
     # This part doesn't work right now!
     # map1, new_trail = create_trail(map1, path, 0, 0, (-31.872236, 116.093924))    # Create a new trail for this search.
     # trails.append(new_trail)
-    # map1.save(path)
 
 
 def create_trail(map1, path: str, device_num: int, trail_num: int, trail_start: tuple):
