@@ -10,22 +10,22 @@ If you want to test this you need to create an Azure storage account, create a c
 
 """
 
-
 from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
-storage_connection_string = 'DefaultEndpointsProtocol=https;AccountName=3200data;AccountKey=o1n3cEFaFRhSH+ag2sB+82xRWOQwge3641FCMKEBqpEmaS5uMYwWaCGqp6YIFD6Ikcn+zibojnRo+AStQdyo0g==;EndpointSuffix=core.windows.net'
+STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=bob3200;AccountKey=uoWVK+RRGGf4jaMYZ76U0zffW9Pm2ejc0XnN6ybXs6MuX6HQkNCa7fzVsKuP78Y8H7qjCheH8EZ7+AStwTVQ6g==;EndpointSuffix=core.windows.net"
+CONTAINER_ID = '3200testv1'
 
 # using blobserviceclient class, to authenticate the account, we pass the connection string
-blob_service_client = BlobServiceClient.from_connection_string(storage_connection_string)
+blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
 
 #create container reference/entity
-container_id = 'datacontainer'
-container_client = blob_service_client.get_container_client(container_id)
+
+container_client = blob_service_client.get_container_client(CONTAINER_ID)
 
 # Prepare the data
-data_string = "device123, -31.9505, 115.8605"
+sample_data_string = "device123, -31.9505, 115.8605"
 blob_name = "gps_data.txt"  # Name of the blob (file) in the container
 
 # Upload the data
 blob_client = container_client.get_blob_client(blob_name)
-blob_client.upload_blob(data_string, overwrite=True)
+blob_client.upload_blob(sample_data_string, overwrite=True)
