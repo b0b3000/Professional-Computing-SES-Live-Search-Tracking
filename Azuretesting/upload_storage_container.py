@@ -1,31 +1,70 @@
-# Ensure that you pip install azure-storage-blob
-# Details
+# pip install azure-storage-blob, folium
 """
-The storage_connection_string is what enables connection to a storage container.
-Currently this is linked to the one I have made through a free account on microsoft Azure.
-I tried to look into making it available for sharing but it began to take too long for the time I had.
+Python program that emulates how a single base station would upload GPS data to the server.
 
-Worth looking into of course, however this is just what I tested in the time being.
-If you want to test this you need to create an Azure storage account, create a container, then get its access key which is the connection string here.
-
+Written by Bob Beashel, Fred Leman.
 """
+from azure.storage.blob import BlobServiceClient
 
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
-STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=bob3200;AccountKey=uoWVK+RRGGf4jaMYZ76U0zffW9Pm2ejc0XnN6ybXs6MuX6HQkNCa7fzVsKuP78Y8H7qjCheH8EZ7+AStwTVQ6g==;EndpointSuffix=core.windows.net"
-CONTAINER_ID = '3200testv1'
+def startup():
+    # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
+    STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=rQIU/ZBa7bHFY2TLevr7UGL4RixfBbg3FclEpivImv33c241ynxn/TKnLaHjbdKUZjJNeGKfRvTu+AStcXfU3g==;EndpointSuffix=core.windows.net"
+    BASE_STATION_ID = 0
+    CONTAINER_ID = "base-station-" + str(BASE_STATION_ID)
+    SEARCH_ID = 0
 
-# using blobserviceclient class, to authenticate the account, we pass the connection string
-blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
+    # Initialises client to interact with the Storage Account.
+    blob_service_client = BlobServiceClient.from_connection_string(conn_str=STORAGE_CONNECTION_STRING)
 
-#create container reference/entity
+    # Creates a new container (directory) for this base station to upload data to.
+    blob_service_client.create_container(name=CONTAINER_ID)
 
-container_client = blob_service_client.get_container_client(CONTAINER_ID)
+    # Initialises client to interact with the container.
+    container_client = blob_service_client.get_container_client(container=CONTAINER_ID)
 
-# Prepare the data
-sample_data_string = "device123, -31.9505, 115.8605"
-blob_name = "gps_data.txt"  # Name of the blob (file) in the container
+    # Example TimestampedGeoJson lines data (assuming the base station has been tracking all this).
+    lines = [
+        {
+            "coordinates": [
+                [116.07863524846368, -31.865184419408514],
+                [116.07911971292083, -31.86478329243488],
+            ],
+            "dates": ["2024-08-18T00:00:00", "2024-08-18T00:10:00"],
+            "color": "red",
+            "data": "additional data"   # Things like telemetry data can go here.
+        },
+        {
+            "coordinates": [
+                [116.07911971292083, -31.86478329243488], 
+                [116.07975560446562, -31.865369779903773]
+            ],
+            "dates": ["2024-08-18T00:10:00", "2024-08-18T00:20:00"],
+            "color": "red",
+            "data": "additional data"
+        },
+        {
+            "coordinates": [
+                [116.07975560446562, -31.865369779903773], 
+                [116.08041136907269, -31.864828128884]
+            ],
+            "dates": ["2024-08-18T00:20:00", "2024-08-18T00:30:00"],
+            "color": "red",
+            "data": "additional data"
+        },
+        {
+            "coordinates": [
+                [116.08041136907269, -31.864828128884], 
+                [116.0804396265383, -31.866904109870646]
+            ],
+            "dates": ["2024-08-18T00:30:00", "2024-08-18T00:40:00"],
+            "color": "red",
+            "data": "additional data"
+        },
+    ]
 
-# Upload the data
-blob_client = container_client.get_blob_client(blob_name)
-blob_client.upload_blob(sample_data_string, overwrite=True)
+    # Uploads the data.
+    container_client.upload_blob(name="search_" + str(SEARCH_ID), data=str(lines), overwrite=True)
+
+if __name__ == "__main__":
+    startup()

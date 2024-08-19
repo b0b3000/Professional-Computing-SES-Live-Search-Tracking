@@ -25,7 +25,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_4e766f58adba3520213979c2ddeb5216 {
+                #map_e4ebb675dbcc123da4786e82e2089920 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -46,14 +46,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_4e766f58adba3520213979c2ddeb5216" ></div>
+            <div class="folium-map" id="map_e4ebb675dbcc123da4786e82e2089920" ></div>
         
 </body>
 <script>
     
     
-            var map_4e766f58adba3520213979c2ddeb5216 = L.map(
-                "map_4e766f58adba3520213979c2ddeb5216",
+            var map_e4ebb675dbcc123da4786e82e2089920 = L.map(
+                "map_e4ebb675dbcc123da4786e82e2089920",
                 {
                     center: [-31.865184419408514, 116.07863524846368],
                     crs: L.CRS.EPSG3857,
@@ -62,19 +62,22 @@
                     preferCanvas: false,
                 }
             );
-            L.control.scale().addTo(map_4e766f58adba3520213979c2ddeb5216);
+            L.control.scale().addTo(map_e4ebb675dbcc123da4786e82e2089920);
 
             
 
         
     
-            var tile_layer_e8412fa583c568d90cc06bcbeb1edb8e = L.tileLayer(
+            var tile_layer_18ec5531ec5d84c794af83c00b6c7b2d = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
             );
         
     
-            tile_layer_e8412fa583c568d90cc06bcbeb1edb8e.addTo(map_4e766f58adba3520213979c2ddeb5216);
+            tile_layer_18ec5531ec5d84c794af83c00b6c7b2d.addTo(map_e4ebb675dbcc123da4786e82e2089920);
+        
+    
+            tile_layer_18ec5531ec5d84c794af83c00b6c7b2d.addTo(map_e4ebb675dbcc123da4786e82e2089920);
         
     
             L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
@@ -84,7 +87,7 @@
                     return newdate.format("YYYY-MM-DD HH:mm:ss");
                 }
             });
-            map_4e766f58adba3520213979c2ddeb5216.timeDimension = L.timeDimension(
+            map_e4ebb675dbcc123da4786e82e2089920.timeDimension = L.timeDimension(
                 {
                     period: "PT1M",
                 }
@@ -92,9 +95,9 @@
             var timeDimensionControl = new L.Control.TimeDimensionCustom(
                 {"autoPlay": true, "loopButton": false, "maxSpeed": 10, "minSpeed": 0.1, "playerOptions": {"loop": false, "startOver": true, "transitionTime": 100}, "position": "bottomleft", "speedSlider": true, "timeSliderDragUpdate": false}
             );
-            map_4e766f58adba3520213979c2ddeb5216.addControl(this.timeDimensionControl);
+            map_e4ebb675dbcc123da4786e82e2089920.addControl(this.timeDimensionControl);
 
-            var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.07863524846368, -31.865184419408514], [116.07911971292083, -31.86478329243488]]}, "properties": {"times": ["2024-08-18T00:00:00", "2024-08-18T00:10:00"], "tooltip": "here is some additional data['2024-08-18T00:00:00', '2024-08-18T00:10:00']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.07911971292083, -31.86478329243488], [116.07975560446562, -31.865369779903773]]}, "properties": {"times": ["2024-08-18T00:10:00", "2024-08-18T00:20:00"], "tooltip": "here is some additional data['2024-08-18T00:10:00', '2024-08-18T00:20:00']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.07975560446562, -31.865369779903773], [116.08041136907269, -31.864828128884]]}, "properties": {"times": ["2024-08-18T00:20:00", "2024-08-18T00:30:00"], "tooltip": "here is some additional data['2024-08-18T00:20:00', '2024-08-18T00:30:00']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.08041136907269, -31.864828128884], [116.0804396265383, -31.866904109870646]]}, "properties": {"times": ["2024-08-18T00:30:00", "2024-08-18T00:40:00"], "tooltip": "here is some additional data['2024-08-18T00:30:00', '2024-08-18T00:40:00']", "style": {"color": "red", "weight": 5}}}]}, {
+            var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.07863524846368, -31.865184419408514], [116.07911971292083, -31.86478329243488]]}, "properties": {"times": ["2024-08-18T00:00:00", "2024-08-18T00:10:00"], "tooltip": "additional data['2024-08-18T00:00:00', '2024-08-18T00:10:00']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.07911971292083, -31.86478329243488], [116.07975560446562, -31.865369779903773]]}, "properties": {"times": ["2024-08-18T00:10:00", "2024-08-18T00:20:00"], "tooltip": "additional data['2024-08-18T00:10:00', '2024-08-18T00:20:00']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.07975560446562, -31.865369779903773], [116.08041136907269, -31.864828128884]]}, "properties": {"times": ["2024-08-18T00:20:00", "2024-08-18T00:30:00"], "tooltip": "additional data['2024-08-18T00:20:00', '2024-08-18T00:30:00']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.08041136907269, -31.864828128884], [116.0804396265383, -31.866904109870646]]}, "properties": {"times": ["2024-08-18T00:30:00", "2024-08-18T00:40:00"], "tooltip": "additional data['2024-08-18T00:30:00', '2024-08-18T00:40:00']", "style": {"color": "red", "weight": 5}}}]}, {
                     pointToLayer: function (feature, latLng) {
                         if (feature.properties.icon == 'marker') {
                             if(feature.properties.iconstyle){
@@ -128,14 +131,14 @@
                     }
                 })
 
-            var timestamped_geo_json_52fafc412b198713ab67215b8f2d2915 = L.timeDimension.layer.geoJson(
+            var timestamped_geo_json_a770377d38ecc5ca8dc9048de0f1d555 = L.timeDimension.layer.geoJson(
                 geoJsonLayer,
                 {
                     updateTimeDimension: true,
                     addlastPoint: true,
                     duration: undefined,
                 }
-            ).addTo(map_4e766f58adba3520213979c2ddeb5216);
+            ).addTo(map_e4ebb675dbcc123da4786e82e2089920);
         
 </script>
 </html>
