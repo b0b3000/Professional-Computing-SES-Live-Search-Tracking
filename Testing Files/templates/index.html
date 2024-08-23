@@ -1,0 +1,22 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Data Map</title>
+    <style>
+        #map-container {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>GPS Data Map</h1>
+    <div id="map-container">
+        <!-- Embed the map directly as an iframe -->
+        <iframe src="{{ url_for('static', filename='test_footprint.html') }}" width="100%" height="600px"></iframe>
+    </div>
+</body>
+</html>
