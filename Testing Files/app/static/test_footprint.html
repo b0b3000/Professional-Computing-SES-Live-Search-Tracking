@@ -25,7 +25,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_f29b3cc98cf03d74de31c00ed797e60e {
+                #map_6b7cb23de5ca5a921fd4b0a6b178eac4 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -46,14 +46,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_f29b3cc98cf03d74de31c00ed797e60e" ></div>
+            <div class="folium-map" id="map_6b7cb23de5ca5a921fd4b0a6b178eac4" ></div>
         
 </body>
 <script>
     
     
-            var map_f29b3cc98cf03d74de31c00ed797e60e = L.map(
-                "map_f29b3cc98cf03d74de31c00ed797e60e",
+            var map_6b7cb23de5ca5a921fd4b0a6b178eac4 = L.map(
+                "map_6b7cb23de5ca5a921fd4b0a6b178eac4",
                 {
                     center: [-31.865184419408514, 116.07863524846368],
                     crs: L.CRS.EPSG3857,
@@ -62,19 +62,19 @@
                     preferCanvas: false,
                 }
             );
-            L.control.scale().addTo(map_f29b3cc98cf03d74de31c00ed797e60e);
+            L.control.scale().addTo(map_6b7cb23de5ca5a921fd4b0a6b178eac4);
 
             
 
         
     
-            var tile_layer_35376260c73836731be4764abb3e64e3 = L.tileLayer(
+            var tile_layer_88f0ade6d5c87665c2fb56ce36d5d68b = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
             );
         
     
-            tile_layer_35376260c73836731be4764abb3e64e3.addTo(map_f29b3cc98cf03d74de31c00ed797e60e);
+            tile_layer_88f0ade6d5c87665c2fb56ce36d5d68b.addTo(map_6b7cb23de5ca5a921fd4b0a6b178eac4);
         
     
             L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
@@ -84,7 +84,7 @@
                     return newdate.format("YYYY-MM-DD HH:mm:ss");
                 }
             });
-            map_f29b3cc98cf03d74de31c00ed797e60e.timeDimension = L.timeDimension(
+            map_6b7cb23de5ca5a921fd4b0a6b178eac4.timeDimension = L.timeDimension(
                 {
                     period: "PT1M",
                 }
@@ -92,9 +92,9 @@
             var timeDimensionControl = new L.Control.TimeDimensionCustom(
                 {"autoPlay": true, "loopButton": false, "maxSpeed": 10, "minSpeed": 0.1, "playerOptions": {"loop": false, "startOver": true, "transitionTime": 100}, "position": "bottomleft", "speedSlider": true, "timeSliderDragUpdate": false}
             );
-            map_f29b3cc98cf03d74de31c00ed797e60e.addControl(this.timeDimensionControl);
+            map_6b7cb23de5ca5a921fd4b0a6b178eac4.addControl(this.timeDimensionControl);
 
-            var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.370011359351, -31.973588793450652], [116.79533151088833, -31.152202600665497]]}, "properties": {"times": ["2024-08-23T12:34:47", "2024-08-23T13:34:47"], "tooltip": "additional data goes here['2024-08-23T12:34:47', '2024-08-23T13:34:47']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.79533151088833, -31.152202600665497], [116.09449170501924, -31.6305946442433]]}, "properties": {"times": ["2024-08-23T13:34:47", "2024-08-23T14:34:47"], "tooltip": "additional data goes here['2024-08-23T13:34:47', '2024-08-23T14:34:47']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.09449170501924, -31.6305946442433], [116.8564574756429, -31.744727715420197]]}, "properties": {"times": ["2024-08-23T14:34:47", "2024-08-23T15:34:47"], "tooltip": "additional data goes here['2024-08-23T14:34:47', '2024-08-23T15:34:47']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.8564574756429, -31.744727715420197], [116.21177403479747, -31.924506344428647]]}, "properties": {"times": ["2024-08-23T15:34:47", "2024-08-23T16:34:47"], "tooltip": "additional data goes here['2024-08-23T15:34:47', '2024-08-23T16:34:47']", "style": {"color": "red", "weight": 5}}}]}, {
+            var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.07863524846368, -31.865184419408514], [116.07911971292083, -31.86478329243488]]}, "properties": {"times": ["2024-08-18T00:00:00", "2024-08-18T00:10:00"], "tooltip": "additional data['2024-08-18T00:00:00', '2024-08-18T00:10:00']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.07911971292083, -31.86478329243488], [116.07975560446562, -31.865369779903773]]}, "properties": {"times": ["2024-08-18T00:10:00", "2024-08-18T00:20:00"], "tooltip": "additional data['2024-08-18T00:10:00', '2024-08-18T00:20:00']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.07975560446562, -31.865369779903773], [116.08041136907269, -31.864828128884]]}, "properties": {"times": ["2024-08-18T00:20:00", "2024-08-18T00:30:00"], "tooltip": "additional data['2024-08-18T00:20:00', '2024-08-18T00:30:00']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.08041136907269, -31.864828128884], [116.0804396265383, -31.866904109870646]]}, "properties": {"times": ["2024-08-18T00:30:00", "2024-08-18T00:40:00"], "tooltip": "additional data['2024-08-18T00:30:00', '2024-08-18T00:40:00']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.370011359351, -31.973588793450652], [116.79533151088833, -31.152202600665497]]}, "properties": {"times": ["2024-08-23T12:34:47", "2024-08-23T13:34:47"], "tooltip": "additional data goes here['2024-08-23T12:34:47', '2024-08-23T13:34:47']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.79533151088833, -31.152202600665497], [116.09449170501924, -31.6305946442433]]}, "properties": {"times": ["2024-08-23T13:34:47", "2024-08-23T14:34:47"], "tooltip": "additional data goes here['2024-08-23T13:34:47', '2024-08-23T14:34:47']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.09449170501924, -31.6305946442433], [116.8564574756429, -31.744727715420197]]}, "properties": {"times": ["2024-08-23T14:34:47", "2024-08-23T15:34:47"], "tooltip": "additional data goes here['2024-08-23T14:34:47', '2024-08-23T15:34:47']", "style": {"color": "red", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[116.8564574756429, -31.744727715420197], [116.21177403479747, -31.924506344428647]]}, "properties": {"times": ["2024-08-23T15:34:47", "2024-08-23T16:34:47"], "tooltip": "additional data goes here['2024-08-23T15:34:47', '2024-08-23T16:34:47']", "style": {"color": "red", "weight": 5}}}]}, {
                     pointToLayer: function (feature, latLng) {
                         if (feature.properties.icon == 'marker') {
                             if(feature.properties.iconstyle){
@@ -128,14 +128,14 @@
                     }
                 })
 
-            var timestamped_geo_json_7b5882679108b1dfd76a19a584012782 = L.timeDimension.layer.geoJson(
+            var timestamped_geo_json_53fe902ee2122f31fc35611c7a2f8958 = L.timeDimension.layer.geoJson(
                 geoJsonLayer,
                 {
                     updateTimeDimension: true,
                     addlastPoint: true,
                     duration: undefined,
                 }
-            ).addTo(map_f29b3cc98cf03d74de31c00ed797e60e);
+            ).addTo(map_6b7cb23de5ca5a921fd4b0a6b178eac4);
         
 </script>
 </html>

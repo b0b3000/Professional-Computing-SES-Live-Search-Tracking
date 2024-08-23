@@ -1,7 +1,7 @@
 from flask import render_template, jsonify, current_app as app
 import os
 import folium
-import retrieve_container
+import retrieve_container, upload_storage_container
 
 # Index route
 @app.route('/')
@@ -17,3 +17,12 @@ def index():
 def get_gps_data():
     data = retrieve_container.retrieve_from_containers() # Adjust this as needed
     return jsonify(data)
+
+@app.route('/api/push-data', methods=['POST'])
+def push_data_to_server():
+    try:
+        upload_storage_container.startup()
+        return jsonify({"status": "success", "message": "Data pushed to Azure successfully"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+
