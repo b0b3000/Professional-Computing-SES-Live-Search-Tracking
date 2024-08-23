@@ -1,6 +1,5 @@
 flask
 folium
 meshtastic
-azure.storage.blob
-azure
+azure-storage-blob
 
