@@ -9,9 +9,9 @@
     - Select "Connection string (Key or SAS)"
     - Under "Display name", write "cits3200testv1"
     - For the "Connection string", use this:
-    ```
-    BlobEndpoint=https://cits3200testv1.blob.core.windows.net/;QueueEndpoint=https://cits3200testv1.queue.core.windows.net/;FileEndpoint=https://cits3200testv1.file.core.windows.net/;TableEndpoint=https://cits3200testv1.table.core.windows.net/;SharedAccessSignature=sv=2022-11-02&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2024-12-30T17:14:56Z&st=2024-08-19T09:14:56Z&spr=https,http&sig=lGJZq7yRcnHGFqGR2V7mzTtIfAfKS6CkwvEupdnj0HA%3D
-    ```
+
+        (see Discord)
+
     - Then click "Next", then click "Connect"
     - The Storage Account should now show up in the sidebar, and you can navigate down to certain containers and blobs
 

@@ -1,15 +1,17 @@
-# pip install azure-storage-blob, folium
 """
-Python program that emulates how a single base station would upload GPS data to the server.
+Python program that the base station will use to upload GPS data to the cloud server.
+
+Requirements:
+azure-storage-blob==12.22.0
+folium==0.17.0
 
 Written by Bob Beashel, Fred Leman.
 """
 from azure.storage.blob import BlobServiceClient
 
-
 def startup():
     # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
-    STORAGE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=rQIU/ZBa7bHFY2TLevr7UGL4RixfBbg3FclEpivImv33c241ynxn/TKnLaHjbdKUZjJNeGKfRvTu+AStcXfU3g==;EndpointSuffix=core.windows.net"
+    STORAGE_CONNECTION_STRING = get_key()
     BASE_STATION_ID = 0
     CONTAINER_ID = "base-station-" + str(BASE_STATION_ID)
     SEARCH_ID = 0
@@ -65,6 +67,18 @@ def startup():
 
     # Uploads the data.
     container_client.upload_blob(name="search_" + str(SEARCH_ID), data=str(lines), overwrite=True)
+
+def get_key():
+    # Retrieves key1 from the text file in this directory.
+    # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
+    conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+    with open("keys.txt") as file:
+        for line in file:
+            if line.rstrip().startswith("key1:"):
+                # Splits the key from after the first occurence of "key1:".
+                key = line.rstrip().split("key1:", 1)[1]
+                # Places the key in the correct position in the middle of connection string.
+                return conn_string[:69] + key + conn_string[69:]
 
 if __name__ == "__main__":
     startup()
