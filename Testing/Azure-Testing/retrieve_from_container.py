@@ -20,7 +20,7 @@ def retrieve_from_containers(m, path):
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)   # The BlobServiceClient interacts with the Storage Account itself.
 
     # Iterates through each container in the Storage Account, and prints their names.
-    print("\n----- Containers -----\n")
+    #print("\n----- Containers -----\n")
     for container in blob_service_client.list_containers():
         print(container.name)
         container_client = blob_service_client.get_container_client(container)   # The ContainerClient interacts with a specific container (directory).
