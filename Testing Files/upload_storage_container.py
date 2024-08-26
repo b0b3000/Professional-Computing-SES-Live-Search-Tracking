@@ -8,6 +8,7 @@ folium==0.17.0
 Written by Bob Beashel, Fred Leman.
 """
 from azure.storage.blob import BlobServiceClient
+from azure.core.exceptions import ResourceExistsError
 
 def startup():
     # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
@@ -19,9 +20,13 @@ def startup():
 
     # Initialises client to interact with the Storage Account.
     blob_service_client = BlobServiceClient.from_connection_string(conn_str=STORAGE_CONNECTION_STRING)
-
-    # Creates a new container (directory) for this base station to upload data to.
-    blob_service_client.create_container(name=CONTAINER_ID)
+    
+    try:
+        # Attempt to create a new container. This will fail if the container already exists.
+        blob_service_client.create_container(name=CONTAINER_ID)
+        print(f"Container '{CONTAINER_ID}' created successfully.")
+    except ResourceExistsError:
+        print(f"Container '{CONTAINER_ID}' already exists. Skipping creation.")
 
     # Initialises client to interact with the container.
     container_client = blob_service_client.get_container_client(container=CONTAINER_ID)
@@ -30,13 +35,13 @@ def startup():
     lines = [
         {
             "coordinates": [
-                [116.07863524846368, -31.865184419408514],
-                [116.07911971292083, -31.86478329243488],
+                [116.07911971292083, -31.86478329243488], 
+                [116.07975560446562, -31.865369779903773]
             ],
             "dates": ["2024-08-18T00:00:00", "2024-08-18T00:10:00"],
             "color": "red",
-            "data": "additional data",   # Things like telemetry data can go here.
-            "id" : "#1234"
+            "data": "additional data"  # Things like telemetry data can go here.
+            
         },
         {
             "coordinates": [
@@ -45,18 +50,17 @@ def startup():
             ],
             "dates": ["2024-08-18T00:10:00", "2024-08-18T00:20:00"],
             "color": "red",
-            "data": "additional data",
-            "id" : "#1235"
+            "data": "additional data"
         },
         {
             "coordinates": [
                 [116.07975560446562, -31.865369779903773], 
                 [116.08041136907269, -31.864828128884]
+
             ],
             "dates": ["2024-08-18T00:20:00", "2024-08-18T00:30:00"],
             "color": "red",
-            "data": "additional data",
-            "id" : "#1236"
+            "data": "additional data"
         },
         {
             "coordinates": [
@@ -65,8 +69,8 @@ def startup():
             ],
             "dates": ["2024-08-18T00:30:00", "2024-08-18T00:40:00"],
             "color": "red",
-            "data": "additional data",
-            "id" : "#1237"
+            "data": "additional data"
+            
         },
     ]
 
