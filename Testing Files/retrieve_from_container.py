@@ -14,8 +14,9 @@ from azure.storage.blob import BlobServiceClient
 
 
 def retrieve_from_containers(m, path):
-    STORAGE_CONNECTION_STRING = 'DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=oVbt8D3gIlcm2zu/ihMeHHIiuJdKXVMtwKJWYdLzmsMFNklyatcEsFoECqe1dcgUqz2NuCyIJDXd+ASt0iGB3A==;EndpointSuffix=core.windows.net'
+    # STORAGE_CONNECTION_STRING = 'DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=oVbt8D3gIlcm2zu/ihMeHHIiuJdKXVMtwKJWYdLzmsMFNklyatcEsFoECqe1dcgUqz2NuCyIJDXd+ASt0iGB3A==;EndpointSuffix=core.windows.net'
     
+    STORAGE_CONNECTION_STRING = get_key()
     # Initialises client.
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)   # The BlobServiceClient interacts with the Storage Account itself.
 
