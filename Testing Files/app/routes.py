@@ -1,3 +1,14 @@
+"""
+Routes:
+    - index(): Renders the index.html template and passes device data to it.
+    - update_map(): Updates the map with new data and returns a success message.
+    - push_data_to_server(): Pushes data to Azure storage container and returns a success message. (Testing Purposes).
+    
+
+
+"""
+
+
 from flask import render_template, jsonify, current_app as app
 import os
 import folium
