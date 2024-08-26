@@ -19,27 +19,43 @@
     <button id="fetch-data-button">Fetch Latest GPS Data</button>
     <button id="push-data-button">Push Data to Server</button>
 
+    <!-- New section to display device ID and additional data -->
+    <div id="data-container">
+        <h2>Device Information</h2>
+        <ul id="device-list">
+            {% for device in device_data %}
+                <li>
+                    <strong>Device ID:</strong> {{ device.id }} <br>
+                    <strong>Additional Data:</strong> {{ device.data }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <script>
         document.getElementById('fetch-data-button').addEventListener('click', function () {
-            fetch('/api/gps-data')
-                .then(response => response.json())
-                .then(data => {
-                    console.log('GPS Data:', data);
-                    document.getElementById('map-iframe').src = document.getElementById('map-iframe').src;
-                })
-                .catch(error => console.error('Error fetching GPS data:', error));
+            fetch('/api/update-map', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Update Map Response:', data);
+                // Refresh the iframe to show updated map
+                document.getElementById('map-iframe').src = document.getElementById('map-iframe').src;
+            })
+            .catch(error => console.error('Error updating map:', error));
         });
 
         document.getElementById('push-data-button').addEventListener('click', function () {
             fetch('/api/push-data', {
                 method: 'POST'
             })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    console.log('Push Data Response:', data);
-                })
-                .catch(error => console.error('Error pushing data:', error));
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                console.log('Push Data Response:', data);
+            })
+            .catch(error => console.error('Error pushing data:', error));
         });
     </script>
 </body>

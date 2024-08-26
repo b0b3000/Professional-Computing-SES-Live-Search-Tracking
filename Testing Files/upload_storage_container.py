@@ -35,7 +35,8 @@ def startup():
             ],
             "dates": ["2024-08-18T00:00:00", "2024-08-18T00:10:00"],
             "color": "red",
-            "data": "additional data"   # Things like telemetry data can go here.
+            "data": "additional data",   # Things like telemetry data can go here.
+            "id" : "#1234"
         },
         {
             "coordinates": [
@@ -44,7 +45,8 @@ def startup():
             ],
             "dates": ["2024-08-18T00:10:00", "2024-08-18T00:20:00"],
             "color": "red",
-            "data": "additional data"
+            "data": "additional data",
+            "id" : "#1235"
         },
         {
             "coordinates": [
@@ -53,7 +55,8 @@ def startup():
             ],
             "dates": ["2024-08-18T00:20:00", "2024-08-18T00:30:00"],
             "color": "red",
-            "data": "additional data"
+            "data": "additional data",
+            "id" : "#1236"
         },
         {
             "coordinates": [
@@ -62,7 +65,8 @@ def startup():
             ],
             "dates": ["2024-08-18T00:30:00", "2024-08-18T00:40:00"],
             "color": "red",
-            "data": "additional data"
+            "data": "additional data",
+            "id" : "#1237"
         },
     ]
 

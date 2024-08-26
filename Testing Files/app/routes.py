@@ -9,8 +9,10 @@ def index():
     current_dir = os.path.dirname(__file__)
     map_path = os.path.join(current_dir, 'static', 'footprint.html')
     m = folium.Map((-31.865184419408514, 116.07863524846368), control_scale=True, zoom_start=17)
-    retrieve_from_container.retrieve_from_containers(m, map_path)
-    return render_template('index.html')
+    device_data = retrieve_from_container.retrieve_from_containers(m, map_path)
+    
+    # Pass device data to template
+    return render_template('index.html', device_data=device_data)
 
 @app.route('/api/update-map', methods=['POST'])
 def update_map():

@@ -19,23 +19,38 @@ def retrieve_from_containers(m, path):
     # Initialises client.
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)   # The BlobServiceClient interacts with the Storage Account itself.
 
+    device_data = []  # To store device-specific data
+
+
     # Iterates through each container in the Storage Account, and prints their names.
-    print("\n----- Containers -----\n")
+
     for container in blob_service_client.list_containers():
-        print(container.name)
+        
         container_client = blob_service_client.get_container_client(container)   # The ContainerClient interacts with a specific container (directory).
 
         # Iterates through each blob in the container and prints its data.
         for blob in container_client.list_blobs():
             try:
                 blob_content = container_client.download_blob(blob).readall()
-                print(f"\n\tContent of the blob '{blob.name}': \n\t\t{str(blob_content)}")    # Prints the content of the blob.
+                data = eval(blob_content)
+                
+                # Append parsed data to device_data
+                lines = eval(blob_content)
+                for line in lines:
+                    device_data.append({
+                        'id': line.get('id', 'Unknown'),
+                        'data': line.get('data', 'No additional data')
+                    })    
+                
+                #print(f"\n\tContent of the blob '{blob.name}': \n\t\t{str(blob_content)}")    # Prints the content of the blob.
                 mapify(blob_content).add_to(m)    # Creates a TimestampedGeoJson object from the blob's lines.
                 m.save(path)    # Save map after each edit.
             except Exception as e:
                 print(f"Error downloading blob: {e}")
 
     print("\n")
+    
+    return device_data
 
 def mapify(blob_content):
     # Evaluates the timestamped trail lines from the blob's content file into a list.
