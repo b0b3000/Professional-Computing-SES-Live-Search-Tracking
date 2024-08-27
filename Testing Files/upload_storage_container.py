@@ -13,7 +13,6 @@ from azure.core.exceptions import ResourceExistsError
 def startup():
     # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
     STORAGE_CONNECTION_STRING = get_key()
-    # STORAGE_CONNECTION_STRING = 'DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=oVbt8D3gIlcm2zu/ihMeHHIiuJdKXVMtwKJWYdLzmsMFNklyatcEsFoECqe1dcgUqz2NuCyIJDXd+ASt0iGB3A==;EndpointSuffix=core.windows.net'
     BASE_STATION_ID = 0
     CONTAINER_ID = "base-station-" + str(BASE_STATION_ID)
     SEARCH_ID = 0

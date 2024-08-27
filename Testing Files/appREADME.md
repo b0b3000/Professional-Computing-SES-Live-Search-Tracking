@@ -1,3 +1,17 @@
+# Context
+
+### Changes made
+- get_key.py as its own file, and acts as global variable in Flask app
+- 
+
+### In Progress Tasks / Future Tasks
+- functions for processing seen blob data and only reading in new blob data from storage container need writing
+- improve telemetry data dispaly
+- when data is uploaded to storage container, search ID is updated along with it, this will allow us to track and display data from the particular LoRa device
+- containers names are set and hardcoded for now, for testing purposes
+
+
+
 # GPS Data Visualization Flask App
 
 This Flask web application is designed to visualize GPS data on a map. Data is pulled from Azure cloud server. This guide will walk you through the steps to set up and run the application on your local machine. 
