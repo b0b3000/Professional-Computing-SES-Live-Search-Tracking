@@ -37,19 +37,22 @@ def telemetry_test():
     request_telemetry(node, 1)
 
 
+# interface.nodes seemingly retrieves all of the information we are looking for:
+# telemetry and position data (where available) from a single request.
+# likely simplifies this process a lot, and may result in a much simpler 'scheduler' 
 def print_node_information():
   interface = meshtastic.serial_interface.SerialInterface()
   data = interface.nodes
   interface.close()
 
   for key, value in data.items():
-      print(f"Key: {key}")
-      for sub_key, sub_value in value.items():
-          if isinstance(sub_value, dict):
-              print(f"  {sub_key}:")
-              for sub_sub_key, sub_sub_value in sub_value.items():
-                  print(f"    {sub_sub_key}: {sub_sub_value}")
-          else:
-              print(f"  {sub_key}: {sub_value}")
+    print(f"Key: {key}")
+    for sub_key, sub_value in value.items():
+      if isinstance(sub_value, dict):
+        print(f"  {sub_key}:")
+        for sub_sub_key, sub_sub_value in sub_value.items():
+          print(f"    {sub_sub_key}: {sub_sub_value}")
+      else:
+        print(f"  {sub_key}: {sub_value}")
 
 print_node_information()
