@@ -31,28 +31,25 @@ def get_available_nodes(base_station_id, node_ids):
 def telemetry_test():
   base_station_id = get_base_station_id()
   connected_nodes = [node_id for node_id in get_node_ids() if node_id != base_station_id]
-
-  print(connected_nodes)
-  for node in connected_nodes:
-    request_telemetry(node, 1)
+  return connected_nodes
 
 
 # interface.nodes seemingly retrieves all of the information we are looking for:
 # telemetry and position data (where available) from a single request.
 # likely simplifies this process a lot, and may result in a much simpler 'scheduler' 
-def print_node_information():
+def get_node_information():
   interface = meshtastic.serial_interface.SerialInterface()
-  data = interface.nodes
+  nodes = interface.nodes
   interface.close()
 
-  for key, value in data.items():
-    print(f"Key: {key}")
-    for sub_key, sub_value in value.items():
-      if isinstance(sub_value, dict):
-        print(f"  {sub_key}:")
-        for sub_sub_key, sub_sub_value in sub_value.items():
-          print(f"    {sub_sub_key}: {sub_sub_value}")
-      else:
-        print(f"  {sub_key}: {sub_value}")
+  result = {}
+  for value in nodes.values():
+    user_id = value['user']['id']
+    telemetry = value.get('deviceMetrics', {})
+    position = value.get('position', {})
+    result[user_id] = {'telemetry': telemetry, 'position': position}
+  print(result)
 
-print_node_information()
+
+
+get_node_information()
