@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+    <html>
+        <head></head>
+        <body>
+            <h1>Search Team Tracker</h1>
+            {{ iframe|safe }}
+            <form method="POST" action="{{ url_for('index')}}">
+                <input type="text"
+                    name="coordinates"
+                    placeholder="Enter coordinates" 
+                    value="{{ request.form['coordinates'] }}">
+                </input>
+            </form>
+        </body>
+    </html>

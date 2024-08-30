@@ -1,3 +1,5 @@
+# This file just displays a few example functions to demonstrate how Folium works
+
 import folium
 import numpy as np
 import os
@@ -9,7 +11,7 @@ def initialise_map():
     :return: map object
     """
     # For a more monochrome map: tiles="cartodb positron"
-    m = folium.Map((-31.9714, 116.2562), control_scale=True, zoom_start=15)
+    m = folium.Map((-31.870650, 116.095986), control_scale=True, zoom_start=16)
     return m
 
 
@@ -18,15 +20,14 @@ def create_trail(m):
     Creates a trail
     """
     trail_coords = [
-        (-31.969518, 116.259844),
-        (-31.969388, 116.259662),
-        (-31.969133, 116.259061),
-        (-31.968996, 116.258408),
-        (-31.968852, 116.255267),
-        (-31.965284, 116.249019),
-        (-31.970103, 116.249647),
+        (-31.872236,116.093924),
+        (-31.871953,116.094601),
+        (-31.872500,116.095320),
+        (-31.871297,116.095813),
+        (-31.872136,116.096747),
+        (-31.872391,116.097917)
     ]
-    # Ensure smooth factor is at 0 so you can see the points
+    # Ensure smooth factor is at 0 - to get the most accurate line
     folium.PolyLine(trail_coords, tooltip="trail", color="red", smoothfactor=0).add_to(m)
 
 
