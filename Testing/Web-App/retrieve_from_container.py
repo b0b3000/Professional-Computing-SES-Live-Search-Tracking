@@ -12,57 +12,57 @@ import folium
 from folium.plugins import TimestampedGeoJson
 from azure.storage.blob import BlobServiceClient
 import map_processing
+import traceback
 
-
-def retrieve_from_containers(m, path, STORAGE_CONNECTION_STRING):
+def retrieve_from_containers(m, geojson_data, STORAGE_CONNECTION_STRING):
     
-    # Initialises client.
-    blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)   # The BlobServiceClient interacts with the Storage Account itself.
+    # Initialize the BlobServiceClient
+    blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
 
     # To store device-specific data
     device_data = []
 
-    # Iterates through each container in the Storage Account, and prints their names.
+    # Iterate through each container in the Storage Account
     print("\n----- Containers -----\n")
     for container in blob_service_client.list_containers():
         print(container.name)
-        container_client = blob_service_client.get_container_client(container)   # The ContainerClient interacts with a specific container (directory).
+        container_client = blob_service_client.get_container_client(container)
 
-        # Iterates through each blob in the container and prints its data.
+        # Iterate through each blob in the container
         for blob in container_client.list_blobs():
             try:
                 blob_content = container_client.download_blob(blob).readall()
                 
-                # 
-                # --------------------------------------------------------------------------
                 # Append parsed data to device_data
                 lines = eval(blob_content)
                 for line in lines:
                     device_data.append({
                         'data': line.get('data', 'No additional data')
                     })  
-                # --------------------------------------------------------------------------  
                 
-                print(f"\n\tContent of the blob '{blob.name}': \n\t\t{str(blob_content)}")    # Prints the content of the blob.
-                mapify(blob_content).add_to(m)    # Creates a TimestampedGeoJson object from the blob's lines.
-                m.save(path)    # Save map after each edit.
+                print(f"\n\tContent of the blob '{blob.name}': \n\t\t{str(blob_content)}")
+                
+                # Add the GeoJSON data to the map
+                mapify(blob_content).add_to(m)
             
             except Exception as e:
                 print(f"Error downloading blob: {e}")
+                traceback.print_exc()
 
     print("\n")
     
-    # Saves current map to Azure storage container
-    map_processing.save_map_to_storage(path, "map-storage", "latest_map", STORAGE_CONNECTION_STRING)
+    # Save the map to an HTML file
+    map_save_path = os.path.join(os.path.dirname(__file__), 'app/static/footprint.html')
+    m.save(map_save_path)
     
-    # This returns tel data
     return device_data
 
-def mapify(blob_content):
+def mapify(geojson_data):
     
-    # Evaluates the timestamped trail lines from the blob's content file into a list.
-    lines = eval(blob_content)
-    # Draws out the trail lines as a Folium object.
+    # Parse the GeoJSON data
+    lines = eval(geojson_data)
+    
+    # Create features from the GeoJSON data
     features = [    
         {
             "type": "Feature",
@@ -81,7 +81,8 @@ def mapify(blob_content):
         }
         for line in lines
     ]
-    # Creates the TimestampedGeoJson object to add to the Folium map.
+    
+    # Create a TimestampedGeoJson object to add to the map
     trail = TimestampedGeoJson(
         {
             "type": "FeatureCollection",
@@ -92,13 +93,18 @@ def mapify(blob_content):
         loop=False,
         add_last_point=True,
     )
+    
     return trail
 
-"""
-if __name__ == "__main__":
-    current_dir = os.path.dirname(__file__)
-    path = os.path.join(current_dir, 'footprint.html')      # Finds correct location to store Folium map.
-    m = folium.Map((-31.865184419408514, 116.07863524846368), control_scale=True, zoom_start=17)    # Creates a new Folium map at an arbitrary location.
-    m.save(path)
-    retrieve_from_containers(m, path)
-"""
+# if __name__ == "__main__":
+#     # Set up the map and path for saving the HTML file
+#     current_dir = os.path.dirname(__file__)
+#     map_save_path = os.path.join(current_dir, 'footprint.html')
+#     m = folium.Map(location=(-31.865184419408514, 116.07863524846368), control_scale=True, zoom_start=17)
+    
+#     # Retrieve GeoJSON data and add it to the map
+#     geojson_data = "Your GeoJSON data string here"
+#     retrieve_from_containers(m, geojson_data, "Your_Storage_Connection_String")
+    
+#     # Save the final map
+#     m.save(map_save_path)

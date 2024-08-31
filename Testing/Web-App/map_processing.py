@@ -24,5 +24,7 @@ def load_map_from_storage(container_name, blob_name, connection_string):
     
     # Downloading saved map from container
     map_html = blob_client.download_blob().readall().decode('utf-8')
+    # print("DEBUG\n")
+    # print(map_html)
     
     return map_html
