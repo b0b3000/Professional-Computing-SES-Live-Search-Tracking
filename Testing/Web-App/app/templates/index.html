@@ -4,58 +4,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPS Data Visualization</title>
+    <title>GPS Data Visualization v1.0</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
     <header>
-        GPS Data Visualization
+        GPS Data Visualization v1.0
     </header>
-    <div id="map-container">
-        <iframe src="{{ url_for('static', filename='footprint.html') }}" width="100%" height="100%"
-            style="border:none;" id="map-iframe"></iframe>
-    </div>
-    <button id="fetch-data-button">Fetch Latest GPS Data</button>
-    <button id="push-data-button">Push Data to Server</button>
 
-    <!-- New section to display device ID and additional data -->
-    <div id="data-container">
-        <h2>Device Information</h2>
-        <ul id="device-list">
-            {% for device in device_data %}
-                <li>
-                    <strong>Device ID:</strong> {{ device.id }} <br>
-                    <strong>Additional Data:</strong> {{ device.data }}
-                </li>
+    <!-- Dropdown for selecting Azure containers -->
+    <div id="container-selector">
+        <label for="container-dropdown">Select Azure Container:</label>
+        <select id="container-dropdown">
+            {% for container in container_names %}
+            <option value="{{ container }}">{{ container }}</option>
             {% endfor %}
-        </ul>
+        </select>
+        <button id="fetch-data-button">Fetch Latest GPS Data</button>
     </div>
+
+    <!-- Map container -->
+    <div id="map-container">
+        <iframe src="{{ url_for('static', filename='footprint.html') }}" width="100%" height="100%" style="border:none;"
+            id="map-iframe"></iframe>
+    </div>
+
+    <!-- Section to display device information -->
+    <!-- <div id="data-container"> -->
+        <!-- <h2>Device Information</h2> -->
+        <!-- <ul id="device-list"> -->
+            <!-- This will be dynamically populated by JavaScript -->
+            <!-- {% for device in device_data %} -->
+            <!-- <li> -->
+                <!-- <strong>Container:</strong> {{ device.container_name }} <br> -->
+                <!-- <strong>Additional Data:</strong> {{ device.data }} -->
+            <!-- </li> -->
+            <!-- {% endfor %} -->
+        <!-- </ul> -->
+    <!-- </div> -->
+    
 
     <script>
         document.getElementById('fetch-data-button').addEventListener('click', function () {
-            fetch('/api/update-map', {
-                method: 'POST'
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Update Map Response:', data);
-                // Refresh the iframe to show updated map
-                document.getElementById('map-iframe').src = document.getElementById('map-iframe').src;
-            })
-            .catch(error => console.error('Error updating map:', error));
-        });
+            const selectedContainer = document.getElementById('container-dropdown').value;
 
-        document.getElementById('push-data-button').addEventListener('click', function () {
-            fetch('/api/push-data', {
+            fetch(`/api/update-map?container=${selectedContainer}`, {
                 method: 'POST'
             })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                console.log('Push Data Response:', data);
-            })
-            .catch(error => console.error('Error pushing data:', error));
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Update Map Response:', data);
+
+                    // Refresh the iframe to show updated map
+                    document.getElementById('map-iframe').src = document.getElementById('map-iframe').src;
+
+                    // Update the device list
+                    const deviceList = document.getElementById('device-list');
+                    deviceList.innerHTML = '';  // Clear the current list
+                    data.device_data.forEach(device => {
+                        const listItem = document.createElement('li');
+                        listItem.innerHTML = `<strong>Container:</strong> ${device.container_name} <br><strong>Additional Data:</strong> ${device.data}`;
+                        deviceList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Error updating map:', error));
         });
     </script>
 </body>
