@@ -59,8 +59,8 @@
                 .then(data => {
                     console.log('Update Map Response:', data);
 
-                    // Refresh the iframe to show updated map
-                    document.getElementById('map-iframe').src = document.getElementById('map-iframe').src;
+                    // Update the iframe to show the new map for the selected container
+                    document.getElementById('map-iframe').src = data.map_path;
                 })
                 .catch(error => console.error('Error updating map:', error));
         });
