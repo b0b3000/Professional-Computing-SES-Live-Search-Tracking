@@ -12,7 +12,7 @@ Written by Susheel Utagi, Lilee Hammond
 from flask import render_template, jsonify, current_app as app
 import os
 import folium
-import retrieve_from_container
+from retrieve_from_container import retrieve_from_containers
 # from Azure_Testing import retrieve_from_container - fred's
 import map_processing
 from azure.core.exceptions import ResourceNotFoundError
@@ -47,9 +47,9 @@ def index():
     #     m.save(map_path)
     #     map_processing.save_map_to_storage(map_path, "map-storage", "latest_map", STORAGE_CONNECTION_STRING)
 
-    m = folium.Map(location=(-31.865184419408514, 116.07863524846368), control_scale=True, zoom_start=17)
+    m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
     map_path = map_processing.load_map_from_storage("base-station-0", "search_0", STORAGE_CONNECTION_STRING)
-    device_data = retrieve_from_container.retrieve_from_containers(m, map_path, STORAGE_CONNECTION_STRING)
+    device_data = retrieve_from_containers(m, map_path, STORAGE_CONNECTION_STRING)
 
     # Pass device data to template
     return render_template('index.html', device_data=device_data)

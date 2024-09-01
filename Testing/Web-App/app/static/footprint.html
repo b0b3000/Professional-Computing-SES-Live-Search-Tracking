@@ -25,7 +25,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_50c83f4b7785adc671bea830a68d2383 {
+                #map_05960c7b3016aac77192ac4b1aae7acf {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -46,35 +46,35 @@
 <body>
     
     
-            <div class="folium-map" id="map_50c83f4b7785adc671bea830a68d2383" ></div>
+            <div class="folium-map" id="map_05960c7b3016aac77192ac4b1aae7acf" ></div>
         
 </body>
 <script>
     
     
-            var map_50c83f4b7785adc671bea830a68d2383 = L.map(
-                "map_50c83f4b7785adc671bea830a68d2383",
+            var map_05960c7b3016aac77192ac4b1aae7acf = L.map(
+                "map_05960c7b3016aac77192ac4b1aae7acf",
                 {
-                    center: [-31.865184419408514, 116.07863524846368],
+                    center: [-31.9505, 115.8605],
                     crs: L.CRS.EPSG3857,
                     zoom: 17,
                     zoomControl: true,
                     preferCanvas: false,
                 }
             );
-            L.control.scale().addTo(map_50c83f4b7785adc671bea830a68d2383);
+            L.control.scale().addTo(map_05960c7b3016aac77192ac4b1aae7acf);
 
             
 
         
     
-            var tile_layer_010b5facebe3f09f435ca6dd5ee0fc38 = L.tileLayer(
+            var tile_layer_777a836f100ba3d926f38b7f93b51bcf = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
             );
         
     
-            tile_layer_010b5facebe3f09f435ca6dd5ee0fc38.addTo(map_50c83f4b7785adc671bea830a68d2383);
+            tile_layer_777a836f100ba3d926f38b7f93b51bcf.addTo(map_05960c7b3016aac77192ac4b1aae7acf);
         
     
             L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
@@ -84,7 +84,7 @@
                     return newdate.format("YYYY-MM-DD HH:mm:ss");
                 }
             });
-            map_50c83f4b7785adc671bea830a68d2383.timeDimension = L.timeDimension(
+            map_05960c7b3016aac77192ac4b1aae7acf.timeDimension = L.timeDimension(
                 {
                     period: "PT1M",
                 }
@@ -92,7 +92,7 @@
             var timeDimensionControl = new L.Control.TimeDimensionCustom(
                 {"autoPlay": true, "loopButton": false, "maxSpeed": 10, "minSpeed": 0.1, "playerOptions": {"loop": false, "startOver": true, "transitionTime": 100}, "position": "bottomleft", "speedSlider": true, "timeSliderDragUpdate": false}
             );
-            map_50c83f4b7785adc671bea830a68d2383.addControl(this.timeDimensionControl);
+            map_05960c7b3016aac77192ac4b1aae7acf.addControl(this.timeDimensionControl);
 
             var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.85704803466797, -31.95351232514714], [115.85798168182373, -31.954569415163345]]}, "properties": {"times": ["2024-08-18T00:50:00", "2024-08-18T01:00:00"], "tooltip": "Elizabeth Quay to The Bell Tower['2024-08-18T00:50:00', '2024-08-18T01:00:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.85798168182373, -31.954569415163345], [115.8565673828125, -31.955543941149934]]}, "properties": {"times": ["2024-08-18T01:00:00", "2024-08-18T01:10:00"], "tooltip": "The Bell Tower to Supreme Court Gardens['2024-08-18T01:00:00', '2024-08-18T01:10:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.8565673828125, -31.955543941149934], [115.85875511169434, -31.9559304992255]]}, "properties": {"times": ["2024-08-18T01:10:00", "2024-08-18T01:20:00"], "tooltip": "Supreme Court Gardens to Perth Concert Hall['2024-08-18T01:10:00', '2024-08-18T01:20:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.85875511169434, -31.9559304992255], [115.86082458496094, -31.956316996788697]]}, "properties": {"times": ["2024-08-18T01:20:00", "2024-08-18T01:30:00"], "tooltip": "Perth Concert Hall to St. Mary's Cathedral['2024-08-18T01:20:00', '2024-08-18T01:30:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.86082458496094, -31.956316996788697], [115.86193084716797, -31.956962057489235]]}, "properties": {"times": ["2024-08-18T01:30:00", "2024-08-18T01:40:00"], "tooltip": "St. Mary's Cathedral to Wellington Square['2024-08-18T01:30:00', '2024-08-18T01:40:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.86193084716797, -31.956962057489235], [115.863037109375, -31.957485412359073]]}, "properties": {"times": ["2024-08-18T01:40:00", "2024-08-18T01:50:00"], "tooltip": "Wellington Square to Queens Gardens['2024-08-18T01:40:00', '2024-08-18T01:50:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.863037109375, -31.957485412359073], [115.86414337158203, -31.95836419261194]]}, "properties": {"times": ["2024-08-18T01:50:00", "2024-08-18T02:00:00"], "tooltip": "Queens Gardens to WACA Ground['2024-08-18T01:50:00', '2024-08-18T02:00:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.86414337158203, -31.95836419261194], [115.86603546142578, -31.959592394017236]]}, "properties": {"times": ["2024-08-18T02:00:00", "2024-08-18T02:10:00"], "tooltip": "WACA Ground to Gloucester Park['2024-08-18T02:00:00', '2024-08-18T02:10:00']", "style": {"color": "blue", "weight": 5}}}]}, {
                     pointToLayer: function (feature, latLng) {
@@ -128,14 +128,14 @@
                     }
                 })
 
-            var timestamped_geo_json_bcd1ba9b24c932a7958647312db7c75b = L.timeDimension.layer.geoJson(
+            var timestamped_geo_json_721a5451d258f82c9b1893fe75ef18b4 = L.timeDimension.layer.geoJson(
                 geoJsonLayer,
                 {
                     updateTimeDimension: true,
                     addlastPoint: true,
                     duration: undefined,
                 }
-            ).addTo(map_50c83f4b7785adc671bea830a68d2383);
+            ).addTo(map_05960c7b3016aac77192ac4b1aae7acf);
         
     
             L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
@@ -145,7 +145,7 @@
                     return newdate.format("YYYY-MM-DD HH:mm:ss");
                 }
             });
-            map_50c83f4b7785adc671bea830a68d2383.timeDimension = L.timeDimension(
+            map_05960c7b3016aac77192ac4b1aae7acf.timeDimension = L.timeDimension(
                 {
                     period: "PT1M",
                 }
@@ -153,7 +153,7 @@
             var timeDimensionControl = new L.Control.TimeDimensionCustom(
                 {"autoPlay": true, "loopButton": false, "maxSpeed": 10, "minSpeed": 0.1, "playerOptions": {"loop": false, "startOver": true, "transitionTime": 100}, "position": "bottomleft", "speedSlider": true, "timeSliderDragUpdate": false}
             );
-            map_50c83f4b7785adc671bea830a68d2383.addControl(this.timeDimensionControl);
+            map_05960c7b3016aac77192ac4b1aae7acf.addControl(this.timeDimensionControl);
 
             var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.85704803466797, -31.95351232514714], [115.85798168182373, -31.954569415163345]]}, "properties": {"times": ["2024-08-18T00:50:00", "2024-08-18T01:00:00"], "tooltip": "Elizabeth Quay to The Bell Tower['2024-08-18T00:50:00', '2024-08-18T01:00:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.85798168182373, -31.954569415163345], [115.8565673828125, -31.955543941149934]]}, "properties": {"times": ["2024-08-18T01:00:00", "2024-08-18T01:10:00"], "tooltip": "The Bell Tower to Supreme Court Gardens['2024-08-18T01:00:00', '2024-08-18T01:10:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.8565673828125, -31.955543941149934], [115.85875511169434, -31.9559304992255]]}, "properties": {"times": ["2024-08-18T01:10:00", "2024-08-18T01:20:00"], "tooltip": "Supreme Court Gardens to Perth Concert Hall['2024-08-18T01:10:00', '2024-08-18T01:20:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.85875511169434, -31.9559304992255], [115.86082458496094, -31.956316996788697]]}, "properties": {"times": ["2024-08-18T01:20:00", "2024-08-18T01:30:00"], "tooltip": "Perth Concert Hall to St. Mary's Cathedral['2024-08-18T01:20:00', '2024-08-18T01:30:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.86082458496094, -31.956316996788697], [115.86193084716797, -31.956962057489235]]}, "properties": {"times": ["2024-08-18T01:30:00", "2024-08-18T01:40:00"], "tooltip": "St. Mary's Cathedral to Wellington Square['2024-08-18T01:30:00', '2024-08-18T01:40:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.86193084716797, -31.956962057489235], [115.863037109375, -31.957485412359073]]}, "properties": {"times": ["2024-08-18T01:40:00", "2024-08-18T01:50:00"], "tooltip": "Wellington Square to Queens Gardens['2024-08-18T01:40:00', '2024-08-18T01:50:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.863037109375, -31.957485412359073], [115.86414337158203, -31.95836419261194]]}, "properties": {"times": ["2024-08-18T01:50:00", "2024-08-18T02:00:00"], "tooltip": "Queens Gardens to WACA Ground['2024-08-18T01:50:00', '2024-08-18T02:00:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.86414337158203, -31.95836419261194], [115.86603546142578, -31.959592394017236]]}, "properties": {"times": ["2024-08-18T02:00:00", "2024-08-18T02:10:00"], "tooltip": "WACA Ground to Gloucester Park['2024-08-18T02:00:00', '2024-08-18T02:10:00']", "style": {"color": "blue", "weight": 5}}}]}, {
                     pointToLayer: function (feature, latLng) {
@@ -189,14 +189,14 @@
                     }
                 })
 
-            var timestamped_geo_json_95c663074b3873c2b56089799e647dab = L.timeDimension.layer.geoJson(
+            var timestamped_geo_json_2d8a9e90737653059c3f4606d554c63a = L.timeDimension.layer.geoJson(
                 geoJsonLayer,
                 {
                     updateTimeDimension: true,
                     addlastPoint: true,
                     duration: undefined,
                 }
-            ).addTo(map_50c83f4b7785adc671bea830a68d2383);
+            ).addTo(map_05960c7b3016aac77192ac4b1aae7acf);
         
 </script>
 </html>
