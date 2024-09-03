@@ -42,14 +42,14 @@ for point_key, point in data.items():
     )
 
     # create extensions for telemetry data
-    extensions = Element('extensions')
     telemetry_data = Element('TelemetryData')
     for key, value in point['telemetry'].items():
         data_element = Element(key)
         data_element.text = str(value)
         telemetry_data.append(data_element)
-    extensions.append(telemetry_data)
-    gpx_point.extensions.append(extensions)
+    
+    # append telemetry data to the point's extensions
+    gpx_point.extensions.append(telemetry_data)
 
     # append the point to the GPX segment
     gpx_segment.points.append(gpx_point)
