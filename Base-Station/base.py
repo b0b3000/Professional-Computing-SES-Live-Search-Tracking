@@ -1,11 +1,14 @@
 """
-Python program that runs on the RaspberryPi, connected to a base station.
+Python program that runs on the RaspberryPi, connected to a base station
 See RaspberryPi setup documentation in this directory's README.md.
 See requirements.txt
 
+Fred's TODO:
 TODO 1: Upload additional data like AirUtilTx, under the "telemetry" in dictionary.
-TODO 2: Print meaningful error messages and data to a log file.
-TODO 3: Upload data to server - need to have database up to do this. 
+TODO 2: Upload data to storage account container, coordinate with front-end people for method of upload:
+    - Each search gets its own container, so base station must know the name of container.
+    - Base station uploads the single self-titled .json file every time it gets a GPS update from it's tracker.
+TODO 3: Print meaningful error messages and data to a log file in the event of a crash.
 
 Meshtastic Serial Interface Node Values
 'num':
