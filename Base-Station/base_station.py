@@ -3,6 +3,10 @@ Python program that runs on the RaspberryPi, connected to a base station.
 See RaspberryPi setup documentation in this directory's README.md.
 See requirements.txt
 
+TODO 1: Print meaningful error messages and data to a log file.
+TODO 2: Upload data to server.
+
+
 Meshtastic Serial Interface Node Values
 'num':
 'user':
@@ -37,7 +41,7 @@ TRACKER_LONG_NAME = 'fredtastic'
 
 
 def run_base_station():
-    """#Performs startup operations."""
+    """Performs startup operations."""
 
     print("Booting up base station...")
     lines = []      # List of the trackers historical locations.
