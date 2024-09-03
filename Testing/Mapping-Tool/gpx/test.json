@@ -1,13 +1,1 @@
-{
-  "point": {
-      "name": "Point 1",
-      "time": "2024-08-28T11:56:50Z",
-      "lat": -31.9505,
-      "long": 115.8605,
-      "telemetry": {
-          "battery": 0.79,
-          "temperature": 30,
-          "air_quality": 0.3
-      }
-  }
-}
+[{"point0": {"name": "!33679a4c", "time": "2024-09-02T00:00:00", "lat": 0.0, "long": 0.0, "telemetry": {"battery": 40}}}, {"point1": {"name": "!33679a4c", "time": "2024-09-02T00:00:00", "lat": 0.1, "long": 0.1, "telemetry": {"battery": 40}}}, {"point2": {"name": "!33679a4c", "time": "2024-09-02T00:00:00", "lat": 0.3, "long": 0.3, "telemetry": {"battery": 40}}}, {"point3": {"name": "!33679a4c", "time": "2024-09-02T00:00:00", "lat": 0.4, "long": 0.4, "telemetry": {"battery": 40}}}, {"point4": {"name": "!33679a4c", "time": "2024-09-02T00:00:00", "lat": 0.5, "long": 0.5, "telemetry": {"battery": 40}}}, {"point5": {"name": "!33679a4c", "time": "2024-09-02T00:00:00", "lat": 0.6, "long": 0.6, "telemetry": {"battery": 40}}}, {"point6": {"name": "!33679a4c", "time": "2024-09-02T00:00:00", "lat": 0.7, "long": 0.7, "telemetry": {"battery": 40}}}]
