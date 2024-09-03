@@ -5,22 +5,13 @@ import os
 from xml.etree.ElementTree import Element
 from datetime import datetime
 
+
 TRACKER_NAME = "test"
 
-# append GPX file if it already exists, else make a new GPX file
-gpx_file = f'{TRACKER_NAME}.gpx'
-if os.path.exists(gpx_file):
-    with open(gpx_file, 'r') as f:
-        gpx = gpxpy.parse(f)
-else:
-    gpx = gpxpy.gpx.GPX()
+gpx = gpxpy.gpx.GPX()
 
-# create a new GPX track if it doesn't exist
-if not gpx.tracks:
-    gpx_track = gpxpy.gpx.GPXTrack()
-    gpx.tracks.append(gpx_track)
-else:
-    gpx_track = gpx.tracks[0]
+gpx_track = gpxpy.gpx.GPXTrack()
+gpx.tracks.append(gpx_track)
 
 # create GPX segment
 gpx_segment = gpxpy.gpx.GPXTrackSegment()
@@ -55,5 +46,5 @@ for point_key, point in data.items():
     gpx_segment.points.append(gpx_point)
 
 # write the updated GPX data back to the file
-with open(gpx_file, 'w') as f:
+with open(f'{TRACKER_NAME}.gpx', 'w') as f:
     f.write(gpx.to_xml())
