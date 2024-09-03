@@ -1,0 +1,13 @@
+{
+  "point": {
+      "name": "Point 1",
+      "time": "2024-08-28T11:56:50Z",
+      "lat": -31.9505,
+      "long": 115.8605,
+      "telemetry": {
+          "battery": 0.79,
+          "temperature": 30,
+          "air_quality": 0.3
+      }
+  }
+}
