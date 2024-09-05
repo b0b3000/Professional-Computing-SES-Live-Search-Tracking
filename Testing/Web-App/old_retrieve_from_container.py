@@ -12,7 +12,6 @@ import os
 import folium
 from folium.plugins import TimestampedGeoJson
 from azure.storage.blob import BlobServiceClient
-import map_processing
 import traceback
 
 
@@ -44,6 +43,7 @@ NEEDS WORK:
 
 
 """
+
 def retrieve_from_containers(m, STORAGE_CONNECTION_STRING):
     
     # Initialize the BlobServiceClient
@@ -57,12 +57,15 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING):
     base_stn_id = -1
     for container in blob_service_client.list_containers():
 
-        retrieved_data[container.name] = []
+        #retrieved_data[container.name] = []
+        
+        # Why do we have a temp container?
         m_container = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
 
         if container.name.startswith('base-station-'):
             base_stn_id = container.name.split('-')[-1]
 
+        # for the current container, allows for listing and downloading blobs within this container
         container_client = blob_service_client.get_container_client(container)
 
         # Iterate through each blob in the container
@@ -78,21 +81,26 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING):
                 # print(f"\n\tContent of the blob '{blob.name}': \n\t\t{str(blob_content)}")
                 # Add the GeoJSON data to the map
 
+                # Blob data added to the two map objects and also to the retrieve_data container
                 mapify(blob_content).add_to(m_container)
                 retrieved_data[container.name].append(blob_content)
                 mapify(blob_content).add_to(m)
+                
+                
             except Exception as e:
                 print(f"Error downloading blob: {e}")
                 traceback.print_exc()
 
         # Save the map to an HTML file
+        
+        # checks if base statoin is still -1, meaning no base station container was processed...
         if base_stn_id == -1:
             map_save_path = os.path.join(os.path.dirname(__file__), f'app/static/base-station-{base_stn_id}.html')
             m_container.save(map_save_path)
             
         m.save('app/static/footprint.html')
         
-    return retrieved_data
+    #return retrieved_data
 
 
 

@@ -7,51 +7,48 @@ Routes:
 Written by Susheel Utagi, Lilee Hammond
 """
 
-from flask import render_template, jsonify, current_app as app, request
+from flask import render_template, request, url_for, current_app as app, request
 import os
 import folium
-from retrieve_from_container import retrieve_from_containers
-import map_processing
+from retrieve_from_containers import retrieve_from_containers
 from azure.core.exceptions import ResourceNotFoundError
 import get_key
-from create_containers import create_containers
 from azure.storage.blob import BlobServiceClient
 
 # Storage connection string used throughout instead of calling get_key() everywhere
 STORAGE_CONNECTION_STRING = get_key.get_key()
 
-# Index route
+# Index route to render the form and map
 @app.route('/')
 def index():
+    # Initialize the map centered on Perth CBD (for now)
+    m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
     
-    # Creates default storage containers upon startup (for historical data)
-    container_names = ["map-storage", "processed-blobs"]
-    create_containers(container_names, STORAGE_CONNECTION_STRING)
+    # Retrieve container names from Azure Blob Storage
+    blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
+    container_names = [container.name for container in blob_service_client.list_containers()]
+
+    # Save the initial map (empty) to be displayed on the page
+    map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
+    m.save(map_save_path)
+
+    # Render the template with container names and the initial map
+    return render_template('index.html', map_html=m._repr_html_(), container_names=container_names)
+
+@app.route('/api/update-map', methods=['POST'])
+def update_map():
+    # Get the container name from the request
+    container_name = request.args.get('container')
     
     # Initialize the map centered on Perth CBD
     m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
 
-    # Load the map path from storage
-    # map_path = map_processing.load_map_from_storage("base-station-0", "search_0", STORAGE_CONNECTION_STRING)
-    
-    # Retrieve device data from containers
-    retrieved_data = retrieve_from_containers(m, STORAGE_CONNECTION_STRING)
+    # Call retrieve_from_containers with the selected container
+    retrieve_from_containers(m, STORAGE_CONNECTION_STRING, [container_name])
 
-    # Pass device data and container names to the template
-    return render_template('index.html', device_data=retrieved_data, container_names=[c.name for c in BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING).list_containers()])
+    # Save the updated map to a file
+    map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
+    m.save(map_save_path)
 
-@app.route('/api/update-map', methods=['POST'])
-def update_map():
-    container_name = request.args.get('container')  # Get the selected container name from the request
-
-    # Re-initialize the Folium map centered on Perth CBD
-    m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
-    
-    # Retrieve data and update the map
-    retrieved_data = retrieve_from_containers(m, STORAGE_CONNECTION_STRING)
-    
-    # Save the updated map to a new HTML file
-    output_map_path = os.path.join('static', f'{container_name}.html')
-    # m.save(output_map_path)
-    return jsonify({'message': 'Map updated successfully!', 'map_path': output_map_path})
-
+    # Return a response indicating where the updated map is saved
+    return {"map_path": url_for('static', filename='footprint.html')}
