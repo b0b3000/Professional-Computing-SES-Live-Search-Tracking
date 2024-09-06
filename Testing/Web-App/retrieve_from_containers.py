@@ -14,10 +14,7 @@ from folium.plugins import TimestampedGeoJson
 from azure.storage.blob import BlobServiceClient
 import traceback
 import get_key
-
-# for the mapify NEW
 import json
-from folium import Marker
 
 
 def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
