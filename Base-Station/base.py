@@ -4,10 +4,10 @@ See RaspberryPi setup documentation in this directory's README.md.
 See requirements.txt
 
 Fred's TODO:
-TODO 1: Upload additional data like AirUtilTx, under the "telemetry" in dictionary.
-TODO 2: Upload data to storage account container, coordinate with front-end people for method of upload:
+TODO 1: Upload data to storage account container, coordinate with front-end people for method of upload:
     - Each search gets its own container, so base station must know the name of container.
     - Base station uploads the single self-titled .json file every time it gets a GPS update from it's tracker.
+TODO 2: Code that checks for types of telemetry received and dynamically builds the returning dictionary/Json.
 TODO 3: Print meaningful error messages and data to a log file in the event of a crash.
 
 Meshtastic Serial Interface Node Values
@@ -33,25 +33,41 @@ Meshtastic Serial Interface Node Values
 """
 
 import meshtastic.serial_interface
-import time
+from azure.storage.blob import BlobServiceClient
 from datetime import datetime
+import sys
+import time
 import traceback
 import json
-import sys
 
 BASE_STATION_ID = '!7c5cb2a0'
 BASE_STATION_LONG_NAME = 'base_3200_a'
 TRACKER_ID = '!33679a4c'
 TRACKER_LONG_NAME = 'fredtastic'
+SEARCH_ID = ''
 
 
 def run_base_station():
     """Performs startup operations."""
 
+    # ---------- Establishes connection with Azure Storage, creates blob file for uploading. ----------
+
+    print("Please enter the search ID: ")
+    # SEARCH_ID = str(input())
+    SEARCH_ID = "0"
+
+    storage_key = get_key()
+    # Initialises client to interact with the Storage Account.
+    blob_service_client = BlobServiceClient.from_connection_string(conn_str=storage_key)
+    print("search" + SEARCH_ID)
+    # Initialises client to interact with the existing search container.
+    container_client = blob_service_client.get_container_client(container="search" + SEARCH_ID)
+
     # ---------- Initialises variables and gets first GPS point from tracker. ----------
 
     print("Beginning base station setup process with base station ID and name = " + BASE_STATION_ID + " , " + BASE_STATION_LONG_NAME
           + ". and tracker ID and name = " + TRACKER_ID + " , " + TRACKER_LONG_NAME)
+
     json_upload = []        # Holds all current GPS data from the tracker.
     json_key = 0            # Control variable to give each GPS point a unique identifier.
 
@@ -63,6 +79,9 @@ def run_base_station():
 
     with open(BASE_STATION_LONG_NAME, "w") as f:                # Writes all current GPS data to file (this will be uploaded to server eventually).
         f.write(json.dumps(json_upload))
+
+    # Test upload to container.
+    container_client.upload_blob(name=BASE_STATION_LONG_NAME, data=str(json_upload), overwrite=True)
 
     # ---------- Every 60 seconds, checks for new GPS data from the tracker. ----------
 
@@ -202,6 +221,17 @@ def get_nodes_verbose(interface):
         return 0
 
     # ---------------------------------------------------------------------------------
+
+
+def get_key():
+    """Retrieves an Azure Storage key from a text file in this directory."""
+    # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
+    conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+    with open("keys.txt") as file:
+        for line in file:
+            if line.rstrip().startswith("key1:"):
+                key = line.rstrip().split("key1:", 1)[1]    # Splits the key from after the first occurence of "key1:".
+                return conn_string[:69] + key + conn_string[69:]    # Places the key in the correct position in the middle of connection string.
 
 
 if __name__ == "__main__":
