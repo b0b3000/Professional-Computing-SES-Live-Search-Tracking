@@ -6,4 +6,5 @@ __pycache__/
 .idea
 keys.txt
 test.py
-.github
+.github/
+application/
