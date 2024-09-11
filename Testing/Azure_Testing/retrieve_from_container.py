@@ -32,6 +32,7 @@ def retrieve_from_containers(m, path):
                 print(f"\n\tContent of the blob '{blob.name}': \n\t\t{str(blob_content)}")    # Prints the content of the blob.
                 mapify(blob_content).add_to(m)    # Creates a TimestampedGeoJson object from the blob's lines.
                 m.save(path)    # Save map after each edit.
+                print()
             except Exception as e:
                 print(f"Error downloading blob: {e}")
 

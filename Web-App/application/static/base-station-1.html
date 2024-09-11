@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_0bcae15e86df1759ba0ab4f9a8fb6e08 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/iso8601-js-period@0.2.1/iso8601.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-timedimension@1.1.1/dist/leaflet.timedimension.control.css"/>
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_0bcae15e86df1759ba0ab4f9a8fb6e08" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_0bcae15e86df1759ba0ab4f9a8fb6e08 = L.map(
+                "map_0bcae15e86df1759ba0ab4f9a8fb6e08",
+                {
+                    center: [-31.9505, 115.8605],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 17,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+            L.control.scale().addTo(map_0bcae15e86df1759ba0ab4f9a8fb6e08);
+
+            
+
+        
+    
+            var tile_layer_cf7a2e98aba2355515ab5783fc36e306 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+        
+    
+            tile_layer_cf7a2e98aba2355515ab5783fc36e306.addTo(map_0bcae15e86df1759ba0ab4f9a8fb6e08);
+        
+    
+            L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
+                _getDisplayDateFormat: function(date){
+                    var newdate = new moment(date);
+                    console.log(newdate)
+                    return newdate.format("YYYY-MM-DD HH:mm:ss");
+                }
+            });
+            map_0bcae15e86df1759ba0ab4f9a8fb6e08.timeDimension = L.timeDimension(
+                {
+                    period: "PT1M",
+                }
+            );
+            var timeDimensionControl = new L.Control.TimeDimensionCustom(
+                {"autoPlay": true, "loopButton": false, "maxSpeed": 10, "minSpeed": 0.1, "playerOptions": {"loop": false, "startOver": true, "transitionTime": 100}, "position": "bottomleft", "speedSlider": true, "timeSliderDragUpdate": false}
+            );
+            map_0bcae15e86df1759ba0ab4f9a8fb6e08.addControl(this.timeDimensionControl);
+
+            var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.857799, -31.981763], [115.861089, -31.983519]]}, "properties": {"times": ["2024-08-18T00:00:00", "2024-08-18T00:10:00"], "tooltip": "South Perth Foreshore to Mends Street Jetty['2024-08-18T00:00:00', '2024-08-18T00:10:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.861089, -31.983519], [115.864057, -31.982462]]}, "properties": {"times": ["2024-08-18T00:10:00", "2024-08-18T00:20:00"], "tooltip": "Mends Street Jetty to Sir James Mitchell Park['2024-08-18T00:10:00', '2024-08-18T00:20:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.864057, -31.982462], [115.867832, -31.983727]]}, "properties": {"times": ["2024-08-18T00:20:00", "2024-08-18T00:30:00"], "tooltip": "Sir James Mitchell Park to South Perth Esplanade['2024-08-18T00:20:00', '2024-08-18T00:30:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.867832, -31.983727], [115.871157, -31.985278]]}, "properties": {"times": ["2024-08-18T00:30:00", "2024-08-18T00:40:00"], "tooltip": "South Perth Esplanade to Wesley College['2024-08-18T00:30:00', '2024-08-18T00:40:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.871157, -31.985278], [115.874488, -31.986558]]}, "properties": {"times": ["2024-08-18T00:40:00", "2024-08-18T00:50:00"], "tooltip": "Wesley College to South Perth Hospital['2024-08-18T00:40:00', '2024-08-18T00:50:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.874488, -31.986558], [115.878563, -31.988243]]}, "properties": {"times": ["2024-08-18T00:50:00", "2024-08-18T01:00:00"], "tooltip": "South Perth Hospital to Mill Point Reserve['2024-08-18T00:50:00', '2024-08-18T01:00:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.878563, -31.988243], [115.882025, -31.989913]]}, "properties": {"times": ["2024-08-18T01:00:00", "2024-08-18T01:10:00"], "tooltip": "Mill Point Reserve to Windsor Park['2024-08-18T01:00:00', '2024-08-18T01:10:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.882025, -31.989913], [115.884524, -31.991219]]}, "properties": {"times": ["2024-08-18T01:10:00", "2024-08-18T01:20:00"], "tooltip": "Windsor Park to Perth Zoo['2024-08-18T01:10:00', '2024-08-18T01:20:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.884524, -31.991219], [115.887898, -31.992798]]}, "properties": {"times": ["2024-08-18T01:20:00", "2024-08-18T01:30:00"], "tooltip": "Perth Zoo to Richardson Park['2024-08-18T01:20:00', '2024-08-18T01:30:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.887898, -31.992798], [115.891064, -31.994219]]}, "properties": {"times": ["2024-08-18T01:30:00", "2024-08-18T01:40:00"], "tooltip": "Richardson Park to Ernest Johnson Reserve['2024-08-18T01:30:00', '2024-08-18T01:40:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.891064, -31.994219], [115.894451, -31.995728]]}, "properties": {"times": ["2024-08-18T01:40:00", "2024-08-18T01:50:00"], "tooltip": "Ernest Johnson Reserve to Como Secondary College['2024-08-18T01:40:00', '2024-08-18T01:50:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.894451, -31.995728], [115.897234, -31.996826]]}, "properties": {"times": ["2024-08-18T01:50:00", "2024-08-18T02:00:00"], "tooltip": "Como Secondary College to Collier Park Golf Course['2024-08-18T01:50:00', '2024-08-18T02:00:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.897234, -31.996826], [115.900389, -31.997925]]}, "properties": {"times": ["2024-08-18T02:00:00", "2024-08-18T02:10:00"], "tooltip": "Collier Park Golf Course to Curtin University['2024-08-18T02:00:00', '2024-08-18T02:10:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.900389, -31.997925], [115.902844, -31.998894]]}, "properties": {"times": ["2024-08-18T02:10:00", "2024-08-18T02:20:00"], "tooltip": "Curtin University to Bentley Hospital['2024-08-18T02:10:00', '2024-08-18T02:20:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.902844, -31.998894], [115.906135, -31.999894]]}, "properties": {"times": ["2024-08-18T02:20:00", "2024-08-18T02:30:00"], "tooltip": "Bentley Hospital to Collier Primary School['2024-08-18T02:20:00', '2024-08-18T02:30:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.906135, -31.999894], [115.909389, -32.000892]]}, "properties": {"times": ["2024-08-18T02:30:00", "2024-08-18T02:40:00"], "tooltip": "Collier Primary School to Manning Primary School['2024-08-18T02:30:00', '2024-08-18T02:40:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.909389, -32.000892], [115.912634, -32.001889]]}, "properties": {"times": ["2024-08-18T02:40:00", "2024-08-18T02:50:00"], "tooltip": "Manning Primary School to George Burnett Park['2024-08-18T02:40:00', '2024-08-18T02:50:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.912634, -32.001889], [115.915679, -32.002874]]}, "properties": {"times": ["2024-08-18T02:50:00", "2024-08-18T03:00:00"], "tooltip": "George Burnett Park to McDougall Park['2024-08-18T02:50:00', '2024-08-18T03:00:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.915679, -32.002874], [115.919073, -32.003844]]}, "properties": {"times": ["2024-08-18T03:00:00", "2024-08-18T03:10:00"], "tooltip": "McDougall Park to Canning River['2024-08-18T03:00:00', '2024-08-18T03:10:00']", "style": {"color": "green", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.919073, -32.003844], [115.922398, -32.004805]]}, "properties": {"times": ["2024-08-18T03:10:00", "2024-08-18T03:20:00"], "tooltip": "Canning River to Centenary Park['2024-08-18T03:10:00', '2024-08-18T03:20:00']", "style": {"color": "green", "weight": 5}}}]}, {
+                    pointToLayer: function (feature, latLng) {
+                        if (feature.properties.icon == 'marker') {
+                            if(feature.properties.iconstyle){
+                                return new L.Marker(latLng, {
+                                    icon: L.icon(feature.properties.iconstyle)});
+                            }
+                            //else
+                            return new L.Marker(latLng);
+                        }
+                        if (feature.properties.icon == 'circle') {
+                            if (feature.properties.iconstyle) {
+                                return new L.circleMarker(latLng, feature.properties.iconstyle)
+                                };
+                            //else
+                            return new L.circleMarker(latLng);
+                        }
+                        //else
+
+                        return new L.Marker(latLng);
+                    },
+                    style: function (feature) {
+                        return feature.properties.style;
+                    },
+                    onEachFeature: function(feature, layer) {
+                        if (feature.properties.popup) {
+                        layer.bindPopup(feature.properties.popup);
+                        }
+                        if (feature.properties.tooltip) {
+                        layer.bindTooltip(feature.properties.tooltip);
+                        }
+                    }
+                })
+
+            var timestamped_geo_json_6688c224f366c011d265d2847dd5a228 = L.timeDimension.layer.geoJson(
+                geoJsonLayer,
+                {
+                    updateTimeDimension: true,
+                    addlastPoint: true,
+                    duration: undefined,
+                }
+            ).addTo(map_0bcae15e86df1759ba0ab4f9a8fb6e08);
+        
+    
+            tile_layer_cf7a2e98aba2355515ab5783fc36e306.addTo(map_0bcae15e86df1759ba0ab4f9a8fb6e08);
+        
+    
+            L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
+                _getDisplayDateFormat: function(date){
+                    var newdate = new moment(date);
+                    console.log(newdate)
+                    return newdate.format("YYYY-MM-DD HH:mm:ss");
+                }
+            });
+            map_0bcae15e86df1759ba0ab4f9a8fb6e08.timeDimension = L.timeDimension(
+                {
+                    period: "PT1M",
+                }
+            );
+            var timeDimensionControl = new L.Control.TimeDimensionCustom(
+                {"autoPlay": true, "loopButton": false, "maxSpeed": 10, "minSpeed": 0.1, "playerOptions": {"loop": false, "startOver": true, "transitionTime": 100}, "position": "bottomleft", "speedSlider": true, "timeSliderDragUpdate": false}
+            );
+            map_0bcae15e86df1759ba0ab4f9a8fb6e08.addControl(this.timeDimensionControl);
+
+            var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.819374, -31.978527], [115.819978, -31.978068]]}, "properties": {"times": ["2024-08-18T08:00:00", "2024-08-18T08:10:00"], "tooltip": "Device A to Device B['2024-08-18T08:00:00', '2024-08-18T08:10:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.819978, -31.978068], [115.820828, -31.977492]]}, "properties": {"times": ["2024-08-18T08:10:00", "2024-08-18T08:20:00"], "tooltip": "Device B to Device C['2024-08-18T08:10:00', '2024-08-18T08:20:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.820828, -31.977492], [115.821492, -31.976972]]}, "properties": {"times": ["2024-08-18T08:20:00", "2024-08-18T08:30:00"], "tooltip": "Device C to Device D['2024-08-18T08:20:00', '2024-08-18T08:30:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.821492, -31.976972], [115.822045, -31.976449]]}, "properties": {"times": ["2024-08-18T08:30:00", "2024-08-18T08:40:00"], "tooltip": "Device D to Device E['2024-08-18T08:30:00', '2024-08-18T08:40:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.822045, -31.976449], [115.822732, -31.975925]]}, "properties": {"times": ["2024-08-18T08:40:00", "2024-08-18T08:50:00"], "tooltip": "Device E to Device F['2024-08-18T08:40:00', '2024-08-18T08:50:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.822732, -31.975925], [115.823324, -31.975425]]}, "properties": {"times": ["2024-08-18T08:50:00", "2024-08-18T09:00:00"], "tooltip": "Device F to Device G['2024-08-18T08:50:00', '2024-08-18T09:00:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.823324, -31.975425], [115.824019, -31.975025]]}, "properties": {"times": ["2024-08-18T09:00:00", "2024-08-18T09:10:00"], "tooltip": "Device G to Device H['2024-08-18T09:00:00', '2024-08-18T09:10:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.824019, -31.975025], [115.824702, -31.974529]]}, "properties": {"times": ["2024-08-18T09:10:00", "2024-08-18T09:20:00"], "tooltip": "Device H to Device I['2024-08-18T09:10:00', '2024-08-18T09:20:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.824702, -31.974529], [115.825387, -31.97402]]}, "properties": {"times": ["2024-08-18T09:20:00", "2024-08-18T09:30:00"], "tooltip": "Device I to Device J['2024-08-18T09:20:00', '2024-08-18T09:30:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.825387, -31.97402], [115.826078, -31.973517]]}, "properties": {"times": ["2024-08-18T09:30:00", "2024-08-18T09:40:00"], "tooltip": "Device J to Device K['2024-08-18T09:30:00', '2024-08-18T09:40:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.826078, -31.973517], [115.826746, -31.973026]]}, "properties": {"times": ["2024-08-18T09:40:00", "2024-08-18T09:50:00"], "tooltip": "Device K to Device L['2024-08-18T09:40:00', '2024-08-18T09:50:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.826746, -31.973026], [115.827382, -31.972548]]}, "properties": {"times": ["2024-08-18T09:50:00", "2024-08-18T10:00:00"], "tooltip": "Device L to Device M['2024-08-18T09:50:00', '2024-08-18T10:00:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.827382, -31.972548], [115.828078, -31.972028]]}, "properties": {"times": ["2024-08-18T10:00:00", "2024-08-18T10:10:00"], "tooltip": "Device M to Device N['2024-08-18T10:00:00', '2024-08-18T10:10:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.828078, -31.972028], [115.828724, -31.971547]]}, "properties": {"times": ["2024-08-18T10:10:00", "2024-08-18T10:20:00"], "tooltip": "Device N to Device O['2024-08-18T10:10:00', '2024-08-18T10:20:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.828724, -31.971547], [115.829426, -31.971067]]}, "properties": {"times": ["2024-08-18T10:20:00", "2024-08-18T10:30:00"], "tooltip": "Device O to Device P['2024-08-18T10:20:00', '2024-08-18T10:30:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.829426, -31.971067], [115.830053, -31.970596]]}, "properties": {"times": ["2024-08-18T10:30:00", "2024-08-18T10:40:00"], "tooltip": "Device P to Device Q['2024-08-18T10:30:00', '2024-08-18T10:40:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.830053, -31.970596], [115.830747, -31.97009]]}, "properties": {"times": ["2024-08-18T10:40:00", "2024-08-18T10:50:00"], "tooltip": "Device Q to Device R['2024-08-18T10:40:00', '2024-08-18T10:50:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.830747, -31.97009], [115.831457, -31.969607]]}, "properties": {"times": ["2024-08-18T10:50:00", "2024-08-18T11:00:00"], "tooltip": "Device R to Device S['2024-08-18T10:50:00', '2024-08-18T11:00:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.831457, -31.969607], [115.832162, -31.969128]]}, "properties": {"times": ["2024-08-18T11:00:00", "2024-08-18T11:10:00"], "tooltip": "Device S to Device T['2024-08-18T11:00:00', '2024-08-18T11:10:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.832162, -31.969128], [115.83285, -31.968652]]}, "properties": {"times": ["2024-08-18T11:10:00", "2024-08-18T11:20:00"], "tooltip": "Device T to Device U['2024-08-18T11:10:00', '2024-08-18T11:20:00']", "style": {"color": "orange", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.83285, -31.968652], [115.833541, -31.968167]]}, "properties": {"times": ["2024-08-18T11:20:00", "2024-08-18T11:30:00"], "tooltip": "Device U to Device V['2024-08-18T11:20:00', '2024-08-18T11:30:00']", "style": {"color": "orange", "weight": 5}}}]}, {
+                    pointToLayer: function (feature, latLng) {
+                        if (feature.properties.icon == 'marker') {
+                            if(feature.properties.iconstyle){
+                                return new L.Marker(latLng, {
+                                    icon: L.icon(feature.properties.iconstyle)});
+                            }
+                            //else
+                            return new L.Marker(latLng);
+                        }
+                        if (feature.properties.icon == 'circle') {
+                            if (feature.properties.iconstyle) {
+                                return new L.circleMarker(latLng, feature.properties.iconstyle)
+                                };
+                            //else
+                            return new L.circleMarker(latLng);
+                        }
+                        //else
+
+                        return new L.Marker(latLng);
+                    },
+                    style: function (feature) {
+                        return feature.properties.style;
+                    },
+                    onEachFeature: function(feature, layer) {
+                        if (feature.properties.popup) {
+                        layer.bindPopup(feature.properties.popup);
+                        }
+                        if (feature.properties.tooltip) {
+                        layer.bindTooltip(feature.properties.tooltip);
+                        }
+                    }
+                })
+
+            var timestamped_geo_json_8d3f59bda0c18bd1afaa06cb7cb6a086 = L.timeDimension.layer.geoJson(
+                geoJsonLayer,
+                {
+                    updateTimeDimension: true,
+                    addlastPoint: true,
+                    duration: undefined,
+                }
+            ).addTo(map_0bcae15e86df1759ba0ab4f9a8fb6e08);
+        
+    
+            tile_layer_cf7a2e98aba2355515ab5783fc36e306.addTo(map_0bcae15e86df1759ba0ab4f9a8fb6e08);
+        
+    
+            L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
+                _getDisplayDateFormat: function(date){
+                    var newdate = new moment(date);
+                    console.log(newdate)
+                    return newdate.format("YYYY-MM-DD HH:mm:ss");
+                }
+            });
+            map_0bcae15e86df1759ba0ab4f9a8fb6e08.timeDimension = L.timeDimension(
+                {
+                    period: "PT1M",
+                }
+            );
+            var timeDimensionControl = new L.Control.TimeDimensionCustom(
+                {"autoPlay": true, "loopButton": false, "maxSpeed": 10, "minSpeed": 0.1, "playerOptions": {"loop": false, "startOver": true, "transitionTime": 100}, "position": "bottomleft", "speedSlider": true, "timeSliderDragUpdate": false}
+            );
+            map_0bcae15e86df1759ba0ab4f9a8fb6e08.addControl(this.timeDimensionControl);
+
+            var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.85704803466797, -31.95351232514714], [115.85798168182373, -31.954569415163345]]}, "properties": {"times": ["2024-08-18T00:50:00", "2024-08-18T01:00:00"], "tooltip": "Elizabeth Quay to The Bell Tower['2024-08-18T00:50:00', '2024-08-18T01:00:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.85798168182373, -31.954569415163345], [115.8565673828125, -31.955543941149934]]}, "properties": {"times": ["2024-08-18T01:00:00", "2024-08-18T01:10:00"], "tooltip": "The Bell Tower to Supreme Court Gardens['2024-08-18T01:00:00', '2024-08-18T01:10:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.8565673828125, -31.955543941149934], [115.85875511169434, -31.9559304992255]]}, "properties": {"times": ["2024-08-18T01:10:00", "2024-08-18T01:20:00"], "tooltip": "Supreme Court Gardens to Perth Concert Hall['2024-08-18T01:10:00', '2024-08-18T01:20:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.85875511169434, -31.9559304992255], [115.86082458496094, -31.956316996788697]]}, "properties": {"times": ["2024-08-18T01:20:00", "2024-08-18T01:30:00"], "tooltip": "Perth Concert Hall to St. Mary's Cathedral['2024-08-18T01:20:00', '2024-08-18T01:30:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.86082458496094, -31.956316996788697], [115.86193084716797, -31.956962057489235]]}, "properties": {"times": ["2024-08-18T01:30:00", "2024-08-18T01:40:00"], "tooltip": "St. Mary's Cathedral to Wellington Square['2024-08-18T01:30:00', '2024-08-18T01:40:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.86193084716797, -31.956962057489235], [115.863037109375, -31.957485412359073]]}, "properties": {"times": ["2024-08-18T01:40:00", "2024-08-18T01:50:00"], "tooltip": "Wellington Square to Queens Gardens['2024-08-18T01:40:00', '2024-08-18T01:50:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.863037109375, -31.957485412359073], [115.86414337158203, -31.95836419261194]]}, "properties": {"times": ["2024-08-18T01:50:00", "2024-08-18T02:00:00"], "tooltip": "Queens Gardens to WACA Ground['2024-08-18T01:50:00', '2024-08-18T02:00:00']", "style": {"color": "blue", "weight": 5}}}, {"type": "Feature", "geometry": {"type": "LineString", "coordinates": [[115.86414337158203, -31.95836419261194], [115.86603546142578, -31.959592394017236]]}, "properties": {"times": ["2024-08-18T02:00:00", "2024-08-18T02:10:00"], "tooltip": "WACA Ground to Gloucester Park['2024-08-18T02:00:00', '2024-08-18T02:10:00']", "style": {"color": "blue", "weight": 5}}}]}, {
+                    pointToLayer: function (feature, latLng) {
+                        if (feature.properties.icon == 'marker') {
+                            if(feature.properties.iconstyle){
+                                return new L.Marker(latLng, {
+                                    icon: L.icon(feature.properties.iconstyle)});
+                            }
+                            //else
+                            return new L.Marker(latLng);
+                        }
+                        if (feature.properties.icon == 'circle') {
+                            if (feature.properties.iconstyle) {
+                                return new L.circleMarker(latLng, feature.properties.iconstyle)
+                                };
+                            //else
+                            return new L.circleMarker(latLng);
+                        }
+                        //else
+
+                        return new L.Marker(latLng);
+                    },
+                    style: function (feature) {
+                        return feature.properties.style;
+                    },
+                    onEachFeature: function(feature, layer) {
+                        if (feature.properties.popup) {
+                        layer.bindPopup(feature.properties.popup);
+                        }
+                        if (feature.properties.tooltip) {
+                        layer.bindTooltip(feature.properties.tooltip);
+                        }
+                    }
+                })
+
+            var timestamped_geo_json_311064f2319b4fdb5419a639a687b928 = L.timeDimension.layer.geoJson(
+                geoJsonLayer,
+                {
+                    updateTimeDimension: true,
+                    addlastPoint: true,
+                    duration: undefined,
+                }
+            ).addTo(map_0bcae15e86df1759ba0ab4f9a8fb6e08);
+        
+    
+            tile_layer_cf7a2e98aba2355515ab5783fc36e306.addTo(map_0bcae15e86df1759ba0ab4f9a8fb6e08);
+        
+</script>
+</html>

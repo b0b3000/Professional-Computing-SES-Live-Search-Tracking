@@ -4,58 +4,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GPS Data Visualization</title>
+    <title>GPS Data Visualization v1.0</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
     <header>
-        GPS Data Visualization
+        GPS Data Visualization v1.0
     </header>
-    <div id="map-container">
-        <iframe src="{{ url_for('static', filename='footprint.html') }}" width="100%" height="100%"
-            style="border:none;" id="map-iframe"></iframe>
-    </div>
-    <button id="fetch-data-button">Fetch Latest GPS Data</button>
-    <button id="push-data-button">Push Data to Server</button>
 
-    <!-- New section to display device ID and additional data -->
-    <div id="data-container">
-        <h2>Device Information</h2>
-        <ul id="device-list">
-            {% for device in device_data %}
-                <li>
-                    <strong>Device ID:</strong> {{ device.id }} <br>
-                    <strong>Additional Data:</strong> {{ device.data }}
-                </li>
+    <!-- Dropdown for selecting Azure containers -->
+
+    <div id="container-selector">
+        <label>Select Azure Containers:</label>
+        <div id="checkbox-container">
+            <!-- Dynamically populated with container names from the server -->
+            {% for container in container_names %}
+            <label>
+                <input type="checkbox" class="container-checkbox" value="{{ container }}"> {{ container }}
+            </label>
             {% endfor %}
-        </ul>
+        </div>
+        <button id="fetch-data-button">Fetch Latest GPS Data</button>
     </div>
+    
+    <!-- Map container -->
+    <div id="map-container">
+        <!-- The iframe displays the map saved as footprint.html -->
+        <iframe src="{{ url_for('static', filename='footprint.html') }}" width="100%" height="100%" style="border:none;"
+            id="map-iframe"></iframe>
+    </div>
+
+    <!-- Search controls for starting and ending a search -->
+    <div id="search-controls">
+        <button id="start-search-button">Start Search</button>
+        <button id="end-search-button">End Search</button>
+    </div>
+
+    <!-- Optional Section: For future device information display -->
+    <!-- <div id="data-container"> -->
+        <!-- <h2>Device Information</h2> -->
+        <!-- <ul id="device-list"> -->
+            <!-- This will be dynamically populated by JavaScript -->
+            <!-- {% for device in device_data %} -->
+            <!-- <li> -->
+                <!-- <strong>Container:</strong> {{ device.container_name }} <br> -->
+                <!-- <strong>Additional Data:</strong> {{ device.data }} -->
+            <!-- </li> -->
+            <!-- {% endfor %} -->
+        <!-- </ul> -->
+    <!-- </div> -->
 
     <script>
+
+        // Event listener for the button to fetch the latest GPS data
         document.getElementById('fetch-data-button').addEventListener('click', function () {
-            fetch('/api/update-map', {
-                method: 'POST'
+            // Collect selected containers
+            const selectedContainers = Array.from(document.querySelectorAll('.container-checkbox:checked'))
+                .map(checkbox => checkbox.value);
+
+            // Ensure at least one container is selected
+            if (selectedContainers.length === 0) {
+                alert('Please select at least one container.');
+                return;
+            }
+
+            // Send a request to the server to update the map based on the selected containers
+            fetch(`/api/update-map`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ containers: selectedContainers })
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Update Map Response:', data);
-                // Refresh the iframe to show updated map
-                document.getElementById('map-iframe').src = document.getElementById('map-iframe').src;
-            })
-            .catch(error => console.error('Error updating map:', error));
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Update Map Response:', data);
+
+                    // Refresh the iframe to show the updated map
+                    document.getElementById('map-iframe').src = data.map_path;
+                })
+                .catch(error => console.error('Error updating map:', error));
         });
 
-        document.getElementById('push-data-button').addEventListener('click', function () {
-            fetch('/api/push-data', {
-                method: 'POST'
+
+        // Handle the start search button click
+        document.getElementById('start-search-button').addEventListener('click', function () {
+            fetch('/api/start-search', {
+                method: 'POST',
             })
             .then(response => response.json())
             .then(data => {
-                alert(data.message);
-                console.log('Push Data Response:', data);
+                alert('Search started!');
+                console.log('Start Search Response:', data);
             })
-            .catch(error => console.error('Error pushing data:', error));
+            .catch(error => console.error('Error starting search:', error));
+        });
+
+        // Handle the end search button click
+        document.getElementById('end-search-button').addEventListener('click', function () {
+            fetch('/api/end-search', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Search ended! Click below to download the GPX file.');
+                console.log('End Search Response:', data);
+
+                // Create a link to download the GPX file
+                const downloadLink = document.createElement('a');
+                downloadLink.href = data.gpx_download_url; // URL returned from the server to download the GPX file
+                downloadLink.textContent = 'Download GPX File';
+                downloadLink.download = 'search_data.gpx'; // Suggest a filename for the GPX file
+                document.body.appendChild(downloadLink);
+            })
+            .catch(error => console.error('Error ending search:', error));
         });
     </script>
 </body>
