@@ -3,7 +3,7 @@
 #USE THE SECOND FUNCTION FOR AZURE WEB APP
 # I have not yet figured out a way to access key vaults when testing locally - WORKING ON IT
 
-'''
+
 def get_key():
     # Retrieves key1 from the text file in this directory.
     # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
@@ -41,3 +41,4 @@ def get_key():
     # Print the value of the secret
     print(f"The value of the secret '{SECRET_NAME}' is: {retrieved_secret.value}")
     return conn_string[:69] + key + conn_string[69:]
+'''

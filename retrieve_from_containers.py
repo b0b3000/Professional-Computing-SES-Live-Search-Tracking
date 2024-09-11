@@ -68,7 +68,7 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
             traceback.print_exc()
 
         # Save the updated main map
-        map_save_path = os.path.join(os.path.dirname(__file__), 'app/static/footprint.html')
+        map_save_path = os.path.join(os.path.dirname(__file__), 'application/static/footprint.html')
         m.save(map_save_path)
         
 
