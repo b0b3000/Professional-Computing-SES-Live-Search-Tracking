@@ -4,32 +4,17 @@ See RaspberryPi setup documentation in this directory's README.md.
 See requirements.txt
 
 Fred's TODO:
-TODO 1: Upload data to storage account container, coordinate with front-end people for method of upload:
-    - Each search gets its own container, so base station must know the name of container.
-    - Base station uploads the single self-titled .json file every time it gets a GPS update from it's tracker.
-TODO 2: Code that checks for types of telemetry received and dynamically builds the returning dictionary/Json.
-TODO 3: Print meaningful error messages and data to a log file in the event of a crash.
+TODO 1: Code that checks for types of telemetry received and dynamically builds the returning dictionary/Json.
+TODO 2: Print meaningful error messages and data to a log file in the event of a crash.
 
-Meshtastic Serial Interface Node Values
-'num':
-'user':
-    'id':
-    'longName':
-    'shortName':
-    'macaddr':
-    'hwModel':
-'position':
-    'latitudeI':
-    'longitudeI':
-    'altitude':
-    'time':
-    'latitude':
-    'longitude':
-'snr':
-'deviceMetrics':
-    'batteryLevel':
-    'voltage':
-    'airUtilTx':
+Known Issues:
+ISSUE 1: After a couple restarts this fixed itself, GPS data was only showing up from ~20 minutes ago, or at least
+had the time stamp from ~20 minutes ago. Theory is that it was hopping between another known device? or tracker/base?
+
+ISSUE 2: Altitude is often read as ~40,000,000m on the tracker, but sometimes gives the correct altitude of ~3m.
+I assume this is from the strength of GPS lock, happens mostly indoors, will need to test more outdoors.
+Additionally, when altitude shows 0m, Meshtastic doesn't include it in the ping for some reason, leading to a
+lot of KeyErrors.
 """
 
 import meshtastic.serial_interface
@@ -54,7 +39,7 @@ def run_base_station():
 
     print("Please enter the search ID: ")
     # SEARCH_ID = str(input())
-    SEARCH_ID = "0"
+    SEARCH_ID = "0"     # For now, just auto-input a "0".
 
     storage_key = get_key()
     # Initialises client to interact with the Storage Account.
@@ -77,16 +62,20 @@ def run_base_station():
     json_upload.append({"point" + str(json_key): new_data})
     json_key += 1
 
-    with open(BASE_STATION_LONG_NAME, "w") as f:                # Writes all current GPS data to file (this will be uploaded to server eventually).
+    print("\nWriting new GPS point: " + str(new_data))
+    with open(BASE_STATION_LONG_NAME, "w") as f:        # Writes all current GPS data to file (this will be uploaded to server eventually).
         f.write(json.dumps(json_upload))
 
-    # Test upload to container.
+    # Initial upload to container.
     container_client.upload_blob(name=BASE_STATION_LONG_NAME, data=str(json_upload), overwrite=True)
+    print("\n Uploaded total: " + str(json_upload) + "\n")
 
-    # ---------- Every 60 seconds, checks for new GPS data from the tracker. ----------
+    # ---------- Every 60 (changeable) seconds, checks for new GPS data from the tracker. ----------
 
+    time.sleep(10)
     try:
         while True:
+            print("\n--------------- LOOP ---------------\n")
             new_data = get_nodes(interface, latest_data)
 
             # If the GPS data has not changed since the latest new data, do nothing.
@@ -95,11 +84,13 @@ def run_base_station():
 
             # If the GPS data is new, save it to file.
             else: 
-                print("writing: " + str(new_data))
+                print("\nWriting new GPS point: " + str(new_data))
                 json_upload.append({"point" + str(json_key): new_data})
                 json_key += 1
                 with open(BASE_STATION_LONG_NAME, "w") as f:
                     f.write(json.dumps(json_upload))
+                container_client.upload_blob(name=BASE_STATION_LONG_NAME, data=str(json_upload), overwrite=True)
+                print("\nUploaded total: " + str(json_upload) + "\n")
                 latest_data = new_data      # Updates latest_data for future changes reference.
 
             time.sleep(10)
@@ -135,7 +126,7 @@ def get_nodes(interface, latest_data):
 
     # ---------- Iterates through all nodes to find the tracker ----------
 
-    print("Retrieving tracker data...")
+    print("\nRetrieving tracker data...")
     foundTracker = False
     tracker = {}
     for value in nodes.values():
@@ -143,30 +134,38 @@ def get_nodes(interface, latest_data):
             foundTracker = True
             tracker = value
     if foundTracker == False:
-        print("\n # ----------  Failed to find GPS tracker. ---------- \n")
+        print("\n ----------  Failed to find GPS tracker. ---------- \n")
 
     # ---------- Checks the tracker data received, if the GPS data is new returns it. ----------
 
-    battLevel = tracker['deviceMetrics']['batteryLevel']
+    print("Tracker data: " + str(tracker))
+    
+    # Check that GPS data was included in the tracker data.
     try:
-        coords = [tracker['position']['longitude'], tracker['position']['latitude']]
-        times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")   # Converts UNIX time to UTC.
-        altitude = tracker['position']['altitude']
-        print("Received GPS data from tracker: " + str(coords))
-        if coords == latest_data['coords']:
-            print("Received GPS data matches old GPS data, not saving.")
-            return 0
-        else:
-            print("Received GPS data is new, saving.")
-            new_data = {"name": TRACKER_ID, "time": times, "lat": coords[0], "long": coords[1], 
-                        "telemetry": {"battery": battLevel, "altitude": altitude}}
-            # TODO: upload_to_server()
-            return new_data
-        
+        coords = [tracker['position']['latitude'], tracker['position']['longitude']]
     except KeyError as e:
-        print("No GPS data found for tracker. Please check GPS lock.")
+        print("\nNo GPS data found for tracker. Please check GPS lock.")
         return 0
+    
+    # Check that the GPS data is new.
+    if coords == [latest_data['lat'], latest_data['long']]:
+        print("Received GPS data matches old GPS data, not saving.")
+        return 0
+    
+    # If it is new, save it, along with other data from the tracker.
+    print("\nReceived GPS data is new, saving.")
+    battLevel = tracker['deviceMetrics']['batteryLevel']
+    times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")
+    new_data = {"name": TRACKER_ID, "time": times, "lat": coords[0], "long": coords[1], 
+                "telemetry": {"battery": battLevel, "altitude": " "}}
 
+    try:        # Method to fix altitude bug.
+        new_data["telemetry"]["altitude"] = tracker['position']['altitude']
+    except KeyError:
+        pass
+
+    return new_data
+    
     # ---------------------------------------------------------------------------------
 
 
@@ -205,27 +204,37 @@ def get_nodes_verbose(interface):
         print(device)
 
     # ---------- Adds retrieved tracker data to saved data. ----------
+    
+    print("\nProcessing tracker data...")
 
-    print("Getting full tracker data...")
-    battLevel = tracker['deviceMetrics']['batteryLevel']
+    # Check that GPS data was included in the tracker data.
     try:
         coords = [tracker['position']['latitude'], tracker['position']['longitude']]
-        times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")   # Converts UNIX time to UTC.
-        altitude = tracker['position']['altitude']
-        new_data = {"name": TRACKER_ID, "time": times, "lat": coords[0], "long": coords[1], 
-                    "telemetry": {"battery": battLevel, "altitude": altitude}}
-        return new_data
-
     except KeyError as e:
-        print("No GPS data found for tracker. Please check GPS lock.")
+        print("\nNo GPS data found for tracker. Please check GPS lock.")
         return 0
+    
+    # Save the GPS data, along with other data from the tracker.
+    print("\nReceived GPS data is new, saving.")
+    battLevel = tracker['deviceMetrics']['batteryLevel']
+    times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")
+    new_data = {"name": TRACKER_ID, "time": times, "lat": coords[0], "long": coords[1], 
+                "telemetry": {"battery": battLevel, "altitude": " "}}
+
+    try:        # Method to fix altitude bug.
+        new_data["telemetry"]["altitude"] = tracker['position']['altitude']
+    except KeyError:
+        pass
+
+    return new_data
 
     # ---------------------------------------------------------------------------------
 
 
 def get_key():
     """Retrieves an Azure Storage key from a text file in this directory."""
-    # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
+    # Sets connection string, where AccountName is the name of the Storage Account, 
+    # and AccountKey is a valid Access Key to that account.
     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
     with open("keys.txt") as file:
         for line in file:
