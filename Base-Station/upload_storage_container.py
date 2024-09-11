@@ -1,14 +1,6 @@
 """
 Python program that the base station will use to upload GPS data to the cloud server.
-
-TO-DO:
-    - Create robustness through try/except blocks for pretty much everything
-
-Requirements:
-azure-storage-blob==12.22.0
-folium==0.17.0
-
-Written by Bob Beashel, Fred Leman.
+This will be edited to run on the RaspberryPi in a separate file.
 """
 import random
 import copy
