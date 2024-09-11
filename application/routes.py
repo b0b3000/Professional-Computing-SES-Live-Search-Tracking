@@ -38,6 +38,9 @@ def index():
     
     # Save the initial map (empty) to be displayed on the page
     map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
+    print(os.path.dirname(__file__))
+    print(os.path.join(os.path.dirname(__file__), 'static/footprint.html'))
+    
     m.save(map_save_path)
 
     # Render the template with container names and map
@@ -66,7 +69,11 @@ def update_map():
 
     # Save the updated map to a file
     map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
+    #print("before", os.path.dirname(__file__))
+    #print(os.path.join(os.path.dirname(__file__), 'static/footprint.html'))
     m.save(map_save_path)
+    print(os.path.dirname(__file__))
+    print(os.path.join(os.path.dirname(__file__), 'static/footprint.html'))
 
     # Return a response indicating where the updated map is saved
     return jsonify({"map_path": url_for('static', filename='footprint.html')})
