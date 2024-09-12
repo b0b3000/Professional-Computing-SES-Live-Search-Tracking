@@ -67,7 +67,7 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
             print(f"Error processing container '{container_name}': {e}")
             traceback.print_exc()
 
-        # Save the updated main map
+        # Save the updated main map, map Path is hardcoded
         map_save_path = os.path.join(os.path.dirname(__file__), 'application/static/footprint.html')
         m.save(map_save_path)
         

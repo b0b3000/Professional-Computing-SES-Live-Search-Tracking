@@ -69,11 +69,7 @@ def update_map():
 
     # Save the updated map to a file
     map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
-    #print("before", os.path.dirname(__file__))
-    #print(os.path.join(os.path.dirname(__file__), 'static/footprint.html'))
     m.save(map_save_path)
-    print(os.path.dirname(__file__))
-    print(os.path.join(os.path.dirname(__file__), 'static/footprint.html'))
 
     # Return a response indicating where the updated map is saved
     return jsonify({"map_path": url_for('static', filename='footprint.html')})
@@ -119,7 +115,7 @@ def end_search():
     if not session_id or not data_path:
         return jsonify({'error': 'No active search session'}), 400
 
-    # Save collected data into a .gpx file (use your parsing function here)
+    # Save collected data into a .gpx file (use parsing function here)
     gpx_file_path = os.path.join(data_path, 'search_data.gpx')
     with open(gpx_file_path, 'w') as gpx_file:
         # TODO: Use parsing function to save data in GPX format
