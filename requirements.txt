@@ -2,3 +2,5 @@ flask
 folium
 meshtastic
 azure-storage-blob
+azure-identity
+azure-keyvault-secrets

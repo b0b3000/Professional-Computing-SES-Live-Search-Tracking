@@ -11,19 +11,16 @@ import os
 import folium
 from folium.plugins import TimestampedGeoJson
 from azure.storage.blob import BlobServiceClient
-import map_processing
 
 
-def retrieve_from_containers(m, path, STORAGE_CONNECTION_STRING):
+def retrieve_from_containers(m, path):
+    STORAGE_CONNECTION_STRING = get_key()
     
     # Initialises client.
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)   # The BlobServiceClient interacts with the Storage Account itself.
 
-    # To store device-specific data
-    device_data = []
-
     # Iterates through each container in the Storage Account, and prints their names.
-    print("\n----- Containers -----\n")
+    #print("\n----- Containers -----\n")
     for container in blob_service_client.list_containers():
         print(container.name)
         container_client = blob_service_client.get_container_client(container)   # The ContainerClient interacts with a specific container (directory).
@@ -32,34 +29,16 @@ def retrieve_from_containers(m, path, STORAGE_CONNECTION_STRING):
         for blob in container_client.list_blobs():
             try:
                 blob_content = container_client.download_blob(blob).readall()
-                
-                # 
-                # --------------------------------------------------------------------------
-                # Append parsed data to device_data
-                lines = eval(blob_content)
-                for line in lines:
-                    device_data.append({
-                        'data': line.get('data', 'No additional data')
-                    })  
-                # --------------------------------------------------------------------------  
-                
                 print(f"\n\tContent of the blob '{blob.name}': \n\t\t{str(blob_content)}")    # Prints the content of the blob.
                 mapify(blob_content).add_to(m)    # Creates a TimestampedGeoJson object from the blob's lines.
                 m.save(path)    # Save map after each edit.
-            
+                print()
             except Exception as e:
                 print(f"Error downloading blob: {e}")
 
     print("\n")
-    
-    # Saves current map to Azure storage container
-    map_processing.save_map_to_storage(path, "map-storage", "latest_map", STORAGE_CONNECTION_STRING)
-    
-    # This returns tel data
-    return device_data
 
 def mapify(blob_content):
-    
     # Evaluates the timestamped trail lines from the blob's content file into a list.
     lines = eval(blob_content)
     # Draws out the trail lines as a Folium object.
@@ -94,11 +73,21 @@ def mapify(blob_content):
     )
     return trail
 
-"""
+def get_key():
+    # Retrieves key1 from the text file in this directory.
+    # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
+    conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+    with open("keys.txt") as file:
+        for line in file:
+            if line.rstrip().startswith("key1:"):
+                # Splits the key from after the first occurence of "key1:".
+                key = line.rstrip().split("key1:", 1)[1]
+                # Places the key in the correct position in the middle of connection string.
+                return conn_string[:69] + key + conn_string[69:]
+
 if __name__ == "__main__":
     current_dir = os.path.dirname(__file__)
     path = os.path.join(current_dir, 'footprint.html')      # Finds correct location to store Folium map.
     m = folium.Map((-31.865184419408514, 116.07863524846368), control_scale=True, zoom_start=17)    # Creates a new Folium map at an arbitrary location.
     m.save(path)
     retrieve_from_containers(m, path)
-"""

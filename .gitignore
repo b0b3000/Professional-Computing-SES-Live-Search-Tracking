@@ -6,4 +6,5 @@ __pycache__/
 .idea
 keys.txt
 test.py
-*deprecated.py
+.github/
+application/
