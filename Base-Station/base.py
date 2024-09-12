@@ -57,7 +57,13 @@ def run_base_station():
     json_key = 0            # Control variable to give each GPS point a unique identifier.
 
     interface = meshtastic.serial_interface.SerialInterface()   # Establishes an interface with the base station.
+
     new_data = get_nodes_verbose(interface)                     # Gets data for base station and tracker.
+    if new_data == 0:
+        print("Tracker has no GPS lock, achieve lock then run program again.")
+        interface.close()
+        return 0
+    
     latest_data = new_data                                      # Holds the latest GPS ping from the tracker.
     json_upload.append({"point" + str(json_key): new_data})
     json_key += 1
@@ -70,9 +76,9 @@ def run_base_station():
     container_client.upload_blob(name=BASE_STATION_LONG_NAME, data=str(json_upload), overwrite=True)
     print("\n Uploaded total: " + str(json_upload) + "\n")
 
-    # ---------- Every 60 (changeable) seconds, checks for new GPS data from the tracker. ----------
+    # ---------- Every 30 (changeable) seconds, checks for new GPS data from the tracker. ----------
 
-    time.sleep(10)
+    time.sleep(30)
     try:
         while True:
             print("\n--------------- LOOP ---------------\n")
@@ -93,7 +99,7 @@ def run_base_station():
                 print("\nUploaded total: " + str(json_upload) + "\n")
                 latest_data = new_data      # Updates latest_data for future changes reference.
 
-            time.sleep(10)
+            time.sleep(30)
 
     except Exception as e:
         # Catches any unexpected error in running the entire code while looping.
@@ -138,7 +144,7 @@ def get_nodes(interface, latest_data):
 
     # ---------- Checks the tracker data received, if the GPS data is new returns it. ----------
 
-    print("Tracker data: " + str(tracker))
+    # print("Tracker data: " + str(tracker))
     
     # Check that GPS data was included in the tracker data.
     try:
