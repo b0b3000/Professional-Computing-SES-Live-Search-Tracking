@@ -10,7 +10,7 @@
 
 <body>
     <header>
-        GPS Data Visualization v1.0
+        GPS Data Visualization v2.0
     </header>
 
     <!-- Dropdown for selecting Azure containers -->
@@ -27,29 +27,32 @@
         <button id="fetch-data-button">Fetch Latest GPS Data</button>
     </div>
 
-    <!-- Map container -->
-    <div id="map-container">
-        <!-- The iframe displays the map saved as footprint.html -->
-        <iframe src="{{ url_for('static', filename='footprint.html') }}" width="100%" height="100%" style="border:none;"
-            id="map-iframe"></iframe>
-    </div>
-
-    <!-- Side panel to display telemetry data -->
-    <div id="telemetry-panel">
-        <h3>Telemetry Data</h3>
-        <div id="telemetry-content">
-            Hover over a ping to see its data here.
-        </div>
-    </div>
-
     <!-- Search controls for starting and ending a search -->
     <div id="search-controls">
         <button id="start-search-button">Start Search</button>
         <button id="end-search-button">End Search</button>
     </div>
+    
+    <!-- Main container to hold the map and telemetry panel -->
+    <div id="main-container">
+        <!-- Map container -->
+        <div id="map-container">
+            <!-- The iframe displays the map saved as footprint.html -->
+            <iframe src="{{ url_for('static', filename='footprint.html') }}" width="100%" height="100%"
+                style="border:none;" id="map-iframe"> RENDER </iframe>
+        </div>
+
+        <!-- Side panel to display telemetry data -->
+        <div id="telemetry-panel">
+            <h3>Telemetry Data</h3>
+            <div id="telemetry-content">
+                Hover over a ping to see its data here.
+            </div>
+        </div>
+    </div>
+
 
     <script>
-
         // Event listener for the button to fetch the latest GPS data
         document.getElementById('fetch-data-button').addEventListener('click', function () {
             // Collect selected containers
@@ -74,8 +77,8 @@
                 .then(data => {
                     console.log('Fetched Data:', data);  // Log the data to the console for inspection
 
-                    // Display the entire fetched data in the sidebar for debugging
-                    document.getElementById('telemetry-content').innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+                    // Display the telemetry data in a nicer format
+                    displayTelemetryData(data.telemetry_data);
 
                     // Refresh the iframe to show the updated map
                     document.getElementById('map-iframe').src = data.map_path;
@@ -83,6 +86,27 @@
                 .catch(error => console.error('Error updating map:', error));
         });
 
+        // Function to display telemetry data in a nicer format
+        function displayTelemetryData(telemetryData) {
+            const telemetryContent = document.getElementById('telemetry-content');
+            telemetryContent.innerHTML = '';  // Clear previous content
+
+            telemetryData.forEach((entry, index) => {
+                const card = document.createElement('div');
+                card.className = 'telemetry-card';
+
+                card.innerHTML = `
+                    <p class="title">Ping ${index + 1}</p>
+                    <p><strong>Device Name:</strong> ${entry.name}</p>
+                    <p><strong>Time:</strong> ${entry.time}</p>
+                    <hr>
+                    <p><strong>Battery Level:</strong> ${entry.telemetry.battery}%</p>
+                    <p><strong>Altitude:</strong> ${entry.telemetry.altitude}</p>
+                `;
+
+                telemetryContent.appendChild(card);
+            });
+        }
 
         // Handle the start search button click
         document.getElementById('start-search-button').addEventListener('click', function () {
@@ -116,20 +140,6 @@
                 })
                 .catch(error => console.error('Error ending search:', error));
         });
-
-        // Function to display telemetry data in the side panel
-        function displayTelemetry(data) {
-            if (data && data.telemetry) {
-                document.getElementById('telemetry-content').innerHTML = `
-                    <p><strong>Device Name:</strong> ${data.name}</p>
-                    <p><strong>Time:</strong> ${data.time}</p>
-                    <p><strong>Battery Level:</strong> ${data.telemetry.battery}%</p>
-                    <p><strong>Altitude:</strong> ${data.telemetry.altitude}</p>
-                `;
-            } else {
-                document.getElementById('telemetry-content').innerHTML = `<p>No telemetry data available</p>`;
-            }
-        }
 
     </script>
 
