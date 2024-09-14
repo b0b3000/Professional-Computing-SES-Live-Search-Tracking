@@ -16,6 +16,7 @@ from azure.storage.blob import BlobServiceClient
 from datetime import datetime
 import shutil
 
+
 #TODO: TO BE UPDATED to Azure Vault Solution
 STORAGE_CONNECTION_STRING = get_key.get_key()
 
@@ -38,9 +39,6 @@ def index():
     
     # Save the initial map (empty) to be displayed on the page
     map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
-    print(os.path.dirname(__file__))
-    print(os.path.join(os.path.dirname(__file__), 'static/footprint.html'))
-    
     m.save(map_save_path)
 
     # Render the template with container names and map
@@ -61,18 +59,17 @@ def update_map():
     if not container_names:
         return jsonify({'error': 'No containers selected'}), 400
 
-    # TODO: Parameters passed for initialising a map, currently map centered on Perth CBD
+    # Initialize a map centered on Perth CBD
     m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
 
-    # Call retrieve_from_containers with the selected containers
-    retrieve_from_containers(m, STORAGE_CONNECTION_STRING, container_names)
+    # Call retrieve_from_containers with the selected containers and get telemetry data
+    telemetry_data, _ = retrieve_from_containers(m, STORAGE_CONNECTION_STRING, container_names)
 
-    # Save the updated map to a file
-    map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
-    m.save(map_save_path)
-
-    # Return a response indicating where the updated map is saved
-    return jsonify({"map_path": url_for('static', filename='footprint.html')})
+    # Return a response indicating where the updated map is saved and include telemetry data
+    return jsonify({
+        "map_path": url_for('static', filename='footprint.html'),
+        "telemetry_data": telemetry_data
+    })
 
 # Update your app configuration to use sessions
 #app.secret_key = 'your_secret_key'  # Required for session management, change to a secure key

@@ -14,7 +14,6 @@
     </header>
 
     <!-- Dropdown for selecting Azure containers -->
-
     <div id="container-selector">
         <label>Select Azure Containers:</label>
         <div id="checkbox-container">
@@ -27,7 +26,7 @@
         </div>
         <button id="fetch-data-button">Fetch Latest GPS Data</button>
     </div>
-    
+
     <!-- Map container -->
     <div id="map-container">
         <!-- The iframe displays the map saved as footprint.html -->
@@ -35,25 +34,19 @@
             id="map-iframe"></iframe>
     </div>
 
+    <!-- Side panel to display telemetry data -->
+    <div id="telemetry-panel">
+        <h3>Telemetry Data</h3>
+        <div id="telemetry-content">
+            Hover over a ping to see its data here.
+        </div>
+    </div>
+
     <!-- Search controls for starting and ending a search -->
     <div id="search-controls">
         <button id="start-search-button">Start Search</button>
         <button id="end-search-button">End Search</button>
     </div>
-
-    <!-- Optional Section: For future device information display -->
-    <!-- <div id="data-container"> -->
-        <!-- <h2>Device Information</h2> -->
-        <!-- <ul id="device-list"> -->
-            <!-- This will be dynamically populated by JavaScript -->
-            <!-- {% for device in device_data %} -->
-            <!-- <li> -->
-                <!-- <strong>Container:</strong> {{ device.container_name }} <br> -->
-                <!-- <strong>Additional Data:</strong> {{ device.data }} -->
-            <!-- </li> -->
-            <!-- {% endfor %} -->
-        <!-- </ul> -->
-    <!-- </div> -->
 
     <script>
 
@@ -79,7 +72,10 @@
             })
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Update Map Response:', data);
+                    console.log('Fetched Data:', data);  // Log the data to the console for inspection
+
+                    // Display the entire fetched data in the sidebar for debugging
+                    document.getElementById('telemetry-content').innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
 
                     // Refresh the iframe to show the updated map
                     document.getElementById('map-iframe').src = data.map_path;
@@ -93,12 +89,12 @@
             fetch('/api/start-search', {
                 method: 'POST',
             })
-            .then(response => response.json())
-            .then(data => {
-                alert('Search started!');
-                console.log('Start Search Response:', data);
-            })
-            .catch(error => console.error('Error starting search:', error));
+                .then(response => response.json())
+                .then(data => {
+                    alert('Search started!');
+                    console.log('Start Search Response:', data);
+                })
+                .catch(error => console.error('Error starting search:', error));
         });
 
         // Handle the end search button click
@@ -106,21 +102,37 @@
             fetch('/api/end-search', {
                 method: 'POST',
             })
-            .then(response => response.json())
-            .then(data => {
-                alert('Search ended! Click below to download the GPX file.');
-                console.log('End Search Response:', data);
+                .then(response => response.json())
+                .then(data => {
+                    alert('Search ended! Click below to download the GPX file.');
+                    console.log('End Search Response:', data);
 
-                // Create a link to download the GPX file
-                const downloadLink = document.createElement('a');
-                downloadLink.href = data.gpx_download_url; // URL returned from the server to download the GPX file
-                downloadLink.textContent = 'Download GPX File';
-                downloadLink.download = 'search_data.gpx'; // Suggest a filename for the GPX file
-                document.body.appendChild(downloadLink);
-            })
-            .catch(error => console.error('Error ending search:', error));
+                    // Create a link to download the GPX file
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = data.gpx_download_url; // URL returned from the server to download the GPX file
+                    downloadLink.textContent = 'Download GPX File';
+                    downloadLink.download = 'search_data.gpx'; // Suggest a filename for the GPX file
+                    document.body.appendChild(downloadLink);
+                })
+                .catch(error => console.error('Error ending search:', error));
         });
+
+        // Function to display telemetry data in the side panel
+        function displayTelemetry(data) {
+            if (data && data.telemetry) {
+                document.getElementById('telemetry-content').innerHTML = `
+                    <p><strong>Device Name:</strong> ${data.name}</p>
+                    <p><strong>Time:</strong> ${data.time}</p>
+                    <p><strong>Battery Level:</strong> ${data.telemetry.battery}%</p>
+                    <p><strong>Altitude:</strong> ${data.telemetry.altitude}</p>
+                `;
+            } else {
+                document.getElementById('telemetry-content').innerHTML = `<p>No telemetry data available</p>`;
+            }
+        }
+
     </script>
+
 </body>
 
 </html>
