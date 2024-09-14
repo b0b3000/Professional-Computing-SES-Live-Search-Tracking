@@ -7,6 +7,7 @@
         <extensions>
           <TelemetryData>
             <battery>40</battery>
+            <temp>12</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -15,6 +16,7 @@
         <extensions>
           <TelemetryData>
             <battery>40</battery>
+            <temp>12</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -23,6 +25,7 @@
         <extensions>
           <TelemetryData>
             <battery>40</battery>
+            <temp>12</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -31,6 +34,7 @@
         <extensions>
           <TelemetryData>
             <battery>40</battery>
+            <temp>12</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -39,6 +43,7 @@
         <extensions>
           <TelemetryData>
             <battery>40</battery>
+            <temp>12</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -47,6 +52,7 @@
         <extensions>
           <TelemetryData>
             <battery>40</battery>
+            <temp>12</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -55,6 +61,7 @@
         <extensions>
           <TelemetryData>
             <battery>39</battery>
+            <temp>900</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -63,6 +70,7 @@
         <extensions>
           <TelemetryData>
             <battery>39</battery>
+            <temp>900</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -71,6 +79,7 @@
         <extensions>
           <TelemetryData>
             <battery>39</battery>
+            <temp>900</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -79,6 +88,7 @@
         <extensions>
           <TelemetryData>
             <battery>39</battery>
+            <temp>900</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -87,6 +97,7 @@
         <extensions>
           <TelemetryData>
             <battery>39</battery>
+            <temp>900</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
@@ -95,6 +106,7 @@
         <extensions>
           <TelemetryData>
             <battery>39</battery>
+            <temp>900</temp>
           </TelemetryData>
         </extensions>
       </trkpt>
