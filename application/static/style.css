@@ -14,10 +14,55 @@ header {
     font-size: 24px;
 }
 
+/* Flexbox container to align the map and telemetry panel side by side */
+#main-container {
+    display: flex;
+    justify-content: space-between; /* Makes sure there’s space between the map and the sidebar */
+    width: 100%;
+    height: calc(100vh - 100px); /* Adjust height to fit under the header */
+    margin-top: 20px;
+}
+
+/* Map styling */
 #map-container {
-    margin: 20px auto;
-    height: 600px;
-    width: 90%;
+    flex-grow: 2; /* Allow the map to grow and take up available space */
+    margin: 0 auto;
+    height: 100%;
     border: 2px solid #ddd;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar styling */
+#telemetry-panel {
+    width: 300px; /* Fixed width for sidebar */
+    height: 100%; /* Take up full height of the viewport */
+    background-color: #f7f7f7;
+    padding: 10px;
+    box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+}
+
+/* BASIC STYLING FOR TELEMETRY SIDEBAR */
+.telemetry-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.telemetry-card p {
+    margin: 5px 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.telemetry-card .title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.telemetry-card hr {
+    margin: 10px 0;
 }

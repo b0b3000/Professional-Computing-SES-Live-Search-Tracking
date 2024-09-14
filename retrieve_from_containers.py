@@ -31,25 +31,20 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
         - active_containers: a list of strings, of the names of the storage containers. eg 'base-station-0'
 
     """
-    
     # Initialize the BlobServiceClient
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
 
-    # Iterate through each container in the Storage Account
-    print("\n----- Containers -----\n")
-    
+    # Initialize an empty list to collect telemetry data
+    telemetry_data = []
+
     for container_name in active_containers:
         
         try:
-            # Retrieve the client for the current container
             container_client = blob_service_client.get_container_client(container_name)
-            
-            # Ensure the container exists
             if not container_client.exists():
                 print(f"Container '{container_name}' does not exist. Skipping...")
                 continue
 
-            # Retrieve the single blob from the container
             blobs_list = list(container_client.list_blobs())
             if len(blobs_list) != 1:
                 print(f"Unexpected blob count in '{container_name}'. Expected 1, found {len(blobs_list)}.")
@@ -58,18 +53,24 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
             # Download and process the blob content
             blob = blobs_list[0]
             blob_content = container_client.download_blob(blob).readall()
-            
-            # Add the GPS data to the map
-            mapify(blob_content).add_to(m)
-            
-            
+
+            # Call mapify to process and add data to the map
+            trail, extracted_telemetry = mapify(blob_content)
+            if trail:
+                trail.add_to(m)
+
+            # Collect telemetry data
+            telemetry_data.extend(extracted_telemetry)
+
         except Exception as e:
             print(f"Error processing container '{container_name}': {e}")
             traceback.print_exc()
 
-        # Save the updated main map
-        map_save_path = os.path.join(os.path.dirname(__file__), 'application/static/footprint.html')
-        m.save(map_save_path)
+    # Save the updated map
+    map_save_path = os.path.join(os.path.dirname(__file__), 'application/static/footprint.html')
+    m.save(map_save_path)
+
+    return telemetry_data, map_save_path
         
 
 
@@ -77,35 +78,29 @@ def mapify(geojson_data):
     """
     Process and display GPS data with telemetry on the map.
 
-    Args:
-    - geojson_data (bytes): Raw data in JSON-like format.
-
     Returns:
     - trail (TimestampedGeoJson): A Folium object to add to the map, or None if parsing fails.
+    - telemetry_list (list): A list of telemetry data points to be sent to the frontend.
     """
     
-    # Decode the bytes data to a string
     try:
-        # Data needed to be decoded from bytes into a string, adds double quotes for valid JSON format
         decoded_data = geojson_data.decode('utf-8').replace("'", '"')
         points = json.loads(decoded_data)
     except Exception as e:
         print(f"Error decoding JSON data: {e}")
-        return None
+        return None, []
 
-    # Create a list to hold GeoJSON features
     features = []
+    telemetry_list = []
 
-    # Iterate over the points in the parsed data
     for point in points:
-        for _, point_data in point.items():  # Iterate through each point object
+        for _, point_data in point.items():
             lat = point_data.get('lat', 0.0)
             long = point_data.get('long', 0.0)
             name = point_data.get('name', 'Unnamed Point')
             time = point_data.get('time', '00:00:00T00:00:00')
             telemetry = point_data.get('telemetry', {})
 
-            # Add the point as a GeoJSON feature with relevant properties
             features.append({
                 "type": "Feature",
                 "geometry": {
@@ -120,7 +115,13 @@ def mapify(geojson_data):
                 },
             })
 
-    # Create a TimestampedGeoJson object for the map
+            # Collect telemetry data for returning
+            telemetry_list.append({
+                "name": name,
+                "time": time,
+                "telemetry": telemetry
+            })
+
     trail = TimestampedGeoJson(
         {
             "type": "FeatureCollection",
@@ -132,8 +133,7 @@ def mapify(geojson_data):
         add_last_point=True,
     )
 
-    return trail
-
+    return trail, telemetry_list
 
 # Testing purposes
 if __name__ == "__main__":
