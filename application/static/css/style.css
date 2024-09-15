@@ -51,18 +51,19 @@ header {
 .search-running-animation::before{
   content: '';
   position: absolute;
-  width: 220px;
+  width: 300px;
   height: 200%;
   background-color: #78c07b;
   box-shadow: 0 0 40px #78c07b;
   animation: animate 12s linear infinite;
+
 }
 
 #map-iframe{
-  height: 95%;
-  width: 95%;
+  height: 97.5%;
+  width: 98%;
   z-index: 10;
-  border-radius: 5px;
+  border-radius: 6px;
 }
 
 @keyframes animate {
