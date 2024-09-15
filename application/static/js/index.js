@@ -62,6 +62,7 @@ document.getElementById('start-search-button').addEventListener('click', functio
       .then(data => {
           alert('Search started!');
           console.log('Start Search Response:', data);
+          document.getElementById('map-border').classList.add('search-running-animation');
       })
       .catch(error => console.error('Error starting search:', error));
 });
@@ -82,6 +83,9 @@ document.getElementById('end-search-button').addEventListener('click', function 
           downloadLink.textContent = 'Download GPX File';
           downloadLink.download = 'search_data.gpx'; // Suggest a filename for the GPX file
           document.body.appendChild(downloadLink);
+
+          // Remove the animated border class
+          document.getElementById('map-border').classList.remove('search-running-animation');
       })
       .catch(error => console.error('Error ending search:', error));
 });
