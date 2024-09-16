@@ -15,6 +15,9 @@ ISSUE 2: Altitude is often read as ~40,000,000m on the tracker, but sometimes gi
 I assume this is from the strength of GPS lock, happens mostly indoors, will need to test more outdoors.
 Additionally, when altitude shows 0m, Meshtastic doesn't include it in the ping for some reason, leading to a
 lot of KeyErrors.
+
+ISSUE 3: GPS pings dropped out at 500m range when testing. What if the GPS data matches because 
+they are in the same location later, need to check the time as well.
 """
 
 import meshtastic.serial_interface
@@ -26,7 +29,7 @@ import traceback
 import json
 
 BASE_STATION_ID = '!7c5cb2a0'
-BASE_STATION_LONG_NAME = 'base_3200_a'
+BASE_STATION_LONG_NAME = 'base-3200-c'
 TRACKER_ID = '!33679a4c'
 TRACKER_LONG_NAME = 'fredtastic'
 SEARCH_ID = ''
@@ -44,9 +47,17 @@ def run_base_station():
     storage_key = get_key()
     # Initialises client to interact with the Storage Account.
     blob_service_client = BlobServiceClient.from_connection_string(conn_str=storage_key)
-    print("search" + SEARCH_ID)
-    # Initialises client to interact with the existing search container.
-    container_client = blob_service_client.get_container_client(container="search" + SEARCH_ID)
+
+    found = False
+    for container in blob_service_client.list_containers():
+        if container['name'] == BASE_STATION_LONG_NAME:
+            found = True
+
+    if not found:
+        # Creates a new container client to interact with this base station's private container.
+        blob_service_client.create_container(name=BASE_STATION_LONG_NAME)
+
+    container_client = blob_service_client.get_container_client(container=BASE_STATION_LONG_NAME)
 
     # ---------- Initialises variables and gets first GPS point from tracker. ----------
 
@@ -143,8 +154,6 @@ def get_nodes(interface, latest_data):
         print("\n ----------  Failed to find GPS tracker. ---------- \n")
 
     # ---------- Checks the tracker data received, if the GPS data is new returns it. ----------
-
-    # print("Tracker data: " + str(tracker))
     
     # Check that GPS data was included in the tracker data.
     try:
@@ -156,6 +165,7 @@ def get_nodes(interface, latest_data):
     # Check that the GPS data is new.
     if coords == [latest_data['lat'], latest_data['long']]:
         print("Received GPS data matches old GPS data, not saving.")
+        print("Old data: " + tracker + "\n")
         return 0
     
     # If it is new, save it, along with other data from the tracker.
