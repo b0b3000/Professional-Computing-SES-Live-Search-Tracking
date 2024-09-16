@@ -62,7 +62,7 @@ document.getElementById('start-search-button').addEventListener('click', functio
       .then(data => {
           alert('Search started!');
           console.log('Start Search Response:', data);
-          document.getElementById('map-border').classList.add('search-running-animation');
+          document.getElementById('map-container').classList.add('search-running-animation');
       })
       .catch(error => console.error('Error starting search:', error));
 });
@@ -85,7 +85,7 @@ document.getElementById('end-search-button').addEventListener('click', function 
           document.body.appendChild(downloadLink);
 
           // Remove the animated border class
-          document.getElementById('map-border').classList.remove('search-running-animation');
+          document.getElementById('map-container').classList.remove('search-running-animation');
       })
       .catch(error => console.error('Error ending search:', error));
 });
