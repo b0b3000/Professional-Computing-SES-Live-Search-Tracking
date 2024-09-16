@@ -25,7 +25,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_8e24ef5f93a73c2aa328e3dd71a493bf {
+                #map_fae5b54142d00a5f893971e7ef879d07 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -46,14 +46,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_8e24ef5f93a73c2aa328e3dd71a493bf" ></div>
+            <div class="folium-map" id="map_fae5b54142d00a5f893971e7ef879d07" ></div>
         
 </body>
 <script>
     
     
-            var map_8e24ef5f93a73c2aa328e3dd71a493bf = L.map(
-                "map_8e24ef5f93a73c2aa328e3dd71a493bf",
+            var map_fae5b54142d00a5f893971e7ef879d07 = L.map(
+                "map_fae5b54142d00a5f893971e7ef879d07",
                 {
                     center: [-31.9505, 115.8605],
                     crs: L.CRS.EPSG3857,
@@ -62,19 +62,19 @@
                     preferCanvas: false,
                 }
             );
-            L.control.scale().addTo(map_8e24ef5f93a73c2aa328e3dd71a493bf);
+            L.control.scale().addTo(map_fae5b54142d00a5f893971e7ef879d07);
 
             
 
         
     
-            var tile_layer_c36d7a97e026bdf17102f5dcafc8e2c7 = L.tileLayer(
+            var tile_layer_431000760b96fd8bd2e2950a2fcc31aa = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {"attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors", "detectRetina": false, "maxNativeZoom": 19, "maxZoom": 19, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
             );
         
     
-            tile_layer_c36d7a97e026bdf17102f5dcafc8e2c7.addTo(map_8e24ef5f93a73c2aa328e3dd71a493bf);
+            tile_layer_431000760b96fd8bd2e2950a2fcc31aa.addTo(map_fae5b54142d00a5f893971e7ef879d07);
         
     
             L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
@@ -84,7 +84,7 @@
                     return newdate.format("YYYY-MM-DD HH:mm:ss");
                 }
             });
-            map_8e24ef5f93a73c2aa328e3dd71a493bf.timeDimension = L.timeDimension(
+            map_fae5b54142d00a5f893971e7ef879d07.timeDimension = L.timeDimension(
                 {
                     period: "PT1M",
                 }
@@ -92,7 +92,7 @@
             var timeDimensionControl = new L.Control.TimeDimensionCustom(
                 {"autoPlay": true, "loopButton": false, "maxSpeed": 10, "minSpeed": 0.1, "playerOptions": {"loop": false, "startOver": true, "transitionTime": 100}, "position": "bottomleft", "speedSlider": true, "timeSliderDragUpdate": false}
             );
-            map_8e24ef5f93a73c2aa328e3dd71a493bf.addControl(this.timeDimensionControl);
+            map_fae5b54142d00a5f893971e7ef879d07.addControl(this.timeDimensionControl);
 
             var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8160611, -31.9775473]}, "properties": {"time": "2024-09-16T09:16:49", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:16:49\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949644}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.816094, -31.9775428]}, "properties": {"time": "2024-09-16T09:17:25", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:17:25\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949644}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8161233, -31.977627]}, "properties": {"time": "2024-09-16T09:18:00", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:18:00\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949641}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8159081, -31.977683]}, "properties": {"time": "2024-09-16T09:18:35", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:18:35\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949642}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8158586, -31.9778573]}, "properties": {"time": "2024-09-16T09:19:45", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:19:45\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949640}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.81637, -31.977911]}, "properties": {"time": "2024-09-16T09:20:20", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:20:20\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949645}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8163681, -31.9775338]}, "properties": {"time": "2024-09-16T09:20:55", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:20:55\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949644}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8165886, -31.9772655]}, "properties": {"time": "2024-09-16T09:21:30", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:21:30\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949638}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8170513, -31.977203]}, "properties": {"time": "2024-09-16T09:22:05", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:22:05\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949638}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.817381, -31.9771908]}, "properties": {"time": "2024-09-16T09:22:40", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:22:40\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949635}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.817863, -31.976994]}, "properties": {"time": "2024-09-16T09:23:15", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:23:15\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949635}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8182656, -31.9769925]}, "properties": {"time": "2024-09-16T09:23:50", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:23:50\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949632}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8196571, -31.9775856]}, "properties": {"time": "2024-09-16T09:28:30", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:28:30\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949644}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8191521, -31.9775976]}, "properties": {"time": "2024-09-16T09:29:05", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:29:05\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949655}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8187813, -31.9775773]}, "properties": {"time": "2024-09-16T09:29:40", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:29:40\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949656}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8184708, -31.977587]}, "properties": {"time": "2024-09-16T09:30:15", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:30:15\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949654}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8181085, -31.9777383]}, "properties": {"time": "2024-09-16T09:30:50", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:30:50\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949652}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8177383, -31.977916]}, "properties": {"time": "2024-09-16T09:31:25", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:31:25\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949652}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8174318, -31.977936]}, "properties": {"time": "2024-09-16T09:32:00", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:32:00\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949662}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8170395, -31.9779983]}, "properties": {"time": "2024-09-16T09:32:35", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:32:35\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949667}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.816783, -31.9779398]}, "properties": {"time": "2024-09-16T09:33:10", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:33:10\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949668}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8165083, -31.977908]}, "properties": {"time": "2024-09-16T09:33:45", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:33:45\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949670}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8163815, -31.9777985]}, "properties": {"time": "2024-09-16T09:34:20", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:34:20\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949669}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8163306, -31.9775768]}, "properties": {"time": "2024-09-16T09:34:55", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:34:55\nBattery: 42%", "telemetry": {"battery": 42, "altitude": 42949664}}}]}, {
                     pointToLayer: function (feature, latLng) {
@@ -128,14 +128,14 @@
                     }
                 })
 
-            var timestamped_geo_json_a8a5e8e4412592ce03330d2fc6edf007 = L.timeDimension.layer.geoJson(
+            var timestamped_geo_json_c25d815ce0ef48610cf445e5f23caae9 = L.timeDimension.layer.geoJson(
                 geoJsonLayer,
                 {
                     updateTimeDimension: true,
                     addlastPoint: true,
                     duration: undefined,
                 }
-            ).addTo(map_8e24ef5f93a73c2aa328e3dd71a493bf);
+            ).addTo(map_fae5b54142d00a5f893971e7ef879d07);
         
     
             L.Control.TimeDimensionCustom = L.Control.TimeDimension.extend({
@@ -145,7 +145,7 @@
                     return newdate.format("YYYY-MM-DD HH:mm:ss");
                 }
             });
-            map_8e24ef5f93a73c2aa328e3dd71a493bf.timeDimension = L.timeDimension(
+            map_fae5b54142d00a5f893971e7ef879d07.timeDimension = L.timeDimension(
                 {
                     period: "PT1M",
                 }
@@ -153,7 +153,7 @@
             var timeDimensionControl = new L.Control.TimeDimensionCustom(
                 {"autoPlay": true, "loopButton": false, "maxSpeed": 10, "minSpeed": 0.1, "playerOptions": {"loop": false, "startOver": true, "transitionTime": 100}, "position": "bottomleft", "speedSlider": true, "timeSliderDragUpdate": false}
             );
-            map_8e24ef5f93a73c2aa328e3dd71a493bf.addControl(this.timeDimensionControl);
+            map_fae5b54142d00a5f893971e7ef879d07.addControl(this.timeDimensionControl);
 
             var geoJsonLayer = L.geoJson({"type": "FeatureCollection", "features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8159203, -31.9779023]}, "properties": {"time": "2024-09-16T09:02:15", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:02:15\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949655}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8159535, -31.9779118]}, "properties": {"time": "2024-09-16T09:02:49", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:02:49\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949655}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8159915, -31.978149]}, "properties": {"time": "2024-09-16T09:03:24", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:03:24\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949656}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8160163, -31.9778246]}, "properties": {"time": "2024-09-16T09:03:59", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:03:59\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949655}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8167543, -31.9780608]}, "properties": {"time": "2024-09-16T09:04:34", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:04:34\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949660}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8170093, -31.9781026]}, "properties": {"time": "2024-09-16T09:05:09", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:05:09\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949660}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8170481, -31.9782515]}, "properties": {"time": "2024-09-16T09:05:44", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:05:44\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949654}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8175233, -31.9784426]}, "properties": {"time": "2024-09-16T09:06:19", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:06:19\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949656}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8177866, -31.9784881]}, "properties": {"time": "2024-09-16T09:06:54", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:06:54\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949654}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.818034, -31.9784491]}, "properties": {"time": "2024-09-16T09:07:29", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:07:29\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949655}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8182463, -31.9783433]}, "properties": {"time": "2024-09-16T09:08:04", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:08:04\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949652}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.818033, -31.977885]}, "properties": {"time": "2024-09-16T09:09:14", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:09:14\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949639}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8177641, -31.9778573]}, "properties": {"time": "2024-09-16T09:09:49", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:09:49\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949639}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.817448, -31.9778651]}, "properties": {"time": "2024-09-16T09:10:24", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:10:24\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949641}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.8172278, -31.977728]}, "properties": {"time": "2024-09-16T09:10:59", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:10:59\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949636}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.816629, -31.977598]}, "properties": {"time": "2024-09-16T09:11:34", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:11:34\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949640}}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [115.81641, -31.9776446]}, "properties": {"time": "2024-09-16T09:12:09", "name": "!33679a4c", "tooltip": "Name: !33679a4c\nTime: 2024-09-16T09:12:09\nBattery: 34%", "telemetry": {"battery": 34, "altitude": 42949641}}}]}, {
                     pointToLayer: function (feature, latLng) {
@@ -189,14 +189,14 @@
                     }
                 })
 
-            var timestamped_geo_json_e73d99a5e40930cbfd745d0cec442629 = L.timeDimension.layer.geoJson(
+            var timestamped_geo_json_d3b0b5248f466c33aff1b2bae1a1aeb7 = L.timeDimension.layer.geoJson(
                 geoJsonLayer,
                 {
                     updateTimeDimension: true,
                     addlastPoint: true,
                     duration: undefined,
                 }
-            ).addTo(map_8e24ef5f93a73c2aa328e3dd71a493bf);
+            ).addTo(map_fae5b54142d00a5f893971e7ef879d07);
         
 </script>
 </html>

@@ -8,15 +8,12 @@ TODO 1: Code that checks for types of telemetry received and dynamically builds 
 TODO 2: Print meaningful error messages and data to a log file in the event of a crash.
 
 Known Issues:
-ISSUE 1: After a couple restarts this fixed itself, GPS data was only showing up from ~20 minutes ago, or at least
-had the time stamp from ~20 minutes ago. Theory is that it was hopping between another known device? or tracker/base?
-
-ISSUE 2: Altitude is often read as ~40,000,000m on the tracker, but sometimes gives the correct altitude of ~3m.
+ISSUE 1: Altitude is often read as ~40,000,000m on the tracker, but sometimes gives the correct altitude of ~3m.
 I assume this is from the strength of GPS lock, happens mostly indoors, will need to test more outdoors.
 Additionally, when altitude shows 0m, Meshtastic doesn't include it in the ping for some reason, leading to a
 lot of KeyErrors.
 
-ISSUE 3: GPS pings dropped out at 500m range when testing. What if the GPS data matches because 
+ISSUE 2: GPS pings dropped out at 500m range when testing. What if the GPS data matches because 
 they are in the same location later, need to check the time as well.
 """
 
@@ -27,12 +24,12 @@ import sys
 import time
 import traceback
 import json
+import logging
 
 BASE_STATION_ID = '!7c5cb2a0'
 BASE_STATION_LONG_NAME = 'base-3200-c'
 TRACKER_ID = '!33679a4c'
 TRACKER_LONG_NAME = 'fredtastic'
-SEARCH_ID = ''
 
 
 def run_base_station():
@@ -40,23 +37,23 @@ def run_base_station():
 
     # ---------- Establishes connection with Azure Storage, creates blob file for uploading. ----------
 
-    print("Please enter the search ID: ")
-    # SEARCH_ID = str(input())
-    SEARCH_ID = "0"     # For now, just auto-input a "0".
-
+    # Retrieves the Azure Storage key.
     storage_key = get_key()
+
     # Initialises client to interact with the Storage Account.
     blob_service_client = BlobServiceClient.from_connection_string(conn_str=storage_key)
 
+    # Checks to see if container already exists.
     found = False
     for container in blob_service_client.list_containers():
         if container['name'] == BASE_STATION_LONG_NAME:
             found = True
 
     if not found:
-        # Creates a new container client to interact with this base station's private container.
+        # Creates a new container named after this blob if it does not already exist.
         blob_service_client.create_container(name=BASE_STATION_LONG_NAME)
 
+    # Creates a new container client to interact with this base station's private container.
     container_client = blob_service_client.get_container_client(container=BASE_STATION_LONG_NAME)
 
     # ---------- Initialises variables and gets first GPS point from tracker. ----------
