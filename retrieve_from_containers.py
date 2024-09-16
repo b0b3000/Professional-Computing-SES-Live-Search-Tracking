@@ -18,6 +18,7 @@ import json
 import random
 from enum import Enum
 
+"""Simple enum to assign colours to trails"""
 class TrailColour(Enum):
     RED = "#FF5733"
     ORANGE = "#FF8D33"
@@ -31,6 +32,9 @@ class TrailColour(Enum):
     LIME = "#A8FF33"
 
 def get_random_colour():
+    """Chooses a random colour from the given enum.
+    
+       Returns: Hex string represnting the chosen colour"""
     return random.choice(list(TrailColour)).value
 
 
@@ -71,7 +75,6 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
             features, coordinates, extracted_telemetry = mapify(blob_content)
 
             # taken from folium docs, stackoverflow, and integrated with the help of ChatGPT
-            # ------------------------------------------------------------------------------
             # Add points to map using folium.Marker
             for feature in features:
                 point_location = feature["geometry"]["coordinates"][::-1]  # Reversing [long, lat] to [lat, long]
@@ -92,7 +95,6 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
                     weight=5,
                     opacity=0.7  
                 ).add_to(m)
-            # ------------------------------------------------------------------------------
 
             # Collect telemetry data
             telemetry_data.extend(extracted_telemetry)
