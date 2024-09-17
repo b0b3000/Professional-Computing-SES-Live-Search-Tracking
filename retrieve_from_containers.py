@@ -15,20 +15,37 @@ from azure.storage.blob import BlobServiceClient
 import traceback
 import get_key
 import json
+import random
+from enum import Enum
+
+"""Simple enum to assign colours to trails"""
+class TrailColour(Enum):
+    RED = "#FF5733"
+    ORANGE = "#FF8D33"
+    YELLOW = "#FFC300"
+    GREEN = "#33FF57"
+    CYAN = "#33FFF3"
+    BLUE = "#3375FF"
+    PURPLE = "#B833FF"
+    PINK = "#FF33F3"
+    MAGENTA = "#FF33B8"
+    LIME = "#A8FF33"
+
+def get_random_colour():
+    """Chooses a random colour from the given enum.
+    
+       Returns: Hex string represnting the chosen colour"""
+    return random.choice(list(TrailColour)).value
 
 
 def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
-    
     """
-    Retrieve data from Azure blob storage.
-    This function retrieves data from Azure blob storage by iterating through each active 
-    container passed in the list 'active_containers'. A single blob will be in the container at a time. 
-    It parses the GeoJSON data from a blob and adds it to our map, and saves the map as an HTML file.
+    Retrieve data from Azure blob storage and add the points and lines to the map.
 
     Parameters:
         - m (folium.Map): The folium map object to add the GeoJSON data to.
         - STORAGE_CONNECTION_STRING (str): The connection string for the Azure storage account.
-        - active_containers: a list of strings, of the names of the storage containers. eg 'base-station-0'
+        - active_containers: a list of strings, of the names of the storage containers.
 
     """
     # Initialize the BlobServiceClient
@@ -50,14 +67,34 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
                 print(f"Unexpected blob count in '{container_name}'. Expected 1, found {len(blobs_list)}.")
                 continue
             
-            # Download and process the blob content
+            # Download and process blob content
             blob = blobs_list[0]
             blob_content = container_client.download_blob(blob).readall()
 
-            # Call mapify to process and add data to the map
-            trail, extracted_telemetry = mapify(blob_content)
-            if trail:
-                trail.add_to(m)
+            # Call mapify to process and get points and coordinates
+            features, coordinates, extracted_telemetry = mapify(blob_content)
+
+            # taken from folium docs, stackoverflow, and integrated with the help of ChatGPT
+            # Add points to map using folium.Marker
+            for feature in features:
+                point_location = feature["geometry"]["coordinates"][::-1]  # Reversing [long, lat] to [lat, long]
+                folium.Marker(
+                    location=point_location,
+                    popup=feature["properties"]["tooltip"],
+                    icon=folium.Icon(color="blue", icon="info-sign")
+                ).add_to(m)
+
+            # Choose a colour for this trail
+            trail_colour = get_random_colour()
+
+            # Draw a line connecting coordinates
+            if coordinates:
+                folium.PolyLine(
+                    locations=coordinates,
+                    color=trail_colour,  # Assign a random color to each trail
+                    weight=5,
+                    opacity=0.7  
+                ).add_to(m)
 
             # Collect telemetry data
             telemetry_data.extend(extracted_telemetry)
@@ -66,7 +103,7 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
             print(f"Error processing container '{container_name}': {e}")
             traceback.print_exc()
 
-    # Save the updated map
+    # Save updated map
     map_save_path = os.path.join(os.path.dirname(__file__), 'application/static/footprint.html')
     m.save(map_save_path)
 
@@ -77,9 +114,10 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
 def mapify(geojson_data):
     """
     Process and display GPS data with telemetry on the map.
-
+    
     Returns:
-    - trail (TimestampedGeoJson): A Folium object to add to the map, or None if parsing fails.
+    - features (list): A list of GeoJSON features to add to the map.
+    - coordinates (list): A list of coordinate tuples for drawing a PolyLine.
     - telemetry_list (list): A list of telemetry data points to be sent to the frontend.
     """
     
@@ -88,9 +126,10 @@ def mapify(geojson_data):
         points = json.loads(decoded_data)
     except Exception as e:
         print(f"Error decoding JSON data: {e}")
-        return None, []
+        return None, [], []
 
     features = []
+    coordinates = [] # For PolyLine
     telemetry_list = []
 
     for point in points:
@@ -100,7 +139,9 @@ def mapify(geojson_data):
             name = point_data.get('name', 'Unnamed Point')
             time = point_data.get('time', '00:00:00T00:00:00')
             telemetry = point_data.get('telemetry', {})
+            coordinates.append([lat, long])
 
+            # Add the point as a GeoJSON `feature` (this will display points as an icon on map)
             features.append({
                 "type": "Feature",
                 "geometry": {
@@ -122,34 +163,23 @@ def mapify(geojson_data):
                 "telemetry": telemetry
             })
 
-    trail = TimestampedGeoJson(
-        {
-            "type": "FeatureCollection",
-            "features": features,
-        },
-        transition_time=100,
-        period="PT1M",
-        loop=False,
-        add_last_point=True,
-    )
+    return features, coordinates, telemetry_list 
 
-    return trail, telemetry_list
-
-# Testing purposes
-if __name__ == "__main__":
+# Testing purposes (Uncomment if needed to test)
+# if __name__ == "__main__":
     
-    active_containers = ['base-station-0']  # Replace with the containers you want to test
-    STORAGE_CONNECTION_STRING = get_key.get_key()
+#     active_containers = ['base-station-0']  # Replace with the containers you want to test
+#     STORAGE_CONNECTION_STRING = get_key.get_key()
     
     
-    # Create a new map object to test the updates
-    m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
+#     # Create a new map object to test the updates
+#     m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
     
-    # Call the function with test parameters
-    try:
-        retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers)
-        print()
-        print("Test completed successfully. The map should be updated with data from the active containers.")
-    except Exception as e:
-        print("An error occurred during testing:", e)
+#     # Call the function with test parameters
+#     try:
+#         retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers)
+#         print()
+#         print("Test completed successfully. The map should be updated with data from the active containers.")
+#     except Exception as e:
+#         print("An error occurred during testing:", e)
     
