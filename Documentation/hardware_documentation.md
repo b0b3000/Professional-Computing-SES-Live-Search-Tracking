@@ -135,58 +135,105 @@ Given these specifications, we opted to use a Raspberry Pi 3A+ for the role of b
 
 Connect the following to your base station:
 
-- *Power Supply*: For the 3A+ model you will need a 5V/2.5A power supply connected to the 12.5W micro USB power cable.
+- **Power Supply**: For the 3A+ model you will need a 5V/2.5A power supply connected to the 12.5W micro USB power cable.
 
-- *Boot Media*: If an OS is not installed, you will need to install it via a MicroSD card, find the OS on the RaspberryPi website. Alternatively you can use the imager found on the website
+- **Boot Media**: If an OS is not installed, you will need to install it via a MicroSD card, find the OS on the RaspberryPi website. Alternatively you can use the imager found on the website
 
-- *Peripherals*:
+- **Peripherals**:
 	- Connect a preconfigured client tracker device (see above section)
 	- *Optionally* connect a mouse, keyboard, and monitor if not using SSH.
 
-- *Networking*:
+- **Networking**:
 	- The 3A+ model does not have an Ethernet port, but comes with wireless connectivity and Bluetooth out of the box.
 
 - For basic setup, follow the official instructions found [here](https://www.raspberrypi.com/documentation/computers/getting-started.html).
 
 ## Software Setup
 
-- **Establish SSH Connection**
-	- On the RaspPi run `ifconfig` and find the IP address of the device, and `whoami` to get the username.
+#### **Establish SSH Connection**
+- On the RaspPi run `ifconfig` and find the IP address of the device, and `whoami` to get the username.
 
-	- If necessary, go to the Settings and change the password so you know it.
+- If necessary, go to the Settings and change the password so you know it.
 
-	- On your external PC run `ssh username@ipaddr` using the username and IP of the RaspPi, entering the password for the Raspberry Pi when prompted.
+- On your external PC run `ssh username@ipaddr` using the username and IP of the RaspPi, entering the password for the Raspberry Pi when prompted.
 
 
-- **Setup Virtual Environment**
-	- Create a virtual environment so we can install certain python packages that are not packaged for the Debian OS:
+#### **Setup Virtual Environment**
+- Create a virtual environment so we can install certain python packages that are not packaged for the Debian OS:
 
-	```
-	> mkdir Trackers
-	> python3 -m venv /home/[username]/Trackers/venv
-	> source /venv/bin/activate
-	```
+```
+> mkdir Trackers
+> python3 -m venv /home/[username]/Trackers/venv
+> source /venv/bin/activate
+```
 
-	- Get the requirements.txt file from Github, move it into the `Trackers` and run `pip install -r requirements.txt` to install required packages.
+- Get the requirements.txt file from Github, move it into the `Trackers` and run `pip install -r requirements.txt` to install required packages.
 
-	- Get the `base_py` file from Github, move it into the `Trackers` directory.
+- Get the `base_py` file from Github, move it into the `Trackers` directory.
 
 ## Base/Tracker Pair Configuration
 
-- **LoRa/Meshtastic Device Physical Connection**
-	- Connect a preconfigured LoRa/Meshtastic device (setup in `CLIENT` mode) to RaspberryPi via the USB-A port, this will act as the **base station**. Ensure that this device boots up and stays on with no power issues.
+#### **LoRa/Meshtastic Device Physical Connection**
+- Connect a preconfigured LoRa/Meshtastic device (setup in `CLIENT` mode) to RaspberryPi via the USB-A port, this will act as the **base station**. Ensure that this device boots up and stays on with no power issues.
 
-	- Connect a second preconfigured LoRa device (setup in `TRACKER` mode and equipped with a GPS module) into an adequate power supply (5V), this will be the **tracker**. Ensure that this device boots up and stays on with no power issues, and that it has established a GPS lock. 
+- Connect a second preconfigured LoRa device (setup in `TRACKER` mode and equipped with a GPS module) into an adequate power supply (5V), this will be the **tracker**. Ensure that this device boots up and stays on with no power issues, and that it has established a GPS lock. 
 	
-	- You may have to take the tracker outdoors to establish the GPS lock, after which, you can take it back inside to continue the setup.
+- You may have to take the tracker outdoors to establish the GPS lock, after which, you can take it back inside to continue the setup.
 
 
-- **Run Code**
+#### **Run Code**
 
-	- Run the Python code using `python3 base.py`
+- Run the Python code using `python3 base.py`
 
-	- Note the global variables in the Python file `TRACKER_ID`, `TRACKER_LONG_NAME`, `BASE_ID`, `BASE_LONG_NAME`.
+- Note the global variables in the Python file `TRACKER_ID`, `TRACKER_LONG_NAME`, `BASE_ID`, `BASE_LONG_NAME`.
 
-	- When the code runs for the first time you will be able to find these details in the nodes summary printout, enter them into the code and run it again.
+- When the code runs for the first time you will be able to find these details in the nodes summary printout, enter them into the code and run it again.
 
-	- This documentation is continued in `technical_documentation.md`
+- This documentation is continued in `technical_documentation.md`
+
+<br><br>
+
+# Tracker Device User Guide
+
+### Introduction
+
+The purpose of this section is to provide a brief guide to a search team leader member on how to handle the device pair and to provide some troubleshooting steps in the event of an error.
+
+## Device Pair
+
+The Communications Support Unit will provide you with a "device pair", this consists of:
+- One GPS device that will be labelled as a "tracker".
+- A second GPS device that will be connected to a small single-board computer, labelled as a "client".
+
+The client device is to be left in the vehicle connected to the Starlink, and will receive GPS locations from the tracker device at a range of 2-10km (depending on weather, terrain, etc.).
+
+The tracker device is to be taken with you during the search, every 30 seconds it will relay its GPS coordinates to the client, which will upload the data to a server, accessible by the team coordinating the search.
+
+**When you leave your vehicle and begin a search, ensure**:
+
+- That both devices are powered on and that their power supplies have adequate charge. Device information can be found on the screen of the device by pressing the black button labelled "USER" several times.
+
+- That the cables and antennae attached to each device are secure and in place, DO NOT remove the antennae from either device at this time as it could cause damage to them.
+
+Radio the coordination team to double check that your tracker is sending data, and that the client is uploading, then advise them of the time you are beginning your search.
+
+At this point, no more steps should need to be taken, as the processes run on the tracker and client are entirely automatic.
+
+## Troubleshooting
+
+#### The Tracker Device Has Powered Off, or Is Experiencing Technical Issues
+
+If the tracker device doesn't seem to be working correctly, hold down the black button labelled "RST" to reset the device, then allow it some time to reestablish a GPS lock and a connection with the client.
+
+#### The Tracker Device Does Not Have a GPS Lock
+
+To check for a GPS lock, press the black button labelled "USER" several times until you reach the screen that says "NO GPS LOCK".
+
+Take the device and walk around with it, it should establish a GPS lock and display it's coordinates on that same screen within a few minutes of moving.
+
+#### The Client Device Has Powered Off
+
+There is not much you can do if the client device has powered off, as it requires some work to configure and start the processes again. For now power off both the tracker and client, and use the backup GPS device provided to you.
+
+
+
