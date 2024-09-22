@@ -55,11 +55,12 @@ class SearchData(Base):
 # Function to create the database connection string
 
 import pyodbc
+import get_key
 def get_database_url():
     server = 'cits3200server.database.windows.net'
     database = 'cits3200DB'
     username = 'cits3200group4'
-    password = 'meshtastic2024!' #CHANGE THIS SO IT IS STORED AND ACCESSED FROM KEY VAULT AS SOON AS JIM GIVES ME ACCESS
+    password = get_key.get_db_password()
     connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
 
     return connection_string
@@ -69,8 +70,11 @@ def connect_database():
     try:
         with pyodbc.connect(get_database_url(), timeout=5) as conn:
             cursor = conn.cursor()
-            cursor.execute("CREATE TABLE employees3 (id INT PRIMARY KEY,name VARCHAR(100),age INT);") #TEST SQL COMMAND
-            print("Connection successful!")
+
+            #TEST SQL COMMAND: TEMPORARY
+            cursor.execute("CREATE TABLE test_table (id INT PRIMARY KEY,name VARCHAR(100),age INT);") 
+
+            print("Connection & Test Query successful!")
 
     except Exception as e:
         print(f"Error: {e}")

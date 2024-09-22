@@ -18,7 +18,7 @@ import shutil
 
 
 #TODO: TO BE UPDATED to Azure Vault Solution
-STORAGE_CONNECTION_STRING = get_key.get_key()
+STORAGE_CONNECTION_STRING = get_key.get_blob_storage_key()
 
 # Global variable to store search session ID and data path, called when a user starts a search
 search_session = {
