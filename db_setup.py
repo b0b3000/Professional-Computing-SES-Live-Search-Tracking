@@ -64,8 +64,8 @@ def get_database_url():
 
     return connection_string
 
-# Function to create tables
-def setup_database():
+# Function to connect to database
+def connect_database():
     try:
         with pyodbc.connect(get_database_url(), timeout=5) as conn:
             cursor = conn.cursor()
@@ -75,5 +75,4 @@ def setup_database():
     except Exception as e:
         print(f"Error: {e}")
 
-
-setup_database()
+connect_database()
