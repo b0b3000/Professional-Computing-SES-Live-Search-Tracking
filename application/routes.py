@@ -23,7 +23,12 @@ STORAGE_CONNECTION_STRING = get_key.get_key()
 # Global variable to store search session ID and data path, called when a user starts a search
 search_session = {
     'session_id': None,
-    'data_path': None
+    'data_path': None,
+    'start_time': None,
+    'end_time': None,
+    'gps_data': [],
+    'base_station': None,
+    'gpx_file': None
 }
 
 # Index route to render the form and map
@@ -59,20 +64,20 @@ def update_map():
     if not container_names:
         return jsonify({'error': 'No containers selected'}), 400
 
-    # Initialize a map centered on Perth CBD
+    # Initialize a map
     m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
-
-    # Call retrieve_from_containers with the selected containers and get telemetry data
     telemetry_data, _ = retrieve_from_containers(m, STORAGE_CONNECTION_STRING, container_names)
 
+    # Update the global search session with new GPS data
+    search_session['gps_data'].extend(telemetry_data)  # Append new GPS points
+
+    #m.save(os.path.join(os.path.dirname(__file__), 'static/footprint.html'))
     # Return a response indicating where the updated map is saved and include telemetry data
     return jsonify({
         "map_path": url_for('static', filename='footprint.html'),
         "telemetry_data": telemetry_data
     })
 
-# Update your app configuration to use sessions
-#app.secret_key = 'your_secret_key'  # Required for session management, change to a secure key
 
 @app.route('/api/start-search', methods=['POST'])
 def start_search():
@@ -82,18 +87,18 @@ def start_search():
     Function that allows a user to start a search. Once a search is started a session is started
     and allocated a session_id. All data from that search are saved into the data path.
     """
-    
-    # Generate a unique session ID (e.g., using a timestamp)
     session_id = datetime.now().strftime('%Y%m%d%H%M%S')
-    data_path = f'search_data/{session_id}'
-
-    # Create a directory to store the search data
-    os.makedirs(data_path, exist_ok=True)
-
-    # Save session details globally
     search_session['session_id'] = session_id
-    search_session['data_path'] = data_path
-
+    search_session['data_path'] = f'search_data/{session_id}'
+    search_session['start_time'] = datetime.now()  # Record start time
+    search_session['gps_data'] = []  # Initialize empty GPS data list
+    search_session['base_station'] = request.json.get('base_station')  # Assume this comes from request data
+    
+    os.makedirs(search_session['data_path'], exist_ok=True)
+    
+    # Print the search session for testing
+    print("search session", search_session)  # This will output the session data to the terminal or logs
+    
     return jsonify({'message': 'Search started', 'session_id': session_id})
 
 @app.route('/api/end-search', methods=['POST'])
@@ -108,7 +113,7 @@ def end_search():
     
     session_id = search_session.get('session_id')
     data_path = search_session.get('data_path')
-
+    print("end of search session", search_session)
     if not session_id or not data_path:
         return jsonify({'error': 'No active search session'}), 400
 
@@ -121,15 +126,24 @@ def end_search():
         <!-- GPX Data goes here -->
         </gpx>''')
 
+    # TODO: INSERT DATA INTO DATABASE
+    # Insert data into the database
+    '''insert_search_data(
+        start_time=search_session['start_time'],
+        end_time=search_session['end_time'],
+        gps_data=json.dumps(search_session['gps_data']),  # Convert GPS data to JSON
+        base_station=search_session['base_station'],
+        gpx_file=open(gpx_file_path, 'rb').read()
+    )'''
+
     # Optionally move or compress the data for storage
     shutil.make_archive(data_path, 'zip', data_path)
 
     # Provide a download link for the user
     download_url = f'/download/{session_id}.zip'
 
-    # Reset search session details
-    search_session['session_id'] = None
-    search_session['data_path'] = None
+    # Reset the search session
+    search_session.clear()
 
     return jsonify({'message': 'Search ended', 'gpx_download_url': download_url})
 

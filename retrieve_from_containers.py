@@ -107,6 +107,8 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
     map_save_path = os.path.join(os.path.dirname(__file__), 'application/static/footprint.html')
     m.save(map_save_path)
 
+    #print("tel data", telemetry_data)
+    #print("map save path", map_save_path)
     return telemetry_data, map_save_path
         
 
@@ -165,10 +167,10 @@ def mapify(geojson_data):
 
     return features, coordinates, telemetry_list 
 
-# Testing purposes (Uncomment if needed to test)
+#Testing purposes (Uncomment if needed to test)
 # if __name__ == "__main__":
     
-#     active_containers = ['base-station-0']  # Replace with the containers you want to test
+#     active_containers = ['base-3200-b']  # Replace with the containers you want to test
 #     STORAGE_CONNECTION_STRING = get_key.get_key()
     
     
