@@ -1,6 +1,5 @@
 ''' 
-    
-    
+
     This program creates the table needed to store historical data. 
     Rather than creating a schema through the Azure portal, we are creating one using this program and then connecting and filling in to an exisiting database
     This requires a url to be formed using the Azure database connection details. 
@@ -24,13 +23,13 @@
     
 '''
 
-
 # setup_database.py
-from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, Float
+'''from sqlalchemy import create_engine, Column, Integer, String, Boolean, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-import os
+from sqlalchemy.orm import sessionmaker'''
 
+
+"""
 # Define the base class for SQLAlchemy models
 ''' this acts as the foundational class that SQLAlchemy works from, it knows that any class that uses this is a table
     stores metadata, allows for table to be easily built
@@ -38,6 +37,7 @@ import os
 Base = declarative_base()
 
 ''' table details for search data'''
+
 class SearchData(Base):
     __tablename__ = 'search_data'
 
@@ -50,26 +50,30 @@ class SearchData(Base):
     containers_active = Column(String)  # Stores a list of containers active during the search
     data_path = Column(String)  # Path where search data was stored
     gpx_file_path = Column(String)  # Path to the GPX file
-
+    '''
+"""
 # Function to create the database connection string
-def get_database_url():
-    server = os.getenv('AZURE_SQL_SERVER')
-    database = os.getenv('AZURE_SQL_DATABASE')
-    username = os.getenv('AZURE_SQL_USERNAME')
-    password = os.getenv('AZURE_SQL_PASSWORD')
-    driver = 'ODBC Driver 17 for SQL Server'
 
-    return f"mssql+pyodbc://{username}:{password}@{server}/{database}?driver={driver}"
+import pyodbc
+def get_database_url():
+    server = 'cits3200server.database.windows.net'
+    database = 'cits3200DB'
+    username = 'cits3200group4'
+    password = 'meshtastic2024!' #CHANGE THIS SO IT IS STORED AND ACCESSED FROM KEY VAULT AS SOON AS JIM GIVES ME ACCESS
+    connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+
+    return connection_string
 
 # Function to create tables
 def setup_database():
-    
-    """ engine object prepares the connection to the database we are using, by giving it the appropriate parameters"""
-    engine = create_engine(get_database_url(), echo=True)
+    try:
+        with pyodbc.connect(get_database_url(), timeout=5) as conn:
+            cursor = conn.cursor()
+            cursor.execute("CREATE TABLE employees3 (id INT PRIMARY KEY,name VARCHAR(100),age INT);") #TEST SQL COMMAND
+            print("Connection successful!")
 
-    # Create all tables defined in the Base metadata
-    Base.metadata.create_all(engine)
-    print("Database schema created successfully.")
+    except Exception as e:
+        print(f"Error: {e}")
 
-if __name__ == '__main__':
-    setup_database()
+
+setup_database()
