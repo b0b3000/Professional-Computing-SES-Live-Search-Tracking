@@ -54,6 +54,8 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
     # Initialize an empty list to collect telemetry data
     telemetry_data = []
 
+    all_blob_content = {}
+
     for container_name in active_containers:
         
         try:
@@ -70,6 +72,7 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
             # Download and process blob content
             blob = blobs_list[0]
             blob_content = container_client.download_blob(blob).readall()
+            all_blob_content[blob.name] = blob_content
 
             # Call mapify to process and get points and coordinates
             features, coordinates, extracted_telemetry = mapify(blob_content)
@@ -109,7 +112,7 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
 
     #print("tel data", telemetry_data)
     #print("map save path", map_save_path)
-    return telemetry_data, map_save_path
+    return telemetry_data, map_save_path, all_blob_content
         
 
 

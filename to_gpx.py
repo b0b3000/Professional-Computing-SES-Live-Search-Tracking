@@ -15,7 +15,7 @@ def convert_json_to_gpx(file_name):
     gpx_track.segments.append(gpx_segment)
 
     # load JSON data
-    with open(file_name, 'r') as f:
+    with open(f'{file_name}.json', 'r') as f:
         data = json.load(f)
 
     # iterate through each point in the JSON list
@@ -48,4 +48,4 @@ def convert_json_to_gpx(file_name):
         f.write(gpx.to_xml())
 
 # example usage
-convert_json_to_gpx('test')
+# convert_json_to_gpx('test')
