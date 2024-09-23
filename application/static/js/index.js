@@ -76,7 +76,6 @@ document.getElementById('end-search-button').addEventListener('click', function 
       .then(data => {
           alert('Search ended! Click below to download the GPX file.');
           console.log('End Search Response:', data);
-
           // Create a link to download the GPX file
           const downloadLink = document.createElement('a');
           downloadLink.href = data.gpx_download_url; // URL returned from the server to download the GPX file

@@ -27,8 +27,8 @@ search_session = {
     'data_path': None,
     'start_time': None,
     'end_time': None,
-    'gps_data': [],
-    'base_stations': [],
+    'gps_data': {},
+    # 'base_station': None,
     'gpx_file': None
 }
 
@@ -67,10 +67,11 @@ def update_map():
 
     # Initialize a map
     m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
-    telemetry_data, _ = retrieve_from_containers(m, STORAGE_CONNECTION_STRING, container_names)
+    telemetry_data, _, all_blobs = retrieve_from_containers(m, STORAGE_CONNECTION_STRING, container_names)
 
     # Update the global search session with new GPS data
-    search_session['gps_data'].extend(telemetry_data)  # Append new GPS points
+    search_session['gps_data'] = all_blobs
+
 
     #m.save(os.path.join(os.path.dirname(__file__), 'static/footprint.html'))
     # Return a response indicating where the updated map is saved and include telemetry data
@@ -90,11 +91,10 @@ def start_search():
     """
     session_id = datetime.now().strftime('%Y%m%d%H%M%S')
     search_session['session_id'] = session_id
-    search_session['data_path'] = f'search_data/{session_id}'
+    search_session['data_path'] = f'search_data/{session_id}' # unsure if this is needed
     search_session['start_time'] = datetime.now()  # Record start time
-    search_session['gps_data'] = []  # Initialize empty GPS data list
-    search_session['base_stations'] = request.json.get('base_stations')  # Assume this comes from request data
-    #CHANGE INPUT FORM SO THAT base_stations returns a value?
+    # search_session['gps_data'] = {}  # Initialize empty GPS data list
+    # search_session['base_station'] = request.json.get('base_station')  # Assume this comes from request data
     
     os.mkdir(search_session['data_path'])
 
@@ -110,7 +110,8 @@ def end_search():
     a .gpx file. Provides a donwload link for the .gpx file.
     
     """
-    
+    search_session['end_time'] = datetime.now()
+
     session_id = search_session.get('session_id')
     data_path = search_session.get('data_path')
 
@@ -118,6 +119,7 @@ def end_search():
         return jsonify({'error': 'No active search session'}), 400
 
     # Save collected data into a .gpx file (use parsing function here)
+    # use jacks code to convert json to gpx.
     gpx_file_path = os.path.join(data_path, 'search_data.gpx')
 
 
