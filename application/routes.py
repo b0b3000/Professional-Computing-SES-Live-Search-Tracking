@@ -28,8 +28,7 @@ search_session = {
     'start_time': None,
     'end_time': None,
     'gps_data': {},
-    # 'base_station': None,
-    'gpx_file': None
+    'gpx_data': None
 }
 
 # Index route to render the form and map
@@ -72,7 +71,6 @@ def update_map():
     # Update the global search session with new GPS data
     search_session['gps_data'] = all_blobs
 
-
     #m.save(os.path.join(os.path.dirname(__file__), 'static/footprint.html'))
     # Return a response indicating where the updated map is saved and include telemetry data
     return jsonify({
@@ -92,12 +90,7 @@ def start_search():
     session_id = datetime.now().strftime('%Y%m%d%H%M%S')
     search_session['session_id'] = session_id
     search_session['data_path'] = f'search_data/{session_id}' # unsure if this is needed
-    search_session['start_time'] = datetime.now()  # Record start time
-    # search_session['gps_data'] = {}  # Initialize empty GPS data list
-    # search_session['base_station'] = request.json.get('base_station')  # Assume this comes from request data
-    
-    os.mkdir(search_session['data_path'])
-
+    search_session['start_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Record start time
 
     return jsonify({'message': 'Search started', 'session_id': session_id})
 
@@ -110,7 +103,7 @@ def end_search():
     a .gpx file. Provides a donwload link for the .gpx file.
     
     """
-    search_session['end_time'] = datetime.now()
+    search_session['end_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     session_id = search_session.get('session_id')
     data_path = search_session.get('data_path')
@@ -120,9 +113,8 @@ def end_search():
 
     # Save collected data into a .gpx file (use parsing function here)
     # use jacks code to convert json to gpx.
+    """
     gpx_file_path = os.path.join(data_path, 'search_data.gpx')
-
-
     with open(gpx_file_path, 'w') as gpx_file:
         # TODO: Use parsing function to save data in GPX format
         gpx_file.write('''<?xml version="1.0" encoding="UTF-8"?>
@@ -131,24 +123,17 @@ def end_search():
         </gpx>''')
 
     # Optionally move or compress the data for storage
-    shutil.make_archive(data_path, 'zip', data_path)
+    shutil.make_archive(data_path, 'zip', data_path) #Dont know if this is necessary or what its even doing?
 
     # Provide a download link for the user
     download_url = f'/download/{session_id}.zip'
-
-
-    historical_database.insert_search_data(
-        start_time=search_session['start_time'],
-        end_time=search_session['end_time'],
-        gps_data=json.dumps(search_session['gps_data']),  # Convert GPS data to JSON
-        base_station=search_session['base_station'],
-        gpx_file=open(gpx_file_path, 'rb').read()
-    )
+    """
+    #Generates and executes SQL query to add a row to the database for each base station in query. See historical_database.py
+    historical_database.upload_search_data(search_session)
 
     # Reset the search session
     search_session.clear()
-
-    return jsonify({'message': 'Search ended', 'gpx_download_url': download_url})
+    return jsonify({'message': 'Search ended', 'gpx_download_url': 'download_url'})
 
 # Route to serve the GPX file for download
 @app.route('/download/<session_id>.zip')

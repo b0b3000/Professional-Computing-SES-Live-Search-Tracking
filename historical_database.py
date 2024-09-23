@@ -70,11 +70,33 @@ def connect_database():
     try:
         with pyodbc.connect(get_database_url(), timeout=5) as conn:
             cursor = conn.cursor()
-
-            #TEST SQL COMMAND: TEMPORARY
-            cursor.execute("CREATE TABLE test_table (id INT PRIMARY KEY,name VARCHAR(100),age INT);") 
-
-            print("Connection & Test Query successful!")
+            print("Connection successful!")
+            
+            return cursor
 
     except Exception as e:
         print(f"Error: {e}")
+        return
+
+def upload_search_data(session):
+    print(session)
+    base_stations = session["gps_data"].keys()
+    try:
+
+        with pyodbc.connect(get_database_url(), timeout=5) as conn:
+            cursor = conn.cursor()
+            
+
+            for base_station in base_stations:
+                session_id = session["session_id"]
+                start_time = session["start_time"]
+                end_time = session["end_time"]
+                gpx_data = session["gpx_data"]
+                query = f"INSERT INTO search_history (session_id, base_station, start_time, end_time, gpx_data) VALUES ('{session_id}', '{base_station}', '{start_time}', '{end_time}', '{gpx_data}');"
+                cursor.execute(query)
+                conn.commit()
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return
+    
