@@ -104,7 +104,7 @@ document.getElementById('end-search-button').addEventListener('click', function 
                   downloadButton.download = 'search_data.gpx'; // Suggest a filename for the GPX file
                   cell2.appendChild(downloadButton);
               });
-              document.body.appendChild(downloadTable)
+              document.getElementById('table-container').appendChild(downloadTable);
           }
       })
       .catch(error => console.error('Error ending search:', error));
