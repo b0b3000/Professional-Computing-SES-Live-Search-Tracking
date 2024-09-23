@@ -78,5 +78,3 @@ def connect_database():
 
     except Exception as e:
         print(f"Error: {e}")
-
-connect_database()

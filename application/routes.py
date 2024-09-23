@@ -15,6 +15,7 @@ import get_key
 from azure.storage.blob import BlobServiceClient
 from datetime import datetime
 import shutil
+import historical_database
 
 
 #TODO: TO BE UPDATED to Azure Vault Solution
@@ -27,7 +28,7 @@ search_session = {
     'start_time': None,
     'end_time': None,
     'gps_data': [],
-    'base_station': None,
+    'base_stations': [],
     'gpx_file': None
 }
 
@@ -92,13 +93,12 @@ def start_search():
     search_session['data_path'] = f'search_data/{session_id}'
     search_session['start_time'] = datetime.now()  # Record start time
     search_session['gps_data'] = []  # Initialize empty GPS data list
-    search_session['base_station'] = request.json.get('base_station')  # Assume this comes from request data
+    search_session['base_stations'] = request.json.get('base_stations')  # Assume this comes from request data
+    #CHANGE INPUT FORM SO THAT base_stations returns a value?
     
-    os.makedirs(search_session['data_path'], exist_ok=True)
-    
-    # Print the search session for testing
-    print("search session", search_session)  # This will output the session data to the terminal or logs
-    
+    os.mkdir(search_session['data_path'])
+
+
     return jsonify({'message': 'Search started', 'session_id': session_id})
 
 @app.route('/api/end-search', methods=['POST'])
@@ -113,12 +113,14 @@ def end_search():
     
     session_id = search_session.get('session_id')
     data_path = search_session.get('data_path')
-    print("end of search session", search_session)
+
     if not session_id or not data_path:
         return jsonify({'error': 'No active search session'}), 400
 
     # Save collected data into a .gpx file (use parsing function here)
     gpx_file_path = os.path.join(data_path, 'search_data.gpx')
+
+
     with open(gpx_file_path, 'w') as gpx_file:
         # TODO: Use parsing function to save data in GPX format
         gpx_file.write('''<?xml version="1.0" encoding="UTF-8"?>
@@ -126,21 +128,20 @@ def end_search():
         <!-- GPX Data goes here -->
         </gpx>''')
 
-    # TODO: INSERT DATA INTO DATABASE
-    # Insert data into the database
-    '''insert_search_data(
-        start_time=search_session['start_time'],
-        end_time=search_session['end_time'],
-        gps_data=json.dumps(search_session['gps_data']),  # Convert GPS data to JSON
-        base_station=search_session['base_station'],
-        gpx_file=open(gpx_file_path, 'rb').read()
-    )'''
-
     # Optionally move or compress the data for storage
     shutil.make_archive(data_path, 'zip', data_path)
 
     # Provide a download link for the user
     download_url = f'/download/{session_id}.zip'
+
+
+    historical_database.insert_search_data(
+        start_time=search_session['start_time'],
+        end_time=search_session['end_time'],
+        gps_data=json.dumps(search_session['gps_data']),  # Convert GPS data to JSON
+        base_station=search_session['base_station'],
+        gpx_file=open(gpx_file_path, 'rb').read()
+    )
 
     # Reset the search session
     search_session.clear()
