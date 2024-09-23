@@ -76,16 +76,36 @@ document.getElementById('end-search-button').addEventListener('click', function 
       .then(data => {
           alert('Search ended! Click below to download the GPX file.');
           console.log('End Search Response:', data);
-
-          // Create a link to download the GPX file
-          const downloadLink = document.createElement('a');
-          downloadLink.href = data.gpx_download_url; // URL returned from the server to download the GPX file
-          downloadLink.textContent = 'Download GPX File';
-          downloadLink.download = 'search_data.gpx'; // Suggest a filename for the GPX file
-          document.body.appendChild(downloadLink);
-
+        
           // Remove the animated border class
           document.getElementById('map-container').classList.remove('search-running-animation');
+
+          // Get the selected containers
+          const selectedContainers = Array.from(document.querySelectorAll('.container-checkbox:checked'))
+              .map(checkbox => checkbox.value);
+
+          const existingTable = document.getElementById('download-table');
+          if (!existingTable) {
+              const downloadTable = document.createElement('table');
+              downloadTable.className = 'gpx-table';
+              downloadTable.id = 'download-table';
+    
+              // Add rows for each selected container
+              selectedContainers.forEach(container => {
+                  const row = downloadTable.insertRow();
+                  
+                  const cell1 = row.insertCell(0);
+                  cell1.textContent = container;
+    
+                  const cell2 = row.insertCell(1);
+                  const downloadButton = document.createElement('a');
+                  downloadButton.href = data.gpx_download_url; // URL returned from the server to download the GPX file
+                  downloadButton.textContent = 'Download GPX';
+                  downloadButton.download = 'search_data.gpx'; // Suggest a filename for the GPX file
+                  cell2.appendChild(downloadButton);
+              });
+              document.body.appendChild(downloadTable)
+          }
       })
       .catch(error => console.error('Error ending search:', error));
 });
