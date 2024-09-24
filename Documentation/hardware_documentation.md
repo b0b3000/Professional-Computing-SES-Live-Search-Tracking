@@ -231,6 +231,10 @@ To check for a GPS lock, press the black button labelled "USER" several times un
 
 Take the device and walk around with it, it should establish a GPS lock and display it's coordinates on that same screen within a few minutes of moving.
 
+#### The Tracker Device is Constantly Restarting
+
+Disconnect the power cable from the tracker device, ensure all the other cables and pins on the device are securely connected, wait for one minute, then reconnect it to power.
+
 #### The Client Device Has Powered Off
 
 There is not much you can do if the client device has powered off, as it requires some work to configure and start the processes again. For now power off both the tracker and client, and use the backup GPS device provided to you.
