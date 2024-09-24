@@ -78,6 +78,13 @@ document
 document
   .getElementById("end-search-button")
   .addEventListener("click", function () {
+    const mapContainer = document.getElementById("map-container");
+
+    if (!mapContainer.classList.contains("search-running-animation")) {
+      alert("Search is not currently running.");
+      return;
+    }
+
     fetch("/api/end-search", {
       method: "POST",
     })
@@ -87,9 +94,7 @@ document
         console.log("End Search Response:", data);
 
         // Remove the animated border class
-        document
-          .getElementById("map-container")
-          .classList.remove("search-running-animation");
+        mapContainer.classList.remove("search-running-animation");
 
         // Get the selected containers
         const selectedContainers = Array.from(
