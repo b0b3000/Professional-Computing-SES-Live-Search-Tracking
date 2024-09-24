@@ -173,6 +173,7 @@ header {
 }
 
 #fetch-data-button {
+  width: 100%;
   background-color: #c1c1c1;
 }
 
