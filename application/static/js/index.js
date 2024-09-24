@@ -58,7 +58,7 @@ function displayTelemetryData(telemetryData) {
 
 // Handle the start search button click
 document
-  .getElementById("start-search-button")
+  .getElementById("start-search")
   .addEventListener("click", function () {
     fetch("/api/start-search", {
       method: "POST",
@@ -76,7 +76,7 @@ document
 
 // Handle the end search button click
 document
-  .getElementById("end-search-button")
+  .getElementById("end-search")
   .addEventListener("click", function () {
     const mapContainer = document.getElementById("map-container");
 
