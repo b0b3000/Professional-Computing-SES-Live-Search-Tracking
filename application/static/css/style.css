@@ -99,7 +99,7 @@ header {
 /* Sidebar styling */
 #telemetry-panel, #search-panel {
   width: 300px; /* Fixed width for sidebars */
-  height: 100%; /* Take up full height of the viewport */
+  height: 100vh; /* Take up full height of the viewport */
   background-color: #f7f7f7;
   padding: 10px;
   box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
@@ -156,9 +156,10 @@ header {
   width: 50%;
   padding: 10px;
   background-color: #4CAF50;
-  color: white;
+  color: #333;
   border: none;
   text-align: center;
+  font-size: auto;
   cursor: pointer;
   box-sizing: border-box; /* Ensures padding doesn't exceed width */
 }
@@ -172,7 +173,7 @@ header {
 }
 
 #fetch-data-button {
-  background-color: #333;
+  background-color: #c1c1c1;
 }
 
 #start-search:hover, #end-search:hover, #fetch-data-button:hover {
