@@ -30,6 +30,8 @@ header {
   flex-direction: column; /* Stack map and controls vertically */
   flex-grow: 2; /* Allows the map-controls section to expand and fit the available space */
   width: 100%; /* Ensures the wrapper takes up the full width between the panels */
+  padding: 0;
+  margin: 0;
 }
 
 /* Map styling */
@@ -52,7 +54,7 @@ header {
 #controls-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* Creates three equal-width columns */
-  gap: 20px; /* Adds space between the columns */
+  gap: 0px;
 }
 
 #map-iframe {
@@ -122,17 +124,15 @@ header {
 }
 
 /* Azure container and search controls styling */
-#container-selector, #table-container {
-  padding: 10px; /* Optional: adds some padding inside the sections */
+#container-selector {
+  padding: 10px;
 }
 
 /* Table styling */
 .gpx-table {
-  margin: auto;
-  margin-top: 15px;
+  padding: 20px;
   border-collapse: collapse;
-  width: 20%;
-  background-color: #fff;
+  width: 100%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -142,7 +142,7 @@ header {
   justify-content: space-between;
   width: 100%;
   height: auto;
-  background-color: #f7f7f7; /* Optional: background color for the container */
+  margin: 0;
 }
 
 /* Start Search button - taking up half of the div and green */

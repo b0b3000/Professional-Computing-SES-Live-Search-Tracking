@@ -93,6 +93,13 @@ document
         alert("Search ended! Click below to download the GPX file.");
         console.log("End Search Response:", data);
 
+        // Check if the download URL is present in the response
+        if (!data.gpx_download_url) {
+          console.error("GPX download URL is missing in the response.");
+          alert("GPX download URL is missing. Please try again later.");
+          return;
+        }
+
         // Remove the animated border class
         mapContainer.classList.remove("search-running-animation");
 
@@ -101,28 +108,39 @@ document
           document.querySelectorAll(".container-checkbox:checked"),
         ).map((checkbox) => checkbox.value);
 
-        const existingTable = document.getElementById("download-table");
-        if (!existingTable) {
-          const downloadTable = document.createElement("table");
+        // Log selected containers for debugging
+        console.log("Selected Containers:", selectedContainers);
+
+        // Check if the table exists
+        let downloadTable = document.getElementById("download-table");
+
+        if (!downloadTable) {
+          // Create the table if it doesn't exist
+          downloadTable = document.createElement("table");
           downloadTable.className = "gpx-table";
           downloadTable.id = "download-table";
 
-          // Add rows for each selected container
-          selectedContainers.forEach((container) => {
-            const row = downloadTable.insertRow();
-
-            const cell1 = row.insertCell(0);
-            cell1.textContent = container;
-
-            const cell2 = row.insertCell(1);
-            const downloadButton = document.createElement("a");
-            downloadButton.href = data.gpx_download_url; // URL returned from the server to download the GPX file
-            downloadButton.textContent = "Download GPX";
-            downloadButton.download = "search_data.gpx"; // Suggest a filename for the GPX file
-            cell2.appendChild(downloadButton);
-          });
+          // Append the table to the container
           document.getElementById("table-container").appendChild(downloadTable);
+        } else {
+          // Clear existing rows if the table exists
+          downloadTable.innerHTML = "";
         }
+
+        // Add rows for each selected container
+        selectedContainers.forEach((container) => {
+          const row = downloadTable.insertRow();
+
+          const cell1 = row.insertCell(0);
+          cell1.textContent = container;
+
+          const cell2 = row.insertCell(1);
+          const downloadButton = document.createElement("a");
+          downloadButton.href = data.gpx_download_url; // URL returned from the server to download the GPX file
+          downloadButton.textContent = "Download GPX";
+          downloadButton.download = `${container}_search_data.gpx`; // Suggest a filename for the GPX file
+          cell2.appendChild(downloadButton);
+        });
       })
       .catch((error) => console.error("Error ending search:", error));
   });
