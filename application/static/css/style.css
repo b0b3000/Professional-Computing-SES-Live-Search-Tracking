@@ -57,6 +57,14 @@ header {
   gap: 0px;
 }
 
+#checkbox-container {
+  overflow-y: auto;
+}
+
+#checkbox-container label {
+  display: block;
+}
+
 #map-iframe {
   height: 97.5%;
   width: 98.4%;
@@ -72,8 +80,8 @@ header {
 .search-running-animation::before {
   content: '';
   position: absolute;
-  width: 300px;
-  height: 200%;
+  width: 25%;
+  height: 225%;
   background-color: #94d096;
   box-shadow: 0 0 40px #94d096;
   animation: animate 12s linear infinite;
