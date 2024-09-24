@@ -115,6 +115,14 @@ document
         let downloadTable = document.getElementById("download-table");
 
         if (!downloadTable) {
+
+          const tableContainer = document.getElementById("table-container");
+          const linkToRemove = tableContainer.querySelector("a");
+          // Check if the link contains the specific text
+          if (linkToRemove && linkToRemove.textContent.includes("Complete a search to create GPX files")) {
+            linkToRemove.remove();
+          }
+          
           // Create the table if it doesn't exist
           downloadTable = document.createElement("table");
           downloadTable.className = "gpx-table";

@@ -132,7 +132,7 @@ header {
 }
 
 /* Azure container and search controls styling */
-#container-selector {
+#container-selector, #table-container {
   padding: 10px;
 }
 
@@ -177,6 +177,17 @@ header {
   box-sizing: border-box; /* Ensures padding doesn't exceed width */
 }
 
-#start-search:hover, #end-search:hover {
-  opacity: 0.8;
+#fetch-data-button {
+  width: 50%;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  box-sizing: border-box; /* Ensures padding doesn't exceed width */
+}
+
+#start-search:hover, #end-search:hover, #fetch-data-button:hover {
+  opacity: 0.7;
 }
