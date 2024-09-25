@@ -125,10 +125,12 @@ def mapify(geojson_data):
     - coordinates (list): A list of coordinate tuples for drawing a PolyLine.
     - telemetry_list (list): A list of telemetry data points to be sent to the frontend.
     """
+    #print("Testing geojson data in mapify", geojson_data)
     
     try:
         decoded_data = geojson_data.decode('utf-8').replace("'", '"')
         points = json.loads(decoded_data)
+        #print("decoded data:", points)
     except Exception as e:
         print(f"Error decoding JSON data: {e}")
         return None, [], []

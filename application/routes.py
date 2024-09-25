@@ -25,6 +25,7 @@ STORAGE_CONNECTION_STRING = get_key.get_blob_storage_key()
 search_session = {
     'session_id': None,
     'data_path': None,
+    'search_date': None,
     'start_time': None,
     'end_time': None,
     'gps_data': {},
@@ -42,6 +43,14 @@ def index():
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
     container_names = [container.name for container in blob_service_client.list_containers()]
     
+    # Retrieve unique base stations from the database
+    try:
+        base_stations = historical_database.get_unique_base_stations()
+    except Exception as e:
+        print(f"Error fetching base stations: {e}")
+        base_stations = []
+    
+    
     # Save the initial map (empty) to be displayed on the page
     map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
     m.save(map_save_path)
@@ -51,6 +60,7 @@ def index():
         'index.html',
         map_html=m._repr_html_(),
         container_names=container_names,
+        base_stations=base_stations,  # Pass base stations to the template
     )
 
 # Updates the map with new data when it is called 
@@ -70,8 +80,9 @@ def update_map():
 
     # Update the global search session with new GPS data
     search_session['gps_data'] = all_blobs
+    #print("all blobs", all_blobs)
 
-    #m.save(os.path.join(os.path.dirname(__file__), 'static/footprint.html'))
+
     # Return a response indicating where the updated map is saved and include telemetry data
     return jsonify({
         "map_path": url_for('static', filename='footprint.html'),
@@ -83,33 +94,30 @@ def update_map():
 def start_search():
     
     """ 
-    start_search:
-    Function that allows a user to start a search. Once a search is started a session is started
-    and allocated a session_id. All data from that search are saved into the data path.
+        start_search:
+        Function that allows a user to start a search. Once a search is started a session is started
+        and allocated a session_id. All data from that search are saved into the data path.
     """
     session_id = datetime.now().strftime('%Y%m%d%H%M%S')
     search_session['session_id'] = session_id
-    search_session['data_path'] = f'search_data/{session_id}' # unsure if this is needed
-    search_session['start_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # Record start time
-
+    search_session['search_date'] = datetime.now().strftime('%Y-%m-%d')
+    search_session['start_time'] = datetime.now().strftime('%H:%M:%S')
     return jsonify({'message': 'Search started', 'session_id': session_id})
 
 @app.route('/api/end-search', methods=['POST'])
 def end_search():
     
     """ 
-    end_search:
-    Function that allows a user to indicate when a search is over, data will stop being collected and will be prepared into 
-    a .gpx file. Provides a donwload link for the .gpx file.
-    
+        end_search:
+        Function that allows a user to indicate when a search is over, data will stop being collected and will be prepared into 
+        a .gpx file. Provides a donwload link for the .gpx file.
     """
-    search_session['end_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
     session_id = search_session.get('session_id')
-    data_path = search_session.get('data_path')
 
-    if not session_id or not data_path:
+    if not session_id:
         return jsonify({'error': 'No active search session'}), 400
+    
+    search_session['end_time'] = datetime.now().strftime('%H:%M:%S')
 
     # Save collected data into a .gpx file (use parsing function here)
     # use jacks code to convert json to gpx.
@@ -144,4 +152,21 @@ def download_gpx(session_id):
     else:
         return jsonify({'error': 'File not found'}), 404
 
+
+@app.route('/submit-date', methods=['POST'])
+def submit_date():
+    
+    # These two values are from the inputs from the web app, index
+    start_date = request.form.get('start-date')
+    end_date = request.form.get('end-date')
+    
+    # This needs to correlate with the base containers that have shown up in history, index.html controls this
+    selected_base_stations = request.form.getlist('base-station')
+    #base_station = request.form.get('base-station')
+    
+  
+    results = historical_database.get_historical_searches(start_date, end_date, selected_base_stations)
+    print("Testing: Retrieved search data", results, flush=True)
+    
+    return "Check the terminal for the input values!"
 

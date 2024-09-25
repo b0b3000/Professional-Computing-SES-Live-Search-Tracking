@@ -59,5 +59,34 @@
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+    <!-- Historical Search Form (added here, below the map and main-container) -->
+    <div id="historical-search">
+        <h2>Search for Historical Data</h2>
+
+        <form action="/submit-date" method="POST">
+            <label for="start-date">Select Start Date:</label>
+            <input type="date" id="start-date" name="start-date" required>
+
+            <label for="end-date">Select End Date:</label>
+            <input type="date" id="end-date" name="end-date">
+    
+            <label for="base-station">Base Station:</label>
+            <!-- Multi-select dropdown for Base Stations -->
+            <select id="base-station" name="base-station" multiple>
+                <!-- Dynamically populated base stations will be inserted here -->
+                {% for station in base_stations %}
+                <option value="{{ station }}">{{ station }}</option>
+                {% endfor %}
+            </select>
+
+    <input type="submit" value="Submit">
+</form>
+    
+    
+</div>
+
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 </html>
+
