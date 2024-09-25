@@ -1,63 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GPS Data Visualization v1.0</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
 
-<body>
-    <header>
-        GPS Data Visualization v2.0
-    </header>
+  <body>
+    <header>GPS Data Visualization v2.0</header>
 
-    <!-- Dropdown for selecting Azure containers -->
-    <div id="container-selector">
-        <label>Select Azure Containers:</label>
-        <div id="checkbox-container">
-            <!-- Dynamically populated with container names from the server -->
-            {% for container in container_names %}
-            <label>
-                <input type="checkbox" class="container-checkbox" value="{{ container }}"> {{ container }}
-            </label>
-            {% endfor %}
-        </div>
-        <button id="fetch-data-button">Fetch Latest GPS Data</button>
-    </div>
-
-    <!-- Search controls for starting and ending a search -->
-    <div id="search-controls">
-        <button id="start-search-button">Start Search</button>
-        <button id="end-search-button">End Search</button>
-    </div>
-    
     <!-- Main container to hold the map and telemetry panel -->
     <div id="main-container">
+      <!-- Side panel to display searches -->
+      <div id="search-panel">
+        <h3>Searches</h3>
+        <div id="search-content">Select search</div>
+      </div>
 
-        <!-- Side panel to display searches -->
-        <div id="search-panel">
-            <h3>Searches</h3>
-            <div id="search-content">
-                Select search
-              </div>
-        </div>
-
+      <!-- Wrapper div to hold the map and the controls -->
+      <div id="map-controls-wrapper">
         <!-- Map container -->
         <div id="map-container">
-            <!-- The iframe displays the map saved as footprint.html -->
-            <iframe src="{{ url_for('static', filename='footprint.html') }}" width="100%" height="100%" id="map-iframe"> RENDER </iframe>
+          <iframe
+            src="{{ url_for('static', filename='footprint.html') }}"
+            width="100%"
+            height="100%"
+            id="map-iframe"
+            >RENDER</iframe
+          >
         </div>
 
-        <!-- Side panel to display telemetry data -->
-        <div id="telemetry-panel">
-            <h3>Telemetry Data</h3>
-            <div id="telemetry-content">
-                Hover over a ping to see its data here.
+        <!-- Controls container -->
+        <div id="controls-container">
+          <!-- Dropdown for selecting Azure containers -->
+          <div id="container-selector">
+            <label>Select Base Stations:</label>
+            <div id="checkbox-container">
+              {% for container in container_names %}
+              <label>
+                <input
+                  type="checkbox"
+                  class="container-checkbox"
+                  value="{{ container }}"
+                />
+                {{ container }}
+              </label>
+              {% endfor %}
             </div>
+          </div>
+
+          <!-- Search controls -->
+          <div id="user-buttons">
+            <div id="button-container">
+              <button id="start-search">Start Search</button>
+              <button id="end-search">End Search</button>
+            </div>
+            <button id="fetch-data-button">Fetch Latest GPS Data</button>
+          </div>
+
+          <!-- Table container -->
+          <div id="table-container">
+            <label>Download GPX Files:</label>
+            <br />
+            <a>Complete a search to create GPX files.</a>
+          </div>
         </div>
+      </div>
+
+      <!-- Side panel to display telemetry data -->
+      <div id="telemetry-panel">
+        <h3>Telemetry Data</h3>
+        <div id="telemetry-content">
+          Hover over a ping to see its data here.
+        </div>
+      </div>
     </div>
+
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
-</body>
+  </body>
 </html>

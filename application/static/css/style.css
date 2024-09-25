@@ -1,60 +1,71 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
-    text-align: center;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+  text-align: center;
 }
 
 header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px 0;
-    font-size: 24px;
+  background-color: #4caf50;
+  color: white;
+  padding: 15px 0;
+  font-size: 24px;
 }
 
-/* Flexbox container to align the map and telemetry panel side by side */
+/* Flexbox container to align the map, search, and telemetry panels side by side */
 #main-container {
-    display: flex;
-    justify-content: space-between; /* Makes sure there’s space between the map and the sidebar */
-    width: 100%;
-    height: calc(100vh - 100px); /* Adjust height to fit under the header */
-    margin-top: 20px;
+  display: flex;
+  justify-content: space-between; /* Ensures spacing between panels */
+  width: 100%;
+  height: calc(100vh - 100px); /* Adjust height to fit under the header */
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* Wrapper to stack map-container and controls-container vertically */
+#map-controls-wrapper {
+  display: flex;
+  flex-direction: column; /* Stack map and controls vertically */
+  flex-grow: 2; /* Allows the map-controls section to expand and fit the available space */
+  width: 100%; /* Ensures the wrapper takes up the full width between the panels */
+  padding: 0;
+  margin: 0;
 }
 
 /* Map styling */
 #map-container {
-    flex-grow: 2; /* Allow the map to grow and take up available space */
-    margin: 0 auto;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden !important;
-
-    background-color: #e07070;
-    border-radius: 1px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  flex-grow: 1; /* Map will take up as much space as available above the controls */
+  position: relative;
+  width: 100%;
+  height: 85%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden !important;
+  background-color: #e07070;
+  border-radius: 1px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0;
 }
 
-.search-running-animation{
-  background-color: #4CAF50 !important;
+/* Controls container for Azure containers, search, and table */
+#controls-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Creates three equal-width columns */
+  gap: 0px;
 }
 
-.search-running-animation::before{
-  content: '';
-  position: absolute;
-  width: 300px;
-  height: 200%;
-  background-color: #94d096;
-  box-shadow: 0 0 40px #94d096;
-  animation: animate 12s linear infinite;
+#checkbox-container {
+  overflow-y: auto;
 }
 
-#map-iframe{
+#checkbox-container label {
+  display: block;
+}
+
+#map-iframe {
   height: 97.5%;
   width: 98.4%;
   z-index: 10;
@@ -62,50 +73,116 @@ header {
   border: none;
 }
 
+.search-running-animation {
+  background-color: #4caf50 !important;
+}
+
+.search-running-animation::before {
+  content: "";
+  position: absolute;
+  width: 25%;
+  height: 225%;
+  background-color: #94d096;
+  box-shadow: 0 0 40px #94d096;
+  animation: animate 12s linear infinite;
+}
+
 @keyframes animate {
-  0%{
+  0% {
     transform: rotate(0deg);
   }
-  100%{
+  100% {
     transform: rotate(360deg);
   }
 }
 
 /* Sidebar styling */
-#telemetry-panel, #search-panel {
-    width: 300px; /* Fixed width for sidebar */
-    height: 100%; /* Take up full height of the viewport */
-    background-color: #f7f7f7;
-    padding: 10px;
-    box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
-    overflow-y: auto;
-}
-
+#telemetry-panel,
 #search-panel {
-  width: 200px;
+  width: 300px; /* Fixed width for sidebars */
+  height: 100vh; /* Take up full height of the viewport */
+  background-color: #f7f7f7;
+  padding: 10px;
+  box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
 }
 
-/* BASIC STYLING FOR TELEMETRY SIDEBAR */
+/* Telemetry card styling */
 .telemetry-card {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .telemetry-card p {
-    margin: 5px 0;
-    font-size: 14px;
-    line-height: 1.4;
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .telemetry-card .title {
-    font-weight: bold;
-    font-size: 16px;
+  font-weight: bold;
+  font-size: 16px;
 }
 
 .telemetry-card hr {
-    margin: 10px 0;
+  margin: 10px 0;
+}
+
+/* Azure container and search controls styling */
+#container-selector,
+#table-container {
+  padding: 10px;
+}
+
+/* Table styling */
+.gpx-table {
+  padding: 20px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+/* Container styling to ensure the buttons take up half the width each */
+#button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  margin: 0;
+}
+
+#start-search,
+#end-search,
+#fetch-data-button {
+  width: 50%;
+  padding: 10px;
+  background-color: #4caf50;
+  color: #333;
+  border: none;
+  text-align: center;
+  font-size: auto;
+  cursor: pointer;
+  box-sizing: border-box; /* Ensures padding doesn't exceed width */
+}
+
+#start-search {
+  background-color: #4caf50;
+}
+
+#end-search {
+  background-color: #e07070;
+}
+
+#fetch-data-button {
+  width: 100%;
+  background-color: #c1c1c1;
+}
+
+#start-search:hover,
+#end-search:hover,
+#fetch-data-button:hover {
+  opacity: 0.7;
 }
