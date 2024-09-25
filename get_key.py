@@ -27,7 +27,7 @@ def get_key():
     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
 
-    # Create a SecretClient using DefaultAzureCredential
+    # Create a SecretClient using DefaultAzureCredential.
     credential = DefaultAzureCredential()
     client = SecretClient(vault_url=vault_url, credential=credential)
 
