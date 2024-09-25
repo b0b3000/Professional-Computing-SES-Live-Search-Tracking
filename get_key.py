@@ -22,7 +22,7 @@ from azure.keyvault.secrets import SecretClient
 conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
 def get_key():    
 
-    VAULT_NAME = "keys3200"
+    VAULT_NAME = "cits32004keys"
     SECRET_NAME = "DbConnectionString"
     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
