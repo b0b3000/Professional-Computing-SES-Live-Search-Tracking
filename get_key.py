@@ -22,10 +22,9 @@ def get_db_password():
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 
-conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
 def get_blob_storage_key():    
 
-    VAULT_NAME = "keys3200"
+    VAULT_NAME = "cits32004keys"
     SECRET_NAME = "BlobStorageConnectionString"
     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
@@ -35,27 +34,22 @@ def get_blob_storage_key():
     client = SecretClient(vault_url=vault_url, credential=credential)
 
     # Retrieve the secret from the Key Vault
-
     retrieved_secret = client.get_secret(SECRET_NAME)
-    print("secret",retrieved_secret)
     key = retrieved_secret.value.rstrip()
-    print("secret",retrieved_secret)
 
-    #print(f"The value of the secret '{SECRET_NAME}' is: {retrieved_secret.value}")
+    #Format correctly
     return conn_string[:69] + key + conn_string[69:]
 
 def get_db_password():
-    VAULT_NAME = "keys3200"
+    VAULT_NAME = "cits32004keys"
     SECRET_NAME = "historicalDatabasePassword"
     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
-    conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
 
     # Create a SecretClient using DefaultAzureCredential
     credential = DefaultAzureCredential()
     client = SecretClient(vault_url=vault_url, credential=credential)
 
     # Retrieve the secret from the Key Vault
-
     retrieved_secret = client.get_secret(SECRET_NAME)
     password = retrieved_secret.value.rstrip()
 
