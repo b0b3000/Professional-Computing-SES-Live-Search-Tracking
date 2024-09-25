@@ -23,7 +23,7 @@ conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;Account
 def get_key():    
 
     VAULT_NAME = "cits32004keys"
-    SECRET_NAME = "DbConnectionString"
+    SECRET_NAME = "BlobStorageConnectionString"
     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
 
