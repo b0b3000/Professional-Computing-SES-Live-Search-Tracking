@@ -15,6 +15,8 @@ lot of KeyErrors.
 
 ISSUE 2: GPS pings dropped out at 500m range when testing. What if the GPS data matches because 
 they are in the same location later, need to check the time as well.
+
+Written by Fred Leman
 """
 
 import meshtastic.serial_interface
