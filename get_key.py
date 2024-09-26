@@ -4,7 +4,9 @@
 # I have not yet figured out a way to access key vaults when testing locally - WORKING ON IT
 
 
+'''
 def get_blob_storage_key():
+
     # Retrieves key1 from the text file in this directory.
     # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
@@ -29,7 +31,7 @@ def get_blob_storage_key():
     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
 
-    # Create a SecretClient using DefaultAzureCredential
+    # Create a SecretClient using DefaultAzureCredential.
     credential = DefaultAzureCredential()
     client = SecretClient(vault_url=vault_url, credential=credential)
 
@@ -55,4 +57,4 @@ def get_db_password():
 
     print("Password: ", password, ", should be meshtastic2024!")
     return password
-'''
+
