@@ -143,7 +143,9 @@ def end_search():
         print(gpx_data[gpx])
 
         # Save= GPX data to a file
-        open(f'{gpx}.gpx', 'w').write(gpx_data[gpx])
+        with open(f'{gpx}.gpx', 'w') as outfile:
+            outfile.write(gpx_data[gpx])
+
          
 
     # Save search data to the database (pass gpx_data if needed)
