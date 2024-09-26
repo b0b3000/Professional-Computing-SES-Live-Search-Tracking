@@ -139,11 +139,15 @@ def end_search():
     # TODO: ship these gpx strings off to azure database.
     # TODO: make them into a file and allow the user to download the files (zip all gpx files for a single search)
     search_session['gpx_data'] = gpx_data
+    gpx_filenames = []
     for gpx in gpx_data:
         print(gpx_data[gpx])
-
         # Save= GPX data to a file
-        open(f'{gpx}.gpx', 'w').write(gpx_data[gpx])
+        filename = f'{gpx}.gpx'
+
+        open(filename, 'w').write(gpx_data[gpx])
+        gpx_filenames.append(filename)
+
          
 
     # Save search data to the database (pass gpx_data if needed)
@@ -156,7 +160,8 @@ def end_search():
     search_session['start_time'] = None
     search_session['end_time'] = None
     search_session['search_date'] = None
-    return jsonify({'message': 'Search ended'})
+    return jsonify({'message': 'Search ended', 'gpx_download_routes' : gpx_filenames})
+
 
 # Route to serve the GPX ZIP file for download
 @app.route('/download/<filename>')

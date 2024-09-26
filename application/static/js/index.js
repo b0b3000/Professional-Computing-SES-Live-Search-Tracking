@@ -74,14 +74,18 @@ document.getElementById('end-search-button').addEventListener('click', function 
   })
       .then(response => response.json())
       .then(data => {
-          alert('Search ended! Click below to download the GPX file.');
-          console.log('End Search Response:', data);
+        alert('Search ended! Click below to download the GPX file.');
+        console.log('End Search Response:', data);
+
+        data.gpx_download_routes.forEach(route => {
+
           // Create a link to download the GPX file
           const downloadLink = document.createElement('a');
-          downloadLink.href = data.gpx_download_url; // URL returned from the server to download the GPX file
-          downloadLink.textContent = 'Download GPX File';
-          downloadLink.download = 'search_data.gpx'; // Suggest a filename for the GPX file
+          downloadLink.href = `/download/${route}`
+          downloadLink.textContent = `Download ${route}`;
+          downloadLink.download = `${route}.gpx`; 
           document.body.appendChild(downloadLink);
+        })
 
           // Remove the animated border class
           document.getElementById('map-container').classList.remove('search-running-animation');

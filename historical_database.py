@@ -2,6 +2,8 @@ import json
 import pyodbc
 import get_key
 
+TIMEOUT = 30
+
 def get_database_url():
     
     '''
@@ -21,7 +23,7 @@ def get_database_url():
 # Function to connect to database
 def connect_database():
     try:
-        with pyodbc.connect(get_database_url(), timeout=5) as conn:
+        with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
             cursor = conn.cursor()
             print("Connection successful!")
             return cursor
@@ -36,7 +38,7 @@ def upload_search_data(session):
     
     try:
 
-        with pyodbc.connect(get_database_url(), timeout=5) as conn:
+        with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
             cursor = conn.cursor()
             
             for base_station in base_stations:
@@ -71,7 +73,7 @@ def upload_search_data(session):
 # This is called when we render our page
 def get_unique_base_stations():
     try:
-        with pyodbc.connect(get_database_url(), timeout=5) as conn:
+        with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
             cursor = conn.cursor()
 
             # Query to fetch unique base station names from the database
@@ -96,7 +98,7 @@ def get_historical_searches(start_date=None, end_date=None, base_stations=None):
     
     try:
 
-        with pyodbc.connect(get_database_url(), timeout=5) as conn:
+        with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
             cursor = conn.cursor()
 
 
@@ -133,10 +135,9 @@ def get_historical_searches(start_date=None, end_date=None, base_stations=None):
 
 # Temporary function for testing purposes
 def create_colums_in_table(col_name, data_type):
-    
     try:
 
-        with pyodbc.connect(get_database_url(), timeout=5) as conn:
+        with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
             cursor = conn.cursor()
             
             
@@ -151,7 +152,6 @@ def create_colums_in_table(col_name, data_type):
         print(f"Error: {e}")
         return
     
-
 #Testing purposes (Uncomment if needed to test)
 #if __name__ == "__main__":
 #    
