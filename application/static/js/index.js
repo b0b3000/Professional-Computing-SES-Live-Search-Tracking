@@ -137,23 +137,21 @@ document.getElementById("end-search").addEventListener("click", function () {
       }
 
       // Add rows for each selected container
-      selectedContainers.forEach((container) => {
+      data.gpx_download_routes.forEach((route) => {
         const row = downloadTable.insertRow();
 
         const cell1 = row.insertCell(0);
-        cell1.textContent = container;
+        cell1.textContent = route;
 
         const cell2 = row.insertCell(1);
         const downloadButton = document.createElement("a");
         downloadButton.textContent = "Download GPX";
-        downloadButton.download = `${container}_search_data.gpx`; // Suggest a filename for the GPX file
+        downloadButton.href = `/download/${route}`;
+        downloadButton.download = `${route}_search_data.gpx`; // Suggest a filename for the GPX file
         cell2.appendChild(downloadButton);
+        
       });
-      
-      data.gpx_download_routes.forEach(route => {
-          downloadLink.href = `/download/${route}`
-       })
-      
+
     })
     .catch((error) => console.error("Error ending search:", error));
 
