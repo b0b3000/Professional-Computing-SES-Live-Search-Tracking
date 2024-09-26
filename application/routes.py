@@ -147,7 +147,7 @@ def end_search():
          
 
     # Save search data to the database (pass gpx_data if needed)
-    # historical_database.upload_search_data(search_session)
+    historical_database.upload_search_data(search_session)
 
     # Clear global dict ready for the next search
     search_session['gps_data'] = {}

@@ -46,6 +46,7 @@ def upload_search_data(session):
                 end_time = session["end_time"]
                 #gpx_data = session["gpx_data"] Temporary
                 gps_JSON = session["gps_data"][base_station]
+                gpx_data = session["gpx_data"][base_station]
                 search_date = session["search_date"]
                 
                 # Decode gps_JSON from bytes, then convert to JSON string. Ensures legal storage in Database
@@ -54,11 +55,11 @@ def upload_search_data(session):
                 
                 
                 query = """
-                    INSERT INTO search_history (session_id, base_station, start_time, end_time, search_date, gps_JSON) 
-                    VALUES (?, ?, ?, ?, ?, ?);
+                    INSERT INTO search_history (session_id, base_station, start_time, end_time, gpx_data, search_date, gps_JSON) 
+                    VALUES (?, ?, ?, ?, ?, ?, ?);
                 """
                 
-                cursor.execute(query, (session_id, base_station, start_time, end_time, search_date, gps_JSON_string))
+                cursor.execute(query, (session_id, base_station, start_time, end_time, gpx_data, search_date, gps_JSON_string))
                 conn.commit()
             
             print("Upload successful")
@@ -86,7 +87,6 @@ def get_unique_base_stations():
         print(f"Error in get_unique_base_stations: {e}")
         return []
 
-
 def get_historical_searches(start_date=None, end_date=None, base_stations=None):
     
     '''
@@ -101,7 +101,7 @@ def get_historical_searches(start_date=None, end_date=None, base_stations=None):
 
 
         # SQL query to filter searches based on date or base station
-        query = "SELECT session_id, base_station, start_time, end_time, gps_JSON FROM search_history WHERE 1=1"
+        query = "SELECT session_id, base_station, start_time, end_time, gpx_data, gps_JSON FROM search_history WHERE 1=1"
         
         # Add conditions for date filtering
         params = []
