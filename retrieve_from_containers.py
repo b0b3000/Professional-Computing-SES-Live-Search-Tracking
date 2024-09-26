@@ -51,11 +51,8 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
     # Initialize the BlobServiceClient
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
 
-    # Initialize an empty list to collect telemetry data
     telemetry_data = []
-
     all_blob_content = {}
-
     for container_name in active_containers:
         
         try:
@@ -88,6 +85,7 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
                 ).add_to(m)
 
             # Choose a colour for this trail
+            #TODO: pass in the last chosen colour and make it impossible to choose that again.
             trail_colour = get_random_colour()
 
             # Draw a line connecting coordinates
@@ -99,7 +97,6 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
                     opacity=0.7  
                 ).add_to(m)
 
-            # Collect telemetry data
             telemetry_data.extend(extracted_telemetry)
 
         except Exception as e:
@@ -136,7 +133,7 @@ def mapify(geojson_data):
         return None, [], []
 
     features = []
-    coordinates = [] # For PolyLine
+    coordinates = []
     telemetry_list = []
 
     for point in points:
