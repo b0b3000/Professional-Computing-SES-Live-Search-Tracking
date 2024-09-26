@@ -3,10 +3,8 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import folium
 
-
 def process_gpx_to_df(file_name):
     gpx = gpxpy.parse(open(file_name))
-    
     # parse the raw XML to access extensions
     # (not ideal, but gpxpy doesn't seem to support parsing extensions)
     tree = ET.parse(file_name)

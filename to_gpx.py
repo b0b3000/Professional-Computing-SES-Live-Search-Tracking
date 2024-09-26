@@ -1,51 +1,47 @@
+'''
+pip install gpxpy (requirements.txt has been updated)
+Python program for translating between gpx and json data.
+
+#TODO: reverse trnalsation from GPX to geoJson for rendering on web-app.
+
+Written by Jack Donaghy.
+Extended and modified by Susheel Utagi.
+'''
+
 import gpxpy
 import gpxpy.gpx
-import json
 from xml.etree.ElementTree import Element
 from datetime import datetime
 
-def convert_json_to_gpx(file_name):
-    gpx = gpxpy.gpx.GPX()
+def convert_json_to_gpx_string(json_data):
+    '''
+    Takes in a dicitonary of blobnames paired to geojson data.
+    returns a GPX string for database storage on web-app or transribing into a file
+    for the user to download.
+    '''
 
+    gpx = gpxpy.gpx.GPX()
     gpx_track = gpxpy.gpx.GPXTrack()
     gpx.tracks.append(gpx_track)
-
-    # create GPX segment
     gpx_segment = gpxpy.gpx.GPXTrackSegment()
     gpx_track.segments.append(gpx_segment)
+    for point_dict in json_data:
 
-    # load JSON data
-    with open(file_name, 'r') as f:
-        data = json.load(f)
-
-    # iterate through each point in the JSON list
-    for point_dict in data:
-        for point_key, point in point_dict.items():
-            # convert time string to datetime object
+        for _, point in point_dict.items():
             time = datetime.fromisoformat(point['time'].replace('Z', '+00:00'))
-
             gpx_point = gpxpy.gpx.GPXTrackPoint(
                 time=time,
                 latitude=point['lat'],
                 longitude=point['long']
             )
 
-            # create extensions for telemetry data
             telemetry_data = Element('TelemetryData')
             for key, value in point['telemetry'].items():
                 data_element = Element(key)
                 data_element.text = str(value)
                 telemetry_data.append(data_element)
 
-            # append telemetry data to the point's extensions
             gpx_point.extensions.append(telemetry_data)
-
-            # append the point to the GPX segment
             gpx_segment.points.append(gpx_point)
-
-    # write the updated GPX data back to the file
-    with open(f'{file_name}.gpx', 'w') as f:
-        f.write(gpx.to_xml())
-
-# example usage
-convert_json_to_gpx('test')
+            
+    return gpx.to_xml()

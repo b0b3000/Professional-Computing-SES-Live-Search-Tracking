@@ -51,9 +51,8 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
     # Initialize the BlobServiceClient
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
 
-    # Initialize an empty list to collect telemetry data
     telemetry_data = []
-
+    all_blob_content = {}
     for container_name in active_containers:
         
         try:
@@ -70,6 +69,7 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
             # Download and process blob content
             blob = blobs_list[0]
             blob_content = container_client.download_blob(blob).readall()
+            all_blob_content[blob.name] = blob_content
 
             # Call mapify to process and get points and coordinates
             features, coordinates, extracted_telemetry = mapify(blob_content)
@@ -85,6 +85,7 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
                 ).add_to(m)
 
             # Choose a colour for this trail
+            #TODO: pass in the last chosen colour and make it impossible to choose that again.
             trail_colour = get_random_colour()
 
             # Draw a line connecting coordinates
@@ -96,7 +97,6 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
                     opacity=0.7  
                 ).add_to(m)
 
-            # Collect telemetry data
             telemetry_data.extend(extracted_telemetry)
 
         except Exception as e:
@@ -107,7 +107,9 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
     map_save_path = os.path.join(os.path.dirname(__file__), 'application/static/footprint.html')
     m.save(map_save_path)
 
-    return telemetry_data, map_save_path
+    #print("tel data", telemetry_data)
+    #print("map save path", map_save_path)
+    return telemetry_data, map_save_path, all_blob_content
         
 
 
@@ -120,16 +122,18 @@ def mapify(geojson_data):
     - coordinates (list): A list of coordinate tuples for drawing a PolyLine.
     - telemetry_list (list): A list of telemetry data points to be sent to the frontend.
     """
+    #print("Testing geojson data in mapify", geojson_data)
     
     try:
         decoded_data = geojson_data.decode('utf-8').replace("'", '"')
         points = json.loads(decoded_data)
+        #print("decoded data:", points)
     except Exception as e:
         print(f"Error decoding JSON data: {e}")
         return None, [], []
 
     features = []
-    coordinates = [] # For PolyLine
+    coordinates = []
     telemetry_list = []
 
     for point in points:
@@ -165,10 +169,10 @@ def mapify(geojson_data):
 
     return features, coordinates, telemetry_list 
 
-# Testing purposes (Uncomment if needed to test)
+#Testing purposes (Uncomment if needed to test)
 # if __name__ == "__main__":
     
-#     active_containers = ['base-station-0']  # Replace with the containers you want to test
+#     active_containers = ['base-3200-b']  # Replace with the containers you want to test
 #     STORAGE_CONNECTION_STRING = get_key.get_key()
     
     

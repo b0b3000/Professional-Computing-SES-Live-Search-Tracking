@@ -84,13 +84,14 @@ document.getElementById("end-search").addEventListener("click", function () {
   fetch("/api/end-search", {
     method: "POST",
   })
+
     .then((response) => response.json())
     .then((data) => {
       alert("Search ended! Click below to download the GPX file.");
       console.log("End Search Response:", data);
 
       // Check if the download URL is present in the response
-      if (!data.gpx_download_url) {
+      if (!data.gpx_download_routes) {
         console.error("GPX download URL is missing in the response.");
         alert("GPX download URL is missing. Please try again later.");
         return;
@@ -144,11 +145,16 @@ document.getElementById("end-search").addEventListener("click", function () {
 
         const cell2 = row.insertCell(1);
         const downloadButton = document.createElement("a");
-        downloadButton.href = data.gpx_download_url; // URL returned from the server to download the GPX file
         downloadButton.textContent = "Download GPX";
         downloadButton.download = `${container}_search_data.gpx`; // Suggest a filename for the GPX file
         cell2.appendChild(downloadButton);
       });
+      
+      data.gpx_download_routes.forEach(route => {
+          downloadLink.href = `/download/${route}`
+       })
+      
     })
     .catch((error) => console.error("Error ending search:", error));
+
 });
