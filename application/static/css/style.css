@@ -186,3 +186,36 @@ header {
 #fetch-data-button:hover {
   opacity: 0.7;
 }
+
+/* Style the tab */
+.tab {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+.tab button {
+  background-color: inherit;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tab button:hover {
+  background-color: #ddd;
+}
+
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Hide all tabcontent by default */
+.tabcontent {
+  display: none;
+}
+
+/* When tab is active, show the tab content */
+.tabcontent.active {
+  display: block;
+}

@@ -13,6 +13,17 @@
   <body>
     <header>GPS Data Visualization v2.0</header>
 
+<!-- Add the Tab Navigation -->
+<div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'StartSearch')">Start Search</button>
+    <button class="tablinks" onclick="openTab(event, 'ActiveSearch')">Active Search</button>
+    <button class="tablinks" onclick="openTab(event, 'HistoricalData')">Historical Data</button>
+  </div>
+
+  <!-- Start Search Tab Content -->
+<div id="StartSearch" class="tabcontent">
+    
+  
     <!-- Main container to hold the map and telemetry panel -->
     <div id="main-container">
       <!-- Side panel to display searches -->
@@ -20,7 +31,7 @@
         <h3>Searches</h3>
         <div id="search-content">Select search</div>
       </div>
-
+  
       <!-- Wrapper div to hold the map and the controls -->
       <div id="map-controls-wrapper">
         <!-- Map container -->
@@ -33,7 +44,7 @@
             >RENDER</iframe
           >
         </div>
-
+  
         <!-- Controls container -->
         <div id="controls-container">
           <!-- Dropdown for selecting Azure containers -->
@@ -52,7 +63,7 @@
               {% endfor %}
             </div>
           </div>
-
+  
           <!-- Search controls -->
           <div id="user-buttons">
             <div id="button-container">
@@ -61,7 +72,7 @@
             </div>
             <button id="fetch-data-button">Fetch Latest GPS Data</button>
           </div>
-
+  
           <!-- Table container -->
           <div id="table-container">
             <label>Download GPX Files:</label>
@@ -70,7 +81,7 @@
           </div>
         </div>
       </div>
-
+  
       <!-- Side panel to display telemetry data -->
       <div id="telemetry-panel">
         <h3>Telemetry Data</h3>
@@ -79,38 +90,73 @@
         </div>
       </div>
     </div>
-
-    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
-
-
-    <!-- Historical Search Form (added here, below the map and main-container) -->
-    <div id="historical-search">
-        <h2>Search for Historical Data</h2>
-
-        <form action="/submit-date" method="POST">
-            <label for="start-date">Select Start Date:</label>
-            <input type="date" id="start-date" name="start-date" required>
-
-            <label for="end-date">Select End Date:</label>
-            <input type="date" id="end-date" name="end-date">
+  </div>
+  
+  <!-- Active Searches Tab Content -->
+  <div id="ActiveSearch" class="tabcontent">
+    <h2>Active Search</h2>
+    <p> Map and Telemetry data to be displayed here.</p>
+  </div>
+  
+  <!-- Historical Data Tab Content -->
+  <div id="HistoricalData" class="tabcontent">
+    <h2>Search for Historical Data</h2>
+    <p> New map to be rendered here.</p>
+    <form action="/submit-date" method="POST">
+      <label for="start-date">Select Start Date:</label>
+      <input type="date" id="start-date" name="start-date" required>
+      <label for="end-date">Select End Date:</label>
+      <input type="date" id="end-date" name="end-date">
+      <label for="base-station">Base Station:</label>
+      <!-- Multi-select dropdown for Base Stations -->
+      <select id="base-station" name="base-station" multiple>
+        <!-- Dynamically populated base stations will be inserted here -->
+        {% for station in base_stations %}
+        <option value="{{ station }}">{{ station }}</option>
+        {% endfor %}
+      </select>
+      <input type="submit" value="Submit">
+    </form>
     
-            <label for="base-station">Base Station:</label>
-            <!-- Multi-select dropdown for Base Stations -->
-            <select id="base-station" name="base-station" multiple>
-                <!-- Dynamically populated base stations will be inserted here -->
-                {% for station in base_stations %}
-                <option value="{{ station }}">{{ station }}</option>
-                {% endfor %}
-            </select>
+    <h2>Historical Map View</h2>
+    <div id="historical-map-container">
+      <iframe
+        src="{{ historical_map_path }}" 
+        width="100%"
+        height="600px"
+        id="historical-map-iframe"
+      >RENDER</iframe>
+    </div>
 
-    <input type="submit" value="Submit">
-</form>
-    
-    
-</div>
+  </div>
+  
 
-    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+  <!-- JavaScript -->
+  <script>
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+
+      // Hide all elements with class="tabcontent"
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+
+      // Remove the "active" class from all tablinks
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+
+      // Show the current tab, and add an "active" class to the button that opened the tab
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    // Automatically click on the first tab to show it by default
+    document.getElementsByClassName("tablinks")[0].click();
+  </script>
+
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
-
 </html>
-
