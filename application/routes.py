@@ -14,7 +14,7 @@ import shutil
 import tempfile
 from flask import render_template, request, url_for, current_app as app, jsonify, send_file, Response
 import folium
-from retrieve_from_containers import retrieve_from_containers
+from retrieve_from_containers import retrieve_from_containers, retrieve_historical_data
 import get_key
 from azure.storage.blob import BlobServiceClient
 from datetime import datetime
@@ -42,28 +42,46 @@ def index():
        Establishes connection to Azure Server with secure connection string, and fetches active container names.
     '''
 
-    m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
+    # Initialize both maps: active and historical
+    active_map = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
+    historical_map = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
+    
+    # Getting available base stations from azure container, for live search
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
     container_names = [container.name for container in blob_service_client.list_containers()]
 
-    # Retrieve unique base stations from the database
+    # Get base stations for historical searches
     try:
         base_stations = historical_database.get_unique_base_stations()
     except Exception as e:
         print(f"Error fetching base stations: {e}")
         base_stations = []
 
-    # Save the initial map (empty) to be displayed on the page
-    map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
-    m.save(map_save_path)
+    # Fetch historical searches for the scrollable list
+    try:
+        historical_searches = historical_database.get_all_searches()
+    except Exception as e:
+        print(f"Error fetching historical searches: {e}")
+        historical_searches = []
 
-    # Render the template with container names and map
+    # Save the maps to be displayed on the page
+    active_map_save_path = os.path.join(os.path.dirname(__file__), 'static/active_map.html')
+    active_map.save(active_map_save_path)
+
+    historical_map_save_path = os.path.join(os.path.dirname(__file__), 'static/historical_map.html')
+    historical_map.save(historical_map_save_path)
+    
+    
+    
+    # Render the template with maps and historical search data
     return render_template(
         'index.html',
-        map_html=m._repr_html_(),
+        active_map_html=active_map._repr_html_(),
+        historical_map_html=historical_map._repr_html_(),
         container_names=container_names,
-        base_stations=base_stations,  # Pass base stations to the template
-    )
+        base_stations=base_stations,
+        historical_searches=historical_searches)  # Pass the historical search data to the template
+
 
 # Updates the map with new data when it is called
 @app.route('/api/update-map', methods=['POST'])
@@ -78,8 +96,10 @@ def update_map():
     if not container_names:
         return jsonify({'error': 'No containers selected'}), 400
 
-    m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
-    telemetry_data, _, all_blobs = retrieve_from_containers(m, STORAGE_CONNECTION_STRING, container_names)
+    active_map = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
+    active_map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
+    
+    telemetry_data, _, all_blobs = retrieve_from_containers(active_map, STORAGE_CONNECTION_STRING, container_names, active_map_save_path)
 
     # Update global dict with newly obtained data
     search_session['gps_data'] = all_blobs
@@ -163,6 +183,30 @@ def end_search():
     return jsonify({'message': 'Search ended', 'gpx_download_routes' : gpx_filenames})
 
 
+@app.route('/render-map')
+def render_map():
+    
+    gps_data = request.args.get('gps')
+    
+    # Ensures the GPS data is in the correct format
+    gps_points = json.loads(gps_data)  
+
+    # Initialize map
+    m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
+    
+    # Render GPS points
+    map_save_path = os.path.join(os.path.dirname(__file__), 'static/historical_map.html')
+    retrieve_historical_data(m, gps_points, map_save_path)
+
+    # Save the map and render the template
+    m.save(map_save_path)
+    
+
+    return jsonify({
+        "map_path": url_for('static', filename='/historical_map.html'),
+    })
+
+
 # Route to serve the GPX ZIP file for download
 @app.route('/download/<filename>')
 def download_gpx(filename):
@@ -172,16 +216,26 @@ def download_gpx(filename):
     else:
         return jsonify({'error': 'File not found'}), 404
 
-@app.route('/submit-date', methods=['POST'])
+@app.route('/filter-search', methods=['POST'])
 def submit_date():
     # These two values are from the inputs from the web app, index
     start_date = request.form.get('start-date')
     end_date = request.form.get('end-date')
-
-    # This needs to correlate with the base containers that have shown up in history, index.html controls this
     selected_base_stations = request.form.getlist('base-station')
-
+    
     results = historical_database.get_historical_searches(start_date, end_date, selected_base_stations)
-    print("Testing: Retrieved search data", results, flush=True)
+    
+    # Convert results to serializable format
+    serializable_results = []
+    for row in results:
+        serializable_row = (
+            row[0],  # Assuming ID is already a string
+            row[1],  # Base station
+            row[2].strftime('%H:%M:%S'),  # Convert time to string
+            row[3].strftime('%H:%M:%S'),  # Convert time to string
+            row[4].strftime('%Y-%m-%d'),  # Convert date to string
+    
+        )
+        serializable_results.append(serializable_row)
 
-    return "Check the terminal for the input values!"
+    return jsonify(serializable_results)

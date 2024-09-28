@@ -103,7 +103,7 @@ def get_historical_searches(start_date=None, end_date=None, base_stations=None):
 
 
         # SQL query to filter searches based on date or base station
-        query = "SELECT session_id, base_station, start_time, end_time, gpx_data, gps_JSON FROM search_history WHERE 1=1"
+        query = "SELECT session_id, base_station, start_time, end_time, search_date, gps_JSON FROM search_history WHERE 1=1"
         
         # Add conditions for date filtering
         params = []
@@ -133,6 +133,29 @@ def get_historical_searches(start_date=None, end_date=None, base_stations=None):
 
     return results
 
+def get_all_searches():
+    try:
+
+        with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
+            cursor = conn.cursor()
+
+
+        # SQL query to filter searches based on date or base station
+        query = "SELECT session_id, base_station, start_time, end_time, search_date, gps_JSON FROM search_history"
+        
+        cursor.execute(query)
+        results = cursor.fetchall()
+        
+        conn.close()
+    
+    except Exception as e:
+        print(" ----- ERROR IN get_historical_searches ----\n")
+        print(f"Error: {e}")
+        return
+
+    return results
+    
+    
 # Temporary function for testing purposes
 def create_colums_in_table(col_name, data_type):
     try:
@@ -152,7 +175,3 @@ def create_colums_in_table(col_name, data_type):
         print(f"Error: {e}")
         return
     
-#Testing purposes (Uncomment if needed to test)
-#if __name__ == "__main__":
-#    
-#    connect_database()

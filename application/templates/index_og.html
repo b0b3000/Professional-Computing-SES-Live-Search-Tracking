@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>GPS Data Visualization v1.0</title>
     <link
       rel="stylesheet"
@@ -99,72 +98,50 @@
     <p> Map and Telemetry data to be displayed here.</p>
   </div>
   
-<!-- Historical Data Tab Content -->
+  <!-- Historical Data Tab Content -->
 <div id="HistoricalData" class="tabcontent">
   <h2>Search for Historical Data</h2>
-
-  <!-- Container for the left panel (filter + scrollable table) and right panel (map) -->
-  <div style="display: flex; width: 100%; height: 650px;">
+  
+  <!-- Container for the scrollable list and map -->
+  <div style="display: flex; height: 600px;">
     
-    <!-- Left Panel: Filter + Scrollable List -->
-    <div class="left-panel">
-      
-      <!-- Filter Panel -->
-      <div class="filter-box">
-        <h4>Filter Searches</h4>
-        <form method="POST" action="/filter-search">
-            <div class="filter-inputs">
-                <div class="filter-item">
-                    <label for="start-date">Start Date:</label>
-                    <input type="date" id="start-date" name="start-date" required>
-                </div>
-                <div class="filter-item">
-                    <label for="end-date">End Date:</label>
-                    <input type="date" id="end-date" name="end-date">
-                </div>
-                <div class="filter-item">
-                    <label for="base-station">Base Station:</label>
-                    <select id="base-station" name="base-station" multiple>
-                        {% for station in base_stations %}
-                        <option value="{{ station }}">{{ station }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <input type="submit" class="filter-submit" value="Filter">
-        </form>
+    <!-- Left Panel: Scrollable list -->
+    <div style="flex: 1; overflow-y: auto; border-right: 1px solid #ccc; padding-right: 10px;">
+      <h3>Previous Searches</h3>
+      <div class="search-list-container">
+        <ul class="search-list">
+          {% for search in historical_searches %}
+            <li class="search-item">
+              <div><strong>ID:</strong> {{ search[0] }}</div>
+              <div><strong>Date:</strong> {{ search[2] }}</div>
+              <div><strong>End Time:</strong> {{ search[3] }}</div>
+              <div><strong>Base Station:</strong> {{ search[1] }}</div>
+            </li>
+          {% endfor %}
+        </ul>
       </div>
 
-      <!-- Scrollable Table -->
-      <div class="scrollable-table">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Start Time</th>
-              <th>End Time</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Insert table data dynamically -->
-            {% for search in historical_searches %}
-            <tr class="search-row" data-gps="{{ search[5]}}">  <!-- JSON data is in search[5] -->
-              <td>{{ search[0] }}</td>
-              <td>{{ search[1] }}</td>
-              <td>{{ search[2] }}</td>
-              <td>{{ search[3] }}</td>
-              <td>{{ search[4] }}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+      <!-- Filtering Section -->
+      <h4>Filter Searches</h4>
+      <form action="/filter-searches" method="POST">
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date" name="start-date" required>
+        
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date" name="end-date">
+        
+        <label for="base-station">Base Station:</label>
+        <select id="base-station" name="base-station" multiple>
+          {% for station in base_stations %}
+          <option value="{{ station }}">{{ station }}</option>
+          {% endfor %}
+        </select>
+        <input type="submit" value="Filter">
+      </form>
     </div>
 
     <!-- Right Panel: Map -->
-    <div class="map-container">
+    <div style="flex: 2;">
       <h3>Historical Map View</h3>
       <iframe
         src="{{ url_for('static', filename='historical_map.html') }}" 
@@ -178,7 +155,7 @@
 </div>
   
 
-  <!-- JavaScript for Tabs -->
+  <!-- JavaScript -->
   <script>
     function openTab(evt, tabName) {
       var i, tabcontent, tablinks;
@@ -205,43 +182,34 @@
   </script>
 
   <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+</html>
 
-  <script>
-    $(document).ready(function() {
-        // Handle form submission with AJAX
-        $('.filter-box form').on('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
-            
-            $.ajax({
-                type: 'POST',
-                url: '/filter-search',
-                data: $(this).serialize(), // Serialize form data
-                success: function(data) {
-                    // Clear existing rows in the table
-                    const tbody = $('.scrollable-table tbody');
-                    tbody.empty();
 
-                    // Iterate over the returned data to populate the table
-                    data.forEach(row => {
-                        const newRow = `<tr>
-                            <td>${row[0]}</td>
-                            <td>${row[1]}</td>
-                            <td>${row[4]}</td>
-                            <td>${row[2]}</td>
-                            <td>${row[3]}</td>
-                        </tr>`;
-                        tbody.append(newRow);
-                    });
-                },
-                error: function(error) {
-                    console.error("Error fetching data:", error);
-                }
-            });
-        });
 
-        // Automatically click on the first tab to show it by default
-        document.getElementsByClassName("tablinks")[0].click();
+<script>
+  
+  $(document).ready(function() {
+    $('.search-row').dblclick(function() {
+      console.log("Row clicked:", $(this));  // Log the clicked row
+      console.log("Row attributes:", $(this).data());  // Log all data-* attributes
+
+        const gpsData = $(this).data('gps'); // Get the GPS data from the clicked row
+        console.log("Retrieved GPS Data:", gpsData);
+
+        if (gpsData) {
+            // Redirect to the route with GPS data
+            window.location.href = `/render-map?gps=${encodeURIComponent(JSON.stringify(gpsData))}`; // Convert to string before passing
+            console.log(gpsData)
+        } else {
+            console.error("No GPS data found for this row.");
+        }
     });
+});
+
+</script>
+
+
 </script>
 
 <script>
@@ -270,6 +238,3 @@
 </script>
 
 
-
-</body>
-</html>
