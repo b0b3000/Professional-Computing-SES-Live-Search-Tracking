@@ -37,8 +37,57 @@ def get_random_colour():
        Returns: Hex string represnting the chosen colour"""
     return random.choice(list(TrailColour)).value
 
+def process_data_to_map(data, map, telemetry_data=[] ):
 
-def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
+    #Call mapify to process and get points and coordinates
+        features, coordinates, extracted_telemetry = mapify(data)
+
+        # taken from folium docs, stackoverflow, and integrated with the help of ChatGPT
+        # Add points to map using folium.Marker
+        for feature in features:
+            point_location = feature["geometry"]["coordinates"][::-1]  # Reversing [long, lat] to [lat, long]
+            folium.Marker(
+                location=point_location,
+                popup=feature["properties"]["tooltip"],
+                icon=folium.Icon(color="blue", icon="info-sign")
+            ).add_to(map)
+
+        # Choose a colour for this trail
+        #TODO: pass in the last chosen colour and make it impossible to choose that again.
+        trail_colour = get_random_colour()
+
+        # Draw a line connecting coordinates
+        if coordinates:
+            folium.PolyLine(
+                locations=coordinates,
+                color=trail_colour,  # Assign a random color to each trail
+                weight=5,
+                opacity=0.7  
+            ).add_to(map)
+
+        telemetry_data.extend(extracted_telemetry)
+    
+
+def retrieve_historical_data(m, gps_points, map_save_path):
+    
+    """
+    Retrieve and display historical GPS data on the map.
+
+    Parameters:
+        - m (folium.Map): The folium map object to add the GeoJSON data to.
+        - gps_points: Historical GPS data.
+        - map_save_path (str): Path to save the updated map.
+    """
+    
+    
+    # Process historical GPS data into the map
+    process_data_to_map(gps_points, m, telemetry_data=[])
+
+    # Save the updated map
+    m.save(map_save_path)
+    
+    
+def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, map_save_path):
     """
     Retrieve data from Azure blob storage and add the points and lines to the map.
 
@@ -71,48 +120,18 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers):
             blob_content = container_client.download_blob(blob).readall()
             all_blob_content[blob.name] = blob_content
 
-            # Call mapify to process and get points and coordinates
-            features, coordinates, extracted_telemetry = mapify(blob_content)
-
-            # taken from folium docs, stackoverflow, and integrated with the help of ChatGPT
-            # Add points to map using folium.Marker
-            for feature in features:
-                point_location = feature["geometry"]["coordinates"][::-1]  # Reversing [long, lat] to [lat, long]
-                folium.Marker(
-                    location=point_location,
-                    popup=feature["properties"]["tooltip"],
-                    icon=folium.Icon(color="blue", icon="info-sign")
-                ).add_to(m)
-
-            # Choose a colour for this trail
-            #TODO: pass in the last chosen colour and make it impossible to choose that again.
-            trail_colour = get_random_colour()
-
-            # Draw a line connecting coordinates
-            if coordinates:
-                folium.PolyLine(
-                    locations=coordinates,
-                    color=trail_colour,  # Assign a random color to each trail
-                    weight=5,
-                    opacity=0.7  
-                ).add_to(m)
-
-            telemetry_data.extend(extracted_telemetry)
-
         except Exception as e:
             print(f"Error processing container '{container_name}': {e}")
             traceback.print_exc()
+    
+    
+    process_data_to_map(blob_content, m, telemetry_data)
 
-    # Save updated map
-    map_save_path = os.path.join(os.path.dirname(__file__), 'application/static/footprint.html')
     m.save(map_save_path)
 
-    #print("tel data", telemetry_data)
-    #print("map save path", map_save_path)
     return telemetry_data, map_save_path, all_blob_content
         
-
-
+        
 def mapify(geojson_data):
     """
     Process and display GPS data with telemetry on the map.
@@ -122,15 +141,17 @@ def mapify(geojson_data):
     - coordinates (list): A list of coordinate tuples for drawing a PolyLine.
     - telemetry_list (list): A list of telemetry data points to be sent to the frontend.
     """
-    #print("Testing geojson data in mapify", geojson_data)
     
-    try:
-        decoded_data = geojson_data.decode('utf-8').replace("'", '"')
-        points = json.loads(decoded_data)
-        #print("decoded data:", points)
-    except Exception as e:
-        print(f"Error decoding JSON data: {e}")
-        return None, [], []
+    if isinstance(geojson_data, bytes):
+        try:
+            decoded_data = geojson_data.decode('utf-8').replace("'", '"')
+            points = json.loads(decoded_data)
+            #print("decoded data:", points)
+        except Exception as e:
+            print(f"Error decoding JSON data: {e}")
+            return None, [], []
+    else:
+        points = geojson_data
 
     features = []
     coordinates = []

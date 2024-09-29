@@ -186,3 +186,135 @@ header {
 #fetch-data-button:hover {
   opacity: 0.7;
 }
+
+/* Style the tab */
+.tab {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+.tab button {
+  background-color: inherit;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tab button:hover {
+  background-color: #ddd;
+}
+
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Hide all tabcontent by default */
+.tabcontent {
+  display: none;
+}
+
+/* When tab is active, show the tab content */
+.tabcontent.active {
+  display: block;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#HistoricalData {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.left-panel {
+  flex: 1; /* Takes up 1/3rd of the container width */
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px; /* Adds space between the table and the map */
+}
+
+.scrollable-table {
+  flex-grow: 1;
+  overflow-y: auto;
+  height: calc(100% - 210px); /* Adjust height to leave space for the filter above */
+}
+
+.map-container {
+  flex: 2; /* Takes up the remaining 2/3rd of the space */
+  height: 600px;
+}
+
+.table {
+  width: 100%; /* Make the table stretch to fill the container */
+  font-family: 'Iter', sans-serif;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th, .table td {
+  padding: 6px 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #eeaf6f;
+  color: #ffffff;
+  text-align: left;
+  position: sticky;
+  top: 0;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f8eddb;
+}
+
+.table td {
+  width: calc(100% / 5); /* Stretch each column evenly */
+}
+
+.table tbody tr:hover {
+  background-color: #f1f1f1; /* Adds a hover effect */
+}
+
+.filter-box {
+  background-color: #f7f7f7; /* Light background color */
+  border: 1px solid #ccc; /* Subtle border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding inside the box */
+  margin-bottom: 10px; /* Space between filter box and table */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  width: 100%; /* calc(33% - 40px); Take up the same width as the table */
+  box-sizing: border-box;
+
+}
+
+.filter-inputs {
+  display: flex;
+  flex-wrap: wrap; /* Allows items to wrap to the next line if needed */
+  gap: 15px; /* Adds space between filter items */
+}
+
+.filter-item {
+  flex: 1; /* Makes each item take equal space */
+  min-width: 150px; /* Sets a minimum width to avoid squishing */
+}
+
+.filter-submit {
+  background-color: #eeaf6f;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-submit:hover {
+  background-color: #d59455; /* Darker on hover */
+}
