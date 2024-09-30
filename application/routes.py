@@ -12,7 +12,7 @@ import json
 import os
 import shutil
 import tempfile
-from flask import render_template, request, url_for, current_app as app, jsonify, send_file, Response
+from flask import render_template, request, url_for, current_app as app, jsonify, send_file, Response, session
 import folium
 from retrieve_from_containers import retrieve_from_containers, retrieve_historical_data
 import get_key
@@ -21,19 +21,7 @@ from datetime import datetime
 import historical_database
 from to_gpx import convert_json_to_gpx_string
 
-# TODO: TO BE UPDATED to Azure Vault Solution
 STORAGE_CONNECTION_STRING = get_key.get_blob_storage_key()
-
-# Global variable to store search session ID and data path, called when a user starts a search
-search_session = {
-    'session_id': None,
-    'data_path': None,
-    'search_date': None,
-    'start_time': None,
-    'end_time': None,
-    'gps_data': {},
-    'gpx_data': None
-}
 
 @app.route('/')
 def index():
@@ -99,8 +87,8 @@ def update_map():
     
     telemetry_data, _, all_blobs = retrieve_from_containers(active_map, STORAGE_CONNECTION_STRING, container_names, active_map_save_path)
 
-    # Update global dict with newly obtained data
-    search_session['gps_data'] = all_blobs
+    # Update session-specific GPS data
+    session['gps_data'] = all_blobs
 
     # Return a response indicating where the updated map is saved and include telemetry data
     return jsonify({
@@ -117,9 +105,13 @@ def start_search():
     All data from that search are saved into the data path.
     """
     session_id = datetime.now().strftime('%Y%m%d%H%M%S')
-    search_session['session_id'] = session_id
-    search_session['search_date'] = datetime.now().strftime('%Y-%m-%d')
-    search_session['start_time'] = datetime.now().strftime('%H:%M:%S')
+
+    # Store session data in Flask session
+    session['session_id'] = session_id
+    session['search_date'] = datetime.now().strftime('%Y-%m-%d')
+    session['start_time'] = datetime.now().strftime('%H:%M:%S')
+    session['gps_data'] = {}  # Initialize an empty dict for GPS data
+    
     return jsonify({'message': 'Search started', 'session_id': session_id})
 
 @app.route('/api/end-search', methods=['POST'])
@@ -129,18 +121,18 @@ def end_search():
     Function that allows a user to indicate when a search is over. Data will stop being collected and will be prepared into
     GPX strings. Stores the GPX data in a dictionary for further processing.
     """
-    session_id = search_session.get('session_id')
+    session_id = session.get('session_id')
     if not session_id:
         return jsonify({'error': 'No active search session'}), 400
 
-    search_session['end_time'] = datetime.now().strftime('%H:%M:%S')
-    gps_data = search_session.get('gps_data')
-    if not gps_data:
+    session["end_time"] = datetime.now().strftime('%H:%M:%S')
+
+    if not session.get("gps_data"):
         return jsonify({'error': 'No GPS data to convert'}), 400
 
     # Translate all blobs into GPX string and store in a dictionary
     gpx_data = {}
-    for blob_name, blob_content in gps_data.items():
+    for blob_name, blob_content in session.get("gps_data").items():
         try:
             if isinstance(blob_content, bytes):
                 decoded_content = blob_content.decode('utf-8')
@@ -149,17 +141,20 @@ def end_search():
             json_data = json.loads(decoded_content.replace("'", '"'))
             gpx_string = convert_json_to_gpx_string(json_data)
             gpx_data[blob_name] = gpx_string
+
         except Exception as e:
             print(f"Error converting blob '{blob_name}' to GPX: {e}")
             traceback.print_exc()
 
     # Now we got a dict 'gpx_data' containing GPX strings for each blob
-    # TODO: ship these gpx strings off to azure database.
-    # TODO: make them into a file and allow the user to download the files (zip all gpx files for a single search)
-    search_session['gpx_data'] = gpx_data
+
+    # Store GPX data in session
+    session["gpx_data"] = gpx_data
+    print('session["gpx_data"]', session["gpx_data"])
+    print("gpx_data", gpx_data)
+
     gpx_filenames = []
     for gpx in gpx_data:
-        print(gpx_data[gpx])
         # Save= GPX data to a file
         filename = f'{gpx}.gpx'
         gpx_filenames.append(filename)
@@ -167,17 +162,16 @@ def end_search():
         with open(filename, 'w') as outfile:
             outfile.write(gpx_data[gpx])
 
-
     # Save search data to the database (pass gpx_data if needed)
-    historical_database.upload_search_data(search_session)
+    historical_database.upload_search_data(session)
 
     # Clear global dict ready for the next search
-    search_session['gps_data'] = {}
-    search_session['gpx_data'] = {}
-    search_session['session_id'] = None
-    search_session['start_time'] = None
-    search_session['end_time'] = None
-    search_session['search_date'] = None
+    session.pop('gps_data', None)
+    session.pop('session_id', None)
+    session.pop('start_time', None)
+    session.pop('end_time', None)
+    session.pop('search_date', None)
+    print("SEARCH ENDED, ", gpx_filenames)
     return jsonify({'message': 'Search ended', 'gpx_download_routes' : gpx_filenames})
 
 
@@ -198,12 +192,10 @@ def render_map():
 
     # Save the map and render the template
     m.save(map_save_path)
-    
 
     return jsonify({
         "map_path": url_for('static', filename='/historical_map.html'),
     })
-
 
 # Route to serve the GPX ZIP file for download
 @app.route('/download/<filename>')

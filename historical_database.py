@@ -46,7 +46,6 @@ def upload_search_data(session):
                 session_id = session["session_id"]
                 start_time = session["start_time"]
                 end_time = session["end_time"]
-                #gpx_data = session["gpx_data"] Temporary
                 gps_JSON = session["gps_data"][base_station]
                 gpx_data = session["gpx_data"][base_station]
                 search_date = session["search_date"]
@@ -162,8 +161,7 @@ def create_colums_in_table(col_name, data_type):
 
         with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
             cursor = conn.cursor()
-            
-            
+
             print("Here", flush=True)
             # Testing, Creating another column in table
             alter_table_query = f"""ALTER TABLE search_history ADD '{col_name}' '{data_type}';"""

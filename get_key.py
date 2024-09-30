@@ -21,7 +21,6 @@ def get_blob_storage_key():
 def get_db_password():
     return "meshtastic2024!"
 
-
 '''
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
