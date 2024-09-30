@@ -34,27 +34,49 @@ document
       .catch((error) => console.error("Error updating map:", error));
   });
 
-// Function to display telemetry data in a nicer format
+
+// Displays latest ping from each base in a sidebar, with telemetry data.
 function displayTelemetryData(telemetryData) {
   const telemetryContent = document.getElementById("telemetry-content");
-  telemetryContent.innerHTML = ""; // Clear previous content
+  telemetryContent.innerHTML = "";    // Clear previous content
 
-  telemetryData.forEach((entry, index) => {
+  const latestPingsByBase = {};   // Stores only most recent ping for each base.
+  telemetryData.forEach(entry => {
+    const baseName = entry.name;
+    if (!latestPingsByBase[baseName] || entry.time > latestPingsByBase[baseName].time) {
+      latestPingsByBase[baseName] = entry;
+    }
+  });
+  const latestPings = Object.values(latestPingsByBase);
+
+  latestPings.forEach((entry, index) => {
     const card = document.createElement("div");
     card.className = "telemetry-card";
 
+    // Outlines the box in red if the latest ping for a base was >5 minutes ago.
+    const timeDiff = (new Date() - new Date(entry.time)) / 60000;
+    if (timeDiff > 5) {
+      card.style.border = "2px solid red";
+    }
+    else {
+      card.style.border = "1px solid green";
+    }
+
     card.innerHTML = `
-          <p class="title">Ping ${index + 1}</p>
-          <p><strong>Device Name:</strong> ${entry.name}</p>
-          <p><strong>Time:</strong> ${entry.time}</p>
-          <hr>
-          <p><strong>Battery Level:</strong> ${entry.telemetry.battery}%</p>
-          <p><strong>Altitude:</strong> ${entry.telemetry.altitude}</p>
-      `;
+      <p class="title">${entry.longname}</p>
+      <p><strong>Device ID:</strong> ${entry.name}</p>
+      <p><strong>Time:</strong> ${entry.time}</p>
+      <hr>
+      <p><strong>Coordinates:</strong> ${entry.lat}, ${entry.lon}</p>
+      <hr>
+      <p><strong>Battery Level:</strong> ${entry.telemetry.battery}%</p>
+      <p><strong>Altitude:</strong> ${entry.telemetry.altitude}</p>
+    `;
 
     telemetryContent.appendChild(card);
   });
 }
+
 
 // Handle the start search button click
 document.getElementById("start-search").addEventListener("click", function () {
@@ -71,6 +93,7 @@ document.getElementById("start-search").addEventListener("click", function () {
     })
     .catch((error) => console.error("Error starting search:", error));
 });
+
 
 // Handle the end search button click
 document.getElementById("end-search").addEventListener("click", function () {
@@ -154,5 +177,4 @@ document.getElementById("end-search").addEventListener("click", function () {
 
     })
     .catch((error) => console.error("Error ending search:", error));
-
 });

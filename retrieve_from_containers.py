@@ -31,45 +31,46 @@ class TrailColour(Enum):
     MAGENTA = "#FF33B8"
     LIME = "#A8FF33"
 
+
 def get_random_colour():
     """Chooses a random colour from the given enum.
     
        Returns: Hex string represnting the chosen colour"""
     return random.choice(list(TrailColour)).value
 
+
 def process_data_to_map(data, map, telemetry_data=[] ):
 
-    #Call mapify to process and get points and coordinates
-        features, coordinates, extracted_telemetry = mapify(data)
+    # Call mapify to process and get points and coordinates
+    features, coordinates, extracted_telemetry = mapify(data)
 
-        # taken from folium docs, stackoverflow, and integrated with the help of ChatGPT
-        # Add points to map using folium.Marker
-        for feature in features:
-            point_location = feature["geometry"]["coordinates"][::-1]  # Reversing [long, lat] to [lat, long]
-            folium.Marker(
-                location=point_location,
-                popup=feature["properties"]["tooltip"],
-                icon=folium.Icon(color="blue", icon="info-sign")
-            ).add_to(map)
+    # taken from folium docs, stackoverflow, and integrated with the help of ChatGPT
+    # Add points to map using folium.Marker
+    for feature in features:
+        point_location = feature["geometry"]["coordinates"][::-1]  # Reversing [long, lat] to [lat, long]
+        folium.Marker(
+            location=point_location,
+            popup=feature["properties"]["tooltip"],
+            icon=folium.Icon(color="blue", icon="info-sign")
+        ).add_to(map)
 
-        # Choose a colour for this trail
-        #TODO: pass in the last chosen colour and make it impossible to choose that again.
-        trail_colour = get_random_colour()
+    # Choose a colour for this trail
+    #TODO: pass in the last chosen colour and make it impossible to choose that again.
+    trail_colour = get_random_colour()
 
-        # Draw a line connecting coordinates
-        if coordinates:
-            folium.PolyLine(
-                locations=coordinates,
-                color=trail_colour,  # Assign a random color to each trail
-                weight=5,
-                opacity=0.7  
-            ).add_to(map)
+    # Draw a line connecting coordinates
+    if coordinates:
+        folium.PolyLine(
+            locations=coordinates,
+            color=trail_colour,  # Assign a random color to each trail
+            weight=5,
+            opacity=0.7  
+        ).add_to(map)
 
-        telemetry_data.extend(extracted_telemetry)
+    telemetry_data.extend(extracted_telemetry)
     
 
 def retrieve_historical_data(m, gps_points, map_save_path):
-    
     """
     Retrieve and display historical GPS data on the map.
 
@@ -78,8 +79,6 @@ def retrieve_historical_data(m, gps_points, map_save_path):
         - gps_points: Historical GPS data.
         - map_save_path (str): Path to save the updated map.
     """
-    
-    
     # Process historical GPS data into the map
     process_data_to_map(gps_points, m, telemetry_data=[])
 
@@ -96,6 +95,10 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
         - STORAGE_CONNECTION_STRING (str): The connection string for the Azure storage account.
         - active_containers: a list of strings, of the names of the storage containers.
 
+    Returns:
+        - telemetry_data (list):
+        - map_save_path (str):
+        - all_blob_content (list):
     """
     # Initialize the BlobServiceClient
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
@@ -103,7 +106,6 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
     telemetry_data = []
     all_blob_content = {}
     for container_name in active_containers:
-        
         try:
             container_client = blob_service_client.get_container_client(container_name)
             if not container_client.exists():
@@ -119,16 +121,13 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
             blob = blobs_list[0]
             blob_content = container_client.download_blob(blob).readall()
             all_blob_content[blob.name] = blob_content
+            process_data_to_map(blob_content, m, telemetry_data)
 
         except Exception as e:
             print(f"Error processing container '{container_name}': {e}")
             traceback.print_exc()
     
-    
-    process_data_to_map(blob_content, m, telemetry_data)
-
     m.save(map_save_path)
-
     return telemetry_data, map_save_path, all_blob_content
         
         
@@ -137,9 +136,9 @@ def mapify(geojson_data):
     Process and display GPS data with telemetry on the map.
     
     Returns:
-    - features (list): A list of GeoJSON features to add to the map.
-    - coordinates (list): A list of coordinate tuples for drawing a PolyLine.
-    - telemetry_list (list): A list of telemetry data points to be sent to the frontend.
+        - features (list): A list of GeoJSON features to add to the map.
+        - coordinates (list): A list of coordinate tuples for drawing a PolyLine.
+        - telemetry_list (list): A list of telemetry data points to be sent to the frontend.
     """
     
     if isinstance(geojson_data, bytes):
@@ -160,23 +159,24 @@ def mapify(geojson_data):
     for point in points:
         for _, point_data in point.items():
             lat = point_data.get('lat', 0.0)
-            long = point_data.get('long', 0.0)
+            lon = point_data.get('long', 0.0)
             name = point_data.get('name', 'Unnamed Point')
             time = point_data.get('time', '00:00:00T00:00:00')
             telemetry = point_data.get('telemetry', {})
-            coordinates.append([lat, long])
+            longname = point_data.get('longname')
+            coordinates.append([lat, lon])
 
             # Add the point as a GeoJSON `feature` (this will display points as an icon on map)
             features.append({
                 "type": "Feature",
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [long, lat],
+                    "coordinates": [lon, lat],
                 },
                 "properties": {
                     "time": time,
                     "name": name,
-                    "tooltip": f"Name: {name}\nTime: {time}\nBattery: {telemetry.get('battery', 'N/A')}%",
+                    "tooltip": f"Name: {longname}\nID: {name}\nTime: {time}\nCoords: {[lon, lat]}\nBattery: {telemetry.get('battery', 'N/A')}%",
                     "telemetry": telemetry,
                 },
             })
@@ -185,12 +185,16 @@ def mapify(geojson_data):
             telemetry_list.append({
                 "name": name,
                 "time": time,
-                "telemetry": telemetry
+                "telemetry": telemetry,
+                "lon": lon,
+                "lat": lat,
+                "longname": longname
             })
 
     return features, coordinates, telemetry_list 
 
-#Testing purposes (Uncomment if needed to test)
+
+# Testing purposes (Uncomment if needed to test)
 # if __name__ == "__main__":
     
 #     active_containers = ['base-3200-b']  # Replace with the containers you want to test

@@ -9,8 +9,9 @@ from azure.storage.blob import BlobServiceClient
 import json
 import time
 import copy
+import datetime
 
-NUM_BASE_STATIONS = 10
+NUM_BASE_STATIONS = 5
 
 
 def upload():
@@ -28,17 +29,20 @@ def upload():
     for i in range(NUM_BASE_STATIONS):
         print(f"Creating container {i}")
         blob_service_client.create_container(name=f"base-station-{i}")
+        time_now = datetime.datetime.now()
+        iso_time = time_now.strftime("%Y-%m-%dT%H:%M:%S")
 
         data_set = {
             'point0': {
-                'name': f'!33679a4c{i}', 
-                'time': test_points[0]['point0']['time'],
+                'name': f'!33679a4test{i}', 
+                'time': iso_time,
                 'lat': round(test_points[0]['point0']['lat'] + (0.0001 * (i * 10)), 7),     # Adds a bit of variance for the coordinates of each base station.
                 'long': round(test_points[0]['point0']['long'] + (0.0001 * (i * 10)), 7),   # Modify these to make the searches more or less spaced out.
                 'telemetry': {
                     'battery': test_points[0]['point0']['telemetry']['battery'],
                     'altitude': test_points[0]['point0']['telemetry']['altitude'],
-                }
+                },
+                'longname': f'base-station-{i}'
             }
         }
         fake_data_sets.append([data_set])     # Adds the first data point as a list.
@@ -48,18 +52,21 @@ def upload():
     # For the next 23 points in the test data, add the modified point and upload to server, then wait 30 seconds, then repeat.
     for i in range(23):
         print("Uploading.")
+        time_now = datetime.datetime.now()
+        iso_time = time_now.strftime("%Y-%m-%dT%H:%M:%S")
         for j in range(NUM_BASE_STATIONS):
             container_client = blob_service_client.get_container_client(container=f"base-station-{j}")
             data_set = copy.deepcopy({
                 f'point{i+1}': {
-                    'name': f'!33679a4c{j}', 
-                    'time': test_points[i+1][f'point{i+1}']['time'],
+                    'name': f'!33679a4test{j}', 
+                    'time': iso_time,
                     'lat': round(test_points[i+1][f'point{i+1}']['lat'] + (0.001 * j), 7),  # Modify these to make the searches more or less spaced out.
                     'long': round(test_points[i+1][f'point{i+1}']['long'] + (0.001 * j), 7),
                     'telemetry': {
                         'battery': test_points[i+1][f'point{i+1}']['telemetry']['battery'],
                         'altitude': test_points[i+1][f'point{i+1}']['telemetry']['altitude'],
-                    }
+                    },
+                    'longname': f'base-station-{j}'
                 }
             })
             fake_data_sets[j].append(data_set)

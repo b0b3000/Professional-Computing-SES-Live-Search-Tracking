@@ -43,8 +43,8 @@ def index():
     '''
 
     # Initialize both maps: active and historical
-    active_map = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
-    historical_map = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
+    active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
+    historical_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
     
     # Getting available base stations from azure container, for live search
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
@@ -94,7 +94,7 @@ def update_map():
     if not container_names:
         return jsonify({'error': 'No containers selected'}), 400
 
-    active_map = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
+    active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
     active_map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
     
     telemetry_data, _, all_blobs = retrieve_from_containers(active_map, STORAGE_CONNECTION_STRING, container_names, active_map_save_path)
@@ -190,7 +190,7 @@ def render_map():
     gps_points = json.loads(gps_data)  
 
     # Initialize map
-    m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
+    m = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
     
     # Render GPS points
     map_save_path = os.path.join(os.path.dirname(__file__), 'static/historical_map.html')

@@ -4,8 +4,9 @@ See RaspberryPi setup documentation in this directory's README.md.
 See requirements.txt
 
 Fred's TODO:
-TODO 1: Code that checks for types of telemetry received and dynamically builds the returning dictionary/Json.
-TODO 2: Print meaningful error messages and data to a log file in the event of a crash.
+TODO 1: Check that new longname entry works.
+TODO 2: Code that checks for types of telemetry received and dynamically builds the returning dictionary/Json.
+TODO 3: Print meaningful error messages and data to a log file in the event of a crash.
 
 Known Issues:
 ISSUE 1: Altitude is often read as ~40,000,000m on the tracker, but sometimes gives the correct altitude of ~3m.
@@ -125,8 +126,8 @@ def get_nodes(interface, latest_data):
     """Gets data from tracker via the base station, returns the data if it is new.
     
     Keyword arguments:
-    interface -- The Meshtastic serial interface that interacts with devices.
-    latest_data -- The most recently received data from the tracker.
+        interface -- The Meshtastic serial interface that interacts with devices.
+        latest_data -- The most recently received data from the tracker.
     Return: 0 if the data is the same as most recent data, or returns the new data if it is different.
     """
 
@@ -172,7 +173,7 @@ def get_nodes(interface, latest_data):
     battLevel = tracker['deviceMetrics']['batteryLevel']
     times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")
     new_data = {"name": TRACKER_ID, "time": times, "lat": coords[0], "long": coords[1], 
-                "telemetry": {"battery": battLevel, "altitude": " "}}
+                "telemetry": {"battery": battLevel, "altitude": " "}, "longname": BASE_STATION_LONG_NAME}
 
     try:        # Method to fix altitude bug.
         new_data["telemetry"]["altitude"] = tracker['position']['altitude']
@@ -185,7 +186,7 @@ def get_nodes(interface, latest_data):
 
 
 def get_nodes_verbose(interface):
-    """The same as the above function, except runs basic setup and prints results verbosely"""
+    """The same as get_nodes(), except runs basic setup and prints results verbosely"""
 
     # ---------- Checks serial connection has been maintained ---------- 
 
@@ -234,7 +235,7 @@ def get_nodes_verbose(interface):
     battLevel = tracker['deviceMetrics']['batteryLevel']
     times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")
     new_data = {"name": TRACKER_ID, "time": times, "lat": coords[0], "long": coords[1], 
-                "telemetry": {"battery": battLevel, "altitude": " "}}
+                "telemetry": {"battery": battLevel, "altitude": " "}, "longname": BASE_STATION_LONG_NAME}
 
     try:        # Method to fix altitude bug.
         new_data["telemetry"]["altitude"] = tracker['position']['altitude']
