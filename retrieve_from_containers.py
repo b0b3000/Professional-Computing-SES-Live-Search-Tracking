@@ -98,6 +98,10 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
         - STORAGE_CONNECTION_STRING (str): The connection string for the Azure storage account.
         - active_containers: a list of strings, of the names of the storage containers.
 
+    Returns:
+        - telemetry_data (list):
+        - map_save_path (str):
+        - all_blob_content (list):
     """
     # Initialize the BlobServiceClient
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
@@ -122,7 +126,6 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
             all_blob_content[blob.name] = blob_content
             process_data_to_map(blob_content, m, telemetry_data)
 
-
         except Exception as e:
             print(f"Error processing container '{container_name}': {e}")
             traceback.print_exc()
@@ -136,9 +139,9 @@ def mapify(geojson_data):
     Process and display GPS data with telemetry on the map.
     
     Returns:
-    - features (list): A list of GeoJSON features to add to the map.
-    - coordinates (list): A list of coordinate tuples for drawing a PolyLine.
-    - telemetry_list (list): A list of telemetry data points to be sent to the frontend.
+        - features (list): A list of GeoJSON features to add to the map.
+        - coordinates (list): A list of coordinate tuples for drawing a PolyLine.
+        - telemetry_list (list): A list of telemetry data points to be sent to the frontend.
     """
     
     if isinstance(geojson_data, bytes):
