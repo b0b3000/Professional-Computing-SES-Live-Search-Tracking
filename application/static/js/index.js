@@ -58,11 +58,16 @@ function displayTelemetryData(telemetryData) {
     if (timeDiff > 5) {
       card.style.border = "2px solid red";
     }
+    else {
+      card.style.border = "1px solid green";
+    }
 
     card.innerHTML = `
-      <p class="title">${entry.name}</p>
+      <p class="title">${entry.longname}</p>
       <p><strong>Device ID:</strong> ${entry.name}</p>
       <p><strong>Time:</strong> ${entry.time}</p>
+      <hr>
+      <p><strong>Coordinates:</strong> ${entry.lat}, ${entry.lon}</p>
       <hr>
       <p><strong>Battery Level:</strong> ${entry.telemetry.battery}%</p>
       <p><strong>Altitude:</strong> ${entry.telemetry.altitude}</p>

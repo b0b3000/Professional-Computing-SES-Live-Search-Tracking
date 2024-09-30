@@ -71,7 +71,6 @@ def process_data_to_map(data, map, telemetry_data=[] ):
     
 
 def retrieve_historical_data(m, gps_points, map_save_path):
-    
     """
     Retrieve and display historical GPS data on the map.
 
@@ -80,8 +79,6 @@ def retrieve_historical_data(m, gps_points, map_save_path):
         - gps_points: Historical GPS data.
         - map_save_path (str): Path to save the updated map.
     """
-    
-    
     # Process historical GPS data into the map
     process_data_to_map(gps_points, m, telemetry_data=[])
 
@@ -162,23 +159,24 @@ def mapify(geojson_data):
     for point in points:
         for _, point_data in point.items():
             lat = point_data.get('lat', 0.0)
-            long = point_data.get('long', 0.0)
+            lon = point_data.get('long', 0.0)
             name = point_data.get('name', 'Unnamed Point')
             time = point_data.get('time', '00:00:00T00:00:00')
             telemetry = point_data.get('telemetry', {})
-            coordinates.append([lat, long])
+            longname = point_data.get('longname')
+            coordinates.append([lat, lon])
 
             # Add the point as a GeoJSON `feature` (this will display points as an icon on map)
             features.append({
                 "type": "Feature",
                 "geometry": {
                     "type": "Point",
-                    "coordinates": [long, lat],
+                    "coordinates": [lon, lat],
                 },
                 "properties": {
                     "time": time,
                     "name": name,
-                    "tooltip": f"Name: {name}\nTime: {time}\nBattery: {telemetry.get('battery', 'N/A')}%",
+                    "tooltip": f"Name: {longname}\nID: {name}\nTime: {time}\nCoords: {[lon, lat]}\nBattery: {telemetry.get('battery', 'N/A')}%",
                     "telemetry": telemetry,
                 },
             })
@@ -187,7 +185,10 @@ def mapify(geojson_data):
             telemetry_list.append({
                 "name": name,
                 "time": time,
-                "telemetry": telemetry
+                "telemetry": telemetry,
+                "lon": lon,
+                "lat": lat,
+                "longname": longname
             })
 
     return features, coordinates, telemetry_list 
