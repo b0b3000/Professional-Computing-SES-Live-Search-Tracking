@@ -71,8 +71,6 @@ def index():
     historical_map_save_path = os.path.join(os.path.dirname(__file__), 'static/historical_map.html')
     historical_map.save(historical_map_save_path)
     
-    
-    
     # Render the template with maps and historical search data
     return render_template(
         'index.html',
