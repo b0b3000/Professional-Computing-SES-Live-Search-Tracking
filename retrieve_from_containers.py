@@ -31,41 +31,43 @@ class TrailColour(Enum):
     MAGENTA = "#FF33B8"
     LIME = "#A8FF33"
 
+
 def get_random_colour():
     """Chooses a random colour from the given enum.
     
        Returns: Hex string represnting the chosen colour"""
     return random.choice(list(TrailColour)).value
 
+
 def process_data_to_map(data, map, telemetry_data=[] ):
 
-    #Call mapify to process and get points and coordinates
-        features, coordinates, extracted_telemetry = mapify(data)
+    # Call mapify to process and get points and coordinates
+    features, coordinates, extracted_telemetry = mapify(data)
 
-        # taken from folium docs, stackoverflow, and integrated with the help of ChatGPT
-        # Add points to map using folium.Marker
-        for feature in features:
-            point_location = feature["geometry"]["coordinates"][::-1]  # Reversing [long, lat] to [lat, long]
-            folium.Marker(
-                location=point_location,
-                popup=feature["properties"]["tooltip"],
-                icon=folium.Icon(color="blue", icon="info-sign")
-            ).add_to(map)
+    # taken from folium docs, stackoverflow, and integrated with the help of ChatGPT
+    # Add points to map using folium.Marker
+    for feature in features:
+        point_location = feature["geometry"]["coordinates"][::-1]  # Reversing [long, lat] to [lat, long]
+        folium.Marker(
+            location=point_location,
+            popup=feature["properties"]["tooltip"],
+            icon=folium.Icon(color="blue", icon="info-sign")
+        ).add_to(map)
 
-        # Choose a colour for this trail
-        #TODO: pass in the last chosen colour and make it impossible to choose that again.
-        trail_colour = get_random_colour()
+    # Choose a colour for this trail
+    #TODO: pass in the last chosen colour and make it impossible to choose that again.
+    trail_colour = get_random_colour()
 
-        # Draw a line connecting coordinates
-        if coordinates:
-            folium.PolyLine(
-                locations=coordinates,
-                color=trail_colour,  # Assign a random color to each trail
-                weight=5,
-                opacity=0.7  
-            ).add_to(map)
+    # Draw a line connecting coordinates
+    if coordinates:
+        folium.PolyLine(
+            locations=coordinates,
+            color=trail_colour,  # Assign a random color to each trail
+            weight=5,
+            opacity=0.7  
+        ).add_to(map)
 
-        telemetry_data.extend(extracted_telemetry)
+    telemetry_data.extend(extracted_telemetry)
     
 
 def retrieve_historical_data(m, gps_points, map_save_path):
@@ -103,7 +105,6 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
     telemetry_data = []
     all_blob_content = {}
     for container_name in active_containers:
-        
         try:
             container_client = blob_service_client.get_container_client(container_name)
             if not container_client.exists():
@@ -119,16 +120,14 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
             blob = blobs_list[0]
             blob_content = container_client.download_blob(blob).readall()
             all_blob_content[blob.name] = blob_content
+            process_data_to_map(blob_content, m, telemetry_data)
+
 
         except Exception as e:
             print(f"Error processing container '{container_name}': {e}")
             traceback.print_exc()
     
-    
-    process_data_to_map(blob_content, m, telemetry_data)
-
     m.save(map_save_path)
-
     return telemetry_data, map_save_path, all_blob_content
         
         
@@ -190,7 +189,8 @@ def mapify(geojson_data):
 
     return features, coordinates, telemetry_list 
 
-#Testing purposes (Uncomment if needed to test)
+
+# Testing purposes (Uncomment if needed to test)
 # if __name__ == "__main__":
     
 #     active_containers = ['base-3200-b']  # Replace with the containers you want to test
