@@ -14,265 +14,182 @@
   <body>
     <header>GPS Data Visualization v2.0</header>
 
-<!-- Add the Tab Navigation -->
-<div class="tab">
-    <button class="tablinks" onclick="openTab(event, 'StartSearch')">Start Search</button>
-    <button class="tablinks" onclick="openTab(event, 'ActiveSearch')">Active Search</button>
-    <button class="tablinks" onclick="openTab(event, 'HistoricalData')">Historical Data</button>
-  </div>
+    <!-- Add the Tab Navigation -->
+    <div class="tab">
+      <button class="tablinks" onclick="openTab(event, 'StartSearch')">
+        Start Search
+      </button>
+      <button class="tablinks" onclick="openTab(event, 'ActiveSearch')">
+        Active Search
+      </button>
+      <button class="tablinks" onclick="openTab(event, 'HistoricalData')">
+        Historical Data
+      </button>
+    </div>
 
-  <!-- Start Search Tab Content -->
-<div id="StartSearch" class="tabcontent">
-    
-  
-    <!-- Main container to hold the map and telemetry panel -->
-    <div id="main-container">
-      <!-- Side panel to display searches -->
-      <div id="search-panel">
-        <h3>Searches</h3>
-        <div id="search-content">Select search</div>
+    <!-- Start Search Tab Content -->
+    <div id="StartSearch" class="tabcontent">
+      <!-- Main container to hold the map and telemetry panel -->
+      <div id="main-container">
+        <!-- Side panel to display searches -->
+        <div id="search-panel">
+        </div>
+
+        <!-- Wrapper div to hold the map and the controls -->
+        <div id="map-controls-wrapper">
+          <!-- Map container -->
+          <div id="map-container">
+            <iframe
+              src="{{ url_for('static', filename='footprint.html') }}"
+              width="100%"
+              height="100%"
+              id="map-iframe"
+              class="map-iframe"
+              >RENDER</iframe
+            >
+          </div>
+
+          <!-- Controls container -->
+          <div id="controls-container">
+            <!-- Dropdown for selecting Azure containers -->
+            <div id="container-selector">
+              <label>Select Base Stations:</label>
+              <div id="checkbox-container">
+                {% for container in container_names %}
+                <label>
+                  <input
+                    type="checkbox"
+                    class="container-checkbox"
+                    value="{{ container }}"
+                  />
+                  {{ container }}
+                </label>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- Search controls -->
+            <div id="user-buttons">
+              <div id="button-container">
+                <button id="start-search">Start Search</button>
+                <button id="end-search">End Search</button>
+              </div>
+              <button id="fetch-data-button">Fetch Latest GPS Data</button>
+            </div>
+
+            <!-- Table container -->
+            <div id="table-container">
+              <label>Download GPX Files:</label>
+              <br />
+              <a>Complete a search to create GPX files.</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side panel to display telemetry data -->
+        <div id="telemetry-panel">
+          <h3>Most Recent Pings</h3>
+          <p>
+            A base station outlined in red means the server has not received a
+            ping from it in over 5 minutes.
+          </p>
+          <div id="telemetry-content">
+            Displays the most recent pings from each base, fetch data to view.
+          </div>
+        </div>
       </div>
-  
-      <!-- Wrapper div to hold the map and the controls -->
-      <div id="map-controls-wrapper">
-        <!-- Map container -->
-        <div id="map-container">
+    </div>
+
+    <!-- Active Searches Tab Content -->
+    <div id="ActiveSearch" class="tabcontent">
+      <h2>Active Search</h2>
+      <p>Map and Telemetry data to be displayed here.</p>
+    </div>
+
+    <!-- Historical Data Tab Content -->
+    <div id="HistoricalData" class="tabcontent">
+      <h2>Search for Historical Data</h2>
+
+      <!-- Container for the left panel (filter + scrollable table) and right panel (map) -->
+      <div class="filter-map-container">
+        <!-- Left Panel: Filter + Scrollable List -->
+        <div class="left-panel">
+          <!-- Filter Panel -->
+          <div class="filter-box">
+            <h4>Filter Searches</h4>
+            <form method="POST" action="/filter-search">
+              <div class="filter-inputs">
+                <div class="filter-item">
+                  <label for="start-date">Start Date:</label>
+                  <input
+                    type="date"
+                    id="start-date"
+                    name="start-date"
+                    required
+                  />
+                </div>
+                <div class="filter-item">
+                  <label for="end-date">End Date:</label>
+                  <input type="date" id="end-date" name="end-date" />
+                </div>
+                <div class="filter-item">
+                  <label for="base-station">Base Station:</label>
+                  <select id="base-station" name="base-station" multiple>
+                    {% for station in base_stations %}
+                    <option value="{{ station }}">{{ station }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <input type="submit" class="filter-submit" value="Filter" />
+            </form>
+          </div>
+
+          <!-- Scrollable Table -->
+          <div class="scrollable-table">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Insert table data dynamically -->
+                {% if historical_searches != None %} {% for search in
+                historical_searches %}
+                <tr class="search-row" data-gps="{{ search[5] }}">
+                  <!-- JSON data is in search[5] -->
+                  <td>{{ search[0] }}</td>
+                  <td>{{ search[1] }}</td>
+                  <td>{{ search[2] }}</td>
+                  <td>{{ search[3] }}</td>
+                  <td>{{ search[4] }}</td>
+                </tr>
+                {% endfor %} {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Panel: Map -->
+        <div class="map-container">
+          <h3>Historical Map View</h3>
           <iframe
-            src="{{ url_for('static', filename='footprint.html') }}"
+            src="{{ url_for('static', filename='historical_map.html') }}"
             width="100%"
             height="100%"
-            id="map-iframe"
+            id="historical-map-iframe"
+            class="map-iframe"
             >RENDER</iframe
           >
         </div>
-  
-        <!-- Controls container -->
-        <div id="controls-container">
-          <!-- Dropdown for selecting Azure containers -->
-          <div id="container-selector">
-            <label>Select Base Stations:</label>
-            <div id="checkbox-container">
-              {% for container in container_names %}
-              <label>
-                <input
-                  type="checkbox"
-                  class="container-checkbox"
-                  value="{{ container }}"
-                />
-                {{ container }}
-              </label>
-              {% endfor %}
-            </div>
-          </div>
-  
-          <!-- Search controls -->
-          <div id="user-buttons">
-            <div id="button-container">
-              <button id="start-search">Start Search</button>
-              <button id="end-search">End Search</button>
-            </div>
-            <button id="fetch-data-button">Fetch Latest GPS Data</button>
-          </div>
-  
-          <!-- Table container -->
-          <div id="table-container">
-            <label>Download GPX Files:</label>
-            <br />
-            <a>Complete a search to create GPX files.</a>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Side panel to display telemetry data -->
-      <div id="telemetry-panel">
-        <h3>Most Recent Pings</h3>
-        <p>A base station outlined in red means the server has not received a ping from it in over 5 minutes.</p>
-        <div id="telemetry-content">
-        Displays the most recent pings from each base, fetch data to view.
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Active Searches Tab Content -->
-  <div id="ActiveSearch" class="tabcontent">
-    <h2>Active Search</h2>
-    <p> Map and Telemetry data to be displayed here.</p>
-  </div>
-  
-<!-- Historical Data Tab Content -->
-<div id="HistoricalData" class="tabcontent">
-  <h2>Search for Historical Data</h2>
-
-  <!-- Container for the left panel (filter + scrollable table) and right panel (map) -->
-  <div style="display: flex; width: 100%; height: 650px;">
-    
-    <!-- Left Panel: Filter + Scrollable List -->
-    <div class="left-panel">
-      
-      <!-- Filter Panel -->
-      <div class="filter-box">
-        <h4>Filter Searches</h4>
-        <form method="POST" action="/filter-search">
-            <div class="filter-inputs">
-                <div class="filter-item">
-                    <label for="start-date">Start Date:</label>
-                    <input type="date" id="start-date" name="start-date" required>
-                </div>
-                <div class="filter-item">
-                    <label for="end-date">End Date:</label>
-                    <input type="date" id="end-date" name="end-date">
-                </div>
-                <div class="filter-item">
-                    <label for="base-station">Base Station:</label>
-                    <select id="base-station" name="base-station" multiple>
-                        {% for station in base_stations %}
-                        <option value="{{ station }}">{{ station }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-            <input type="submit" class="filter-submit" value="Filter">
-        </form>
-      </div>
-
-      <!-- Scrollable Table -->
-      <div class="scrollable-table">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Start Time</th>
-              <th>End Time</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Insert table data dynamically -->
-            {% if historical_searches != None %}
-              {% for search in historical_searches %}
-              <tr class="search-row" data-gps="{{ search[5]}}">  <!-- JSON data is in search[5] -->
-                <td>{{ search[0] }}</td>
-                <td>{{ search[1] }}</td>
-                <td>{{ search[2] }}</td>
-                <td>{{ search[3] }}</td>
-                <td>{{ search[4] }}</td>
-              </tr>
-              {% endfor %}
-            {% endif %}
-          </tbody>
-        </table>
       </div>
     </div>
 
-    <!-- Right Panel: Map -->
-    <div class="map-container">
-      <h3>Historical Map View</h3>
-      <iframe
-        src="{{ url_for('static', filename='historical_map.html') }}" 
-        width="100%"
-        height="100%"
-        id="historical-map-iframe"
-      >RENDER</iframe>
-    </div>
-
-  </div>
-</div>
-  
-
-  <!-- JavaScript for Tabs -->
-  <script>
-    function openTab(evt, tabName) {
-      var i, tabcontent, tablinks;
-
-      // Hide all elements with class="tabcontent"
-      tabcontent = document.getElementsByClassName("tabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-      }
-
-      // Remove the "active" class from all tablinks
-      tablinks = document.getElementsByClassName("tablinks");
-      for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-      }
-
-      // Show the current tab, and add an "active" class to the button that opened the tab
-      document.getElementById(tabName).style.display = "block";
-      evt.currentTarget.className += " active";
-    }
-
-    // Automatically click on the first tab to show it by default
-    document.getElementsByClassName("tablinks")[0].click();
-  </script>
-
-  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
-
-  <script>
-    $(document).ready(function() {
-        // Handle form submission with AJAX
-        $('.filter-box form').on('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
-            
-            $.ajax({
-                type: 'POST',
-                url: '/filter-search',
-                data: $(this).serialize(), // Serialize form data
-                success: function(data) {
-                    // Clear existing rows in the table
-                    const tbody = $('.scrollable-table tbody');
-                    tbody.empty();
-
-                    // Iterate over the returned data to populate the table
-                    data.forEach(row => {
-                        const newRow = `<tr>
-                            <td>${row[0]}</td>
-                            <td>${row[1]}</td>
-                            <td>${row[4]}</td>
-                            <td>${row[2]}</td>
-                            <td>${row[3]}</td>
-                        </tr>`;
-                        tbody.append(newRow);
-                    });
-                },
-                error: function(error) {
-                    console.error("Error fetching data:", error);
-                }
-            });
-        });
-
-        // Automatically click on the first tab to show it by default
-        document.getElementsByClassName("tablinks")[0].click();
-    });
-</script>
-
-<script>
-  
-  document.querySelectorAll('.search-row').forEach(function(row) {
-    row.addEventListener('dblclick', function() {
-        const gpsData = this.getAttribute('data-gps');
-        
-        // Send AJAX request to the render-map route
-        $.ajax({
-            type: 'GET',
-            url: '/render-map',
-            data: { gps: gpsData },
-            success: function(response) {
-                // Update the iframe source to reload the updated map
-                document.getElementById('historical-map-iframe').src = response.map_path;
-            },
-            error: function(error) {
-                console.error("Error loading map:", error);
-            }
-        });
-    });
-});
-
-
-</script>
-
-
-
-</body>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+  </body>
 </html>

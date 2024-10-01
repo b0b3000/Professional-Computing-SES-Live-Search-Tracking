@@ -1,3 +1,85 @@
+// Tab handling logic
+function openTab(evt, tabName) {
+  var i, tabcontent, tablinks;
+
+  // Hide all elements with class="tabcontent"
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Remove the "active" class from all tablinks
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+// Automatically click on the first tab to show it by default
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementsByClassName("tablinks")[0].click();
+});
+
+// Handle form submission with AJAX
+$(document).ready(function () {
+  $(".filter-box form").on("submit", function (e) {
+    e.preventDefault(); // Prevent the default form submission
+
+    $.ajax({
+      type: "POST",
+      url: "/filter-search",
+      data: $(this).serialize(), // Serialize form data
+      success: function (data) {
+        const tbody = $(".scrollable-table tbody");
+        tbody.empty(); // Clear existing rows
+
+        // Populate table with returned data
+        data.forEach((row) => {
+          const newRow = `<tr>
+                      <td>${row[0]}</td>
+                      <td>${row[1]}</td>
+                      <td>${row[4]}</td>
+                      <td>${row[2]}</td>
+                      <td>${row[3]}</td>
+                  </tr>`;
+          tbody.append(newRow);
+        });
+      },
+      error: function (error) {
+        console.error("Error fetching data:", error);
+      },
+    });
+  });
+
+  // Automatically click the first tab
+  document.getElementsByClassName("tablinks")[0].click();
+});
+
+// Double-click event handler for search-row
+document.querySelectorAll(".search-row").forEach(function (row) {
+  row.addEventListener("dblclick", function () {
+    const gpsData = this.getAttribute("data-gps");
+
+    // AJAX request to render the map
+    $.ajax({
+      type: "GET",
+      url: "/render-map",
+      data: { gps: gpsData },
+      success: function (response) {
+        document.getElementById("historical-map-iframe").src =
+          response.map_path;
+      },
+      error: function (error) {
+        console.error("Error loading map:", error);
+      },
+    });
+  });
+});
+
 // Event listener for the button to fetch the latest GPS data
 document
   .getElementById("fetch-data-button")
@@ -34,16 +116,18 @@ document
       .catch((error) => console.error("Error updating map:", error));
   });
 
-
 // Displays latest ping from each base in a sidebar, with telemetry data.
 function displayTelemetryData(telemetryData) {
   const telemetryContent = document.getElementById("telemetry-content");
-  telemetryContent.innerHTML = "";    // Clear previous content
+  telemetryContent.innerHTML = ""; // Clear previous content
 
-  const latestPingsByBase = {};   // Stores only most recent ping for each base.
-  telemetryData.forEach(entry => {
+  const latestPingsByBase = {}; // Stores only most recent ping for each base.
+  telemetryData.forEach((entry) => {
     const baseName = entry.name;
-    if (!latestPingsByBase[baseName] || entry.time > latestPingsByBase[baseName].time) {
+    if (
+      !latestPingsByBase[baseName] ||
+      entry.time > latestPingsByBase[baseName].time
+    ) {
       latestPingsByBase[baseName] = entry;
     }
   });
@@ -57,8 +141,7 @@ function displayTelemetryData(telemetryData) {
     const timeDiff = (new Date() - new Date(entry.time)) / 60000;
     if (timeDiff > 5) {
       card.style.border = "2px solid red";
-    }
-    else {
+    } else {
       card.style.border = "1px solid green";
     }
 
@@ -77,7 +160,6 @@ function displayTelemetryData(telemetryData) {
   });
 }
 
-
 // Handle the start search button click
 document.getElementById("start-search").addEventListener("click", function () {
   fetch("/api/start-search", {
@@ -94,7 +176,6 @@ document.getElementById("start-search").addEventListener("click", function () {
     .catch((error) => console.error("Error starting search:", error));
 });
 
-
 // Handle the end search button click
 document.getElementById("end-search").addEventListener("click", function () {
   const mapContainer = document.getElementById("map-container");
@@ -107,11 +188,13 @@ document.getElementById("end-search").addEventListener("click", function () {
   fetch("/api/end-search", {
     method: "POST",
   })
-
     .then((response) => response.json())
     .then((data) => {
       alert("Search ended! Click below to download the GPX file.");
       console.log("End Search Response:", data);
+
+      // Remove the animated border class
+      mapContainer.classList.remove("search-running-animation");
 
       // Check if the download URL is present in the response
       if (!data.gpx_download_routes) {
@@ -119,9 +202,6 @@ document.getElementById("end-search").addEventListener("click", function () {
         alert("GPX download URL is missing. Please try again later.");
         return;
       }
-
-      // Remove the animated border class
-      mapContainer.classList.remove("search-running-animation");
 
       // Get the selected containers
       const selectedContainers = Array.from(
@@ -172,9 +252,7 @@ document.getElementById("end-search").addEventListener("click", function () {
         downloadButton.href = `/download/${route}`;
         downloadButton.download = `${route}_search_data.gpx`; // Suggest a filename for the GPX file
         cell2.appendChild(downloadButton);
-        
       });
-
     })
     .catch((error) => console.error("Error ending search:", error));
 });
