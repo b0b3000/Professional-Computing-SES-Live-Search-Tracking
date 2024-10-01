@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="gpx.py -- https://github.com/tkrajina/gpxpy">
+  <trk>
+    <trkseg>
+      <trkpt lat="-31.9775473" lon="115.8160611">
+        <time>2024-09-30T14:02:28</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949644</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9775428" lon="115.816094">
+        <time>2024-09-30T14:02:28</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949644</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.977627" lon="115.8161233">
+        <time>2024-09-30T14:02:58</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949641</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.977683" lon="115.8159081">
+        <time>2024-09-30T14:03:29</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949642</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9778573" lon="115.8158586">
+        <time>2024-09-30T14:03:59</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949640</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.977911" lon="115.81637">
+        <time>2024-09-30T14:04:30</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949645</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9775338" lon="115.8163681">
+        <time>2024-09-30T14:05:00</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949644</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9772655" lon="115.8165886">
+        <time>2024-09-30T14:05:30</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949638</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.977203" lon="115.8170513">
+        <time>2024-09-30T14:06:01</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949638</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9771908" lon="115.817381">
+        <time>2024-09-30T14:06:31</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949635</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.976994" lon="115.817863">
+        <time>2024-09-30T14:07:01</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949635</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9769925" lon="115.8182656">
+        <time>2024-09-30T14:07:32</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949632</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9775856" lon="115.8196571">
+        <time>2024-09-30T14:08:02</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949644</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9775976" lon="115.8191521">
+        <time>2024-09-30T14:08:33</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949655</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9775773" lon="115.8187813">
+        <time>2024-09-30T14:09:03</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949656</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.977587" lon="115.8184708">
+        <time>2024-09-30T14:09:33</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949654</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9777383" lon="115.8181085">
+        <time>2024-09-30T14:10:04</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949652</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.977916" lon="115.8177383">
+        <time>2024-09-30T14:10:34</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949652</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.977936" lon="115.8174318">
+        <time>2024-09-30T14:11:05</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949662</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9779983" lon="115.8170395">
+        <time>2024-09-30T14:11:35</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949667</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9779398" lon="115.816783">
+        <time>2024-09-30T14:12:05</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949668</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.977908" lon="115.8165083">
+        <time>2024-09-30T14:12:36</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949670</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9777985" lon="115.8163815">
+        <time>2024-09-30T14:13:06</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949669</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+      <trkpt lat="-31.9775768" lon="115.8163306">
+        <time>2024-09-30T14:13:37</time>
+        <extensions>
+          <TelemetryData>
+            <battery>42</battery>
+            <altitude>42949664</altitude>
+          </TelemetryData>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
