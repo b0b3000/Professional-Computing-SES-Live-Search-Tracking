@@ -45,6 +45,10 @@ def index():
         print(f"Error fetching base stations: {e}")
         base_stations = []
 
+    # Save the initial map (empty) to be displayed on the page
+    map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
+    active_map.save(map_save_path)
+
     # Fetch historical searches for the scrollable list
     try:
         historical_searches = historical_database.get_all_searches()
