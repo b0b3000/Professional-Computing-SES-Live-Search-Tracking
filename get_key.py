@@ -4,7 +4,7 @@
 # I have not yet figured out a way to access key vaults when testing locally - WORKING ON IT
 
 
-'''
+"""
 def get_blob_storage_key():
 
     # Retrieves key1 from the text file in this directory.
@@ -17,11 +17,13 @@ def get_blob_storage_key():
                 key = line.rstrip().split("key1:", 1)[1]
                 # Places the key in the correct position in the middle of connection string.
                 return conn_string[:69] + key + conn_string[69:]
-            
+ 
+"""
 def get_db_password():
     return "meshtastic2024!"
 
-'''
+
+
 from azure.identity import DefaultAzureCredential
 from azure.keyvault.secrets import SecretClient
 

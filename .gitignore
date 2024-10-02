@@ -9,3 +9,5 @@ keys.txt
 test.py
 .github/
 search_data
+application/static/footprint.html
+application/static/historical_map.html

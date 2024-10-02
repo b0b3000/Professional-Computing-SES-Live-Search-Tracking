@@ -45,10 +45,6 @@ def index():
         print(f"Error fetching base stations: {e}")
         base_stations = []
 
-    # Save the initial map (empty) to be displayed on the page
-    map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
-    active_map.save(map_save_path)
-
     # Fetch historical searches for the scrollable list
     try:
         historical_searches = historical_database.get_all_searches()
@@ -56,8 +52,9 @@ def index():
         print(f"Error fetching historical searches: {e}")
         historical_searches = []
 
-    # Save the maps to be displayed on the page
-    active_map_save_path = os.path.join(os.path.dirname(__file__), 'static/active_map.html')
+    
+    # Save the initial map (empty) to be displayed on the page
+    active_map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
     active_map.save(active_map_save_path)
 
     historical_map_save_path = os.path.join(os.path.dirname(__file__), 'static/historical_map.html')
@@ -228,6 +225,7 @@ def submit_date():
             row[2].strftime('%H:%M:%S'),  # Convert time to string
             row[3].strftime('%H:%M:%S'),  # Convert time to string
             row[4].strftime('%Y-%m-%d'),  # Convert date to string
+            row[5] # gpsData in JSON string
     
         )
         serializable_results.append(serializable_row)

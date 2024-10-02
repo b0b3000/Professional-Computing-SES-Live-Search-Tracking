@@ -39,7 +39,7 @@ $(document).ready(function () {
 
         // Populate table with returned data
         data.forEach((row) => {
-          const newRow = `<tr>
+          const newRow = `<tr class="search-row" data-gps='${row[5]}'> 
                       <td>${row[0]}</td>
                       <td>${row[1]}</td>
                       <td>${row[4]}</td>
@@ -47,7 +47,12 @@ $(document).ready(function () {
                       <td>${row[3]}</td>
                   </tr>`;
           tbody.append(newRow);
+          console.log("GPS Data 'new row': ", newRow);
         });
+
+        // Bind double-click event to new rows
+        bindRowDoubleClick();
+
       },
       error: function (error) {
         console.error("Error fetching data:", error);
@@ -59,26 +64,35 @@ $(document).ready(function () {
   document.getElementsByClassName("tablinks")[0].click();
 });
 
-// Double-click event handler for search-row
-document.querySelectorAll(".search-row").forEach(function (row) {
-  row.addEventListener("dblclick", function () {
-    const gpsData = this.getAttribute("data-gps");
+function bindRowDoubleClick() {
+  // Double-click event handler for search-row
+  document.querySelectorAll(".search-row").forEach(function (row) {
+    row.addEventListener("dblclick", function () {
+      const gpsData = this.getAttribute("data-gps");
+      console.log("GPS Data from getAttribute, before AJAX request: ", gpsData);
 
-    // AJAX request to render the map
-    $.ajax({
-      type: "GET",
-      url: "/render-map",
-      data: { gps: gpsData },
-      success: function (response) {
-        document.getElementById("historical-map-iframe").src =
-          response.map_path;
-      },
-      error: function (error) {
-        console.error("Error loading map:", error);
-      },
+      if (gpsData) {
+        // AJAX request to render the map
+        $.ajax({
+          type: "GET",
+          url: "/render-map",
+          data: { gps: gpsData },
+          success: function (response) {
+            document.getElementById("historical-map-iframe").src =
+              response.map_path;
+          },
+          error: function (error) {
+            console.error("Error loading map:", error);
+          },
+        });
+      } else {
+        console.error("No GPS data found for this row.");
+      }
     });
   });
-});
+}
+// Call the bindRowDoubleClick function on page load to bind existing rows
+bindRowDoubleClick();
 
 // Event listener for the button to fetch the latest GPS data
 document
