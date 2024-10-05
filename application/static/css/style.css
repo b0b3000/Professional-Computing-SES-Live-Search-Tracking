@@ -56,7 +56,6 @@ header {
   grid-template-columns: repeat(3, 1fr); /* Creates three equal-width columns */
   gap: 0px;
 }
-
 #checkbox-container {
   display: grid;
   grid-template-columns: 1fr;
@@ -73,6 +72,7 @@ header {
   align-items: center;
   justify-content: flex-start;
   padding: 10px;
+  padding-left: 20px;
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #f9f9f9;
@@ -82,18 +82,19 @@ header {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-#checkbox-container input[type="checkbox"] {
-  margin-right: 15px;
-}
-
-#checkbox-container span {
-  flex-grow: 1;
-  text-align: center;
-}
-
 #checkbox-container label:hover {
   background-color: #e0e0e0;
 }
+
+#checkbox-container .active {
+  background-color: #f57f00;
+  color: #e0e0e0;
+}
+
+#checkbox-container label.active:hover {
+  background-color: #f27201
+}
+
 
 #map-iframe {
   height: 97.5%;

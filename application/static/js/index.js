@@ -94,41 +94,47 @@ function bindRowDoubleClick() {
 // Call the bindRowDoubleClick function on page load to bind existing rows
 bindRowDoubleClick();
 
-// Event listener for the button to fetch the latest GPS data
-document
-  .getElementById("fetch-data-button")
-  .addEventListener("click", function () {
-    // Collect selected containers
-    const selectedContainers = Array.from(
-      document.querySelectorAll(".container-checkbox:checked"),
-    ).map((checkbox) => checkbox.value);
-
-    // Ensure at least one container is selected
-    if (selectedContainers.length === 0) {
-      alert("Please select at least one container.");
-      return;
-    }
-
-    // Send a request to the server to update the map based on the selected containers
-    fetch(`/api/update-map`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ containers: selectedContainers }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Fetched Data:", data); // Log the data to the console for inspection
-
-        // Display the telemetry data in a nicer format
-        displayTelemetryData(data.telemetry_data);
-
-        // Refresh the iframe to show the updated map
-        document.getElementById("map-iframe").src = data.map_path;
-      })
-      .catch((error) => console.error("Error updating map:", error));
+// Event listener for tile clicks
+document.querySelectorAll(".container-label").forEach(label => {
+  label.addEventListener("click", function () {
+    // Toggle the active class on click
+    label.classList.toggle("active");
   });
+});
+
+// Event listener for the button to fetch the latest GPS data
+document.getElementById("fetch-data-button").addEventListener("click", function () {
+  // Collect selected containers based on active class
+  const selectedContainers = Array.from(
+    document.querySelectorAll(".container-label.active")
+  ).map((label) => label.getAttribute("data-container"));
+
+  // Ensure at least one container is selected
+  if (selectedContainers.length === 0) {
+    alert("Please select at least one container.");
+    return;
+  }
+
+  // Send a request to the server to update the map based on the selected containers
+  fetch(`/api/update-map`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ containers: selectedContainers }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Fetched Data:", data); // Log the data to the console for inspection
+
+      // Display the telemetry data in a nicer format
+      displayTelemetryData(data.telemetry_data);
+
+      // Refresh the iframe to show the updated map
+      document.getElementById("map-iframe").src = data.map_path;
+    })
+    .catch((error) => console.error("Error updating map:", error));
+});
 
 // Displays latest ping from each base in a sidebar, with telemetry data.
 function displayTelemetryData(telemetryData) {
@@ -190,7 +196,7 @@ document.getElementById("start-search").addEventListener("click", function () {
     .catch((error) => console.error("Error starting search:", error));
 });
 
-// Handle the end search button click
+// Handle the end searh button click
 document.getElementById("end-search").addEventListener("click", function () {
   const mapContainer = document.getElementById("map-container");
 
@@ -217,10 +223,10 @@ document.getElementById("end-search").addEventListener("click", function () {
         return;
       }
 
-      // Get the selected containers
+      // Get the selected containers based on the active class
       const selectedContainers = Array.from(
-        document.querySelectorAll(".container-checkbox:checked"),
-      ).map((checkbox) => checkbox.value);
+        document.querySelectorAll(".container-label.active") // Updated selector
+      ).map((label) => label.getAttribute("data-container"));
 
       // Log selected containers for debugging
       console.log("Selected Containers:", selectedContainers);
@@ -235,7 +241,7 @@ document.getElementById("end-search").addEventListener("click", function () {
         if (
           linkToRemove &&
           linkToRemove.textContent.includes(
-            "Complete a search to create GPX files",
+            "Complete a search to create GPX files"
           )
         ) {
           linkToRemove.remove();
