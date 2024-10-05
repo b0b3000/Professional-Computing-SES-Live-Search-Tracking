@@ -40,7 +40,7 @@ $(document).ready(function () {
         // Populate table with returned data
         data.forEach((row) => {
 
-          const newRow = `<tr class='search-row' data-gps='${row[7]}'>
+          const newRow = `<tr class='search-row' session_id='${row[0]}' base_station ='${row[1]}'>
 
 
                       <td>${row[0]}</td>
@@ -75,13 +75,16 @@ $(document).ready(function () {
   document.querySelectorAll(".search-row").forEach(function (row) {
     const displayButton = row.querySelector("#display-historical-button");
     displayButton.addEventListener("click", function () {
-      const gpsData = row.getAttribute("data-gps");
+      session_id = row.getAttribute("session_id");
+      base_station = row.getAttribute("base_station");
+      alert(session_id);
+      alert(base_station);
 
       // AJAX request to render the map
       $.ajax({
         type: "GET",
         url: "/render-map",
-        data: { gps: gpsData },
+        data: {session_id: session_id, base_station: base_station},
         success: function (response) {
           document.getElementById("historical-map-iframe").src =
             response.map_path;

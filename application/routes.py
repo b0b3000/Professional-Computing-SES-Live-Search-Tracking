@@ -221,10 +221,21 @@ def end_search():
 @app.route('/render-map')
 def render_map():
     
-    gps_data = request.args.get('gps')
+    session_id = request.args.get('session_id')
+    base_station = request.args.get('base_station')
+
+    print(session_id, base_station)
+
+    gps_data = historical_database.get_live_searches(session_id, [base_station])
+    print(gps_data)
+    print(type(gps_data))
+
+    if not gps_data:
+        return jsonify({'error': 'No GPS data to convert'}), 400
     
     # Ensures the GPS data is in the correct format
-    gps_points = json.loads(gps_data)  
+    gps_points = json.loads(gps_data[base_station])
+    #gps_points = gps_data
 
     # Initialize map
     m = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)

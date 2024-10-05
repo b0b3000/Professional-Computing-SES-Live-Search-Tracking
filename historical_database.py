@@ -100,7 +100,7 @@ def get_live_searches(session_id, base_stations):
         json_data = {}
         for base_station in base_stations:
             # SQL query to filter searches based on session_id and base station
-            query = "SELECT gps_JSON FROM search_history WHERE session_id = ? AND base_station = ?"
+            query = "SELECT gps_JSON FROM search_history WHERE session_id = CAST(? AS VARCHAR) AND base_station = CAST(? AS VARCHAR)"
 
             cursor.execute(query, (session_id, base_station))
             json_data[base_station] = cursor.fetchall()[0].gps_JSON
