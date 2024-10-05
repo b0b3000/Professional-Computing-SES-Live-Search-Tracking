@@ -38,6 +38,8 @@ def get_random_colour():
        Returns: Hex string represnting the chosen colour"""
     return random.choice(list(TrailColour)).value
 
+  # Global list to store all coordinates
+all_coordinates = []
 
 def process_data_to_map(data, map, telemetry_data=[] ):
 
@@ -66,6 +68,19 @@ def process_data_to_map(data, map, telemetry_data=[] ):
             weight=5,
             opacity=0.7  
         ).add_to(map)
+
+        # Add the current coordinates to the global list
+        all_coordinates.extend(coordinates)
+
+        # Calculate the average latitude and longitude from all coordinates
+        avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
+        avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
+
+        # Update the map center to the average lat/long
+        map.location = [avg_lat, avg_long]
+
+        # Adjust the map zoom to fit all coordinates
+        map.fit_bounds([(lat, long) for lat, long in all_coordinates])
 
     telemetry_data.extend(extracted_telemetry)
     
