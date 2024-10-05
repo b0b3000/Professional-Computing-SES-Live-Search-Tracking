@@ -58,11 +58,32 @@ header {
 }
 
 #checkbox-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
   overflow-y: auto;
 }
 
+
 #checkbox-container label {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#checkbox-container label:hover {
+  background-color: #e0e0e0;
 }
 
 #map-iframe {
@@ -98,7 +119,7 @@ header {
 
 /* Sidebar styling */
 #telemetry-panel,
-#search-panel {
+#select-panel {
   width: 300px; /* Fixed width for sidebars */
   height: 100vh; /* Take up full height of the viewport */
   background-color: #f7f7f7;
@@ -133,7 +154,6 @@ header {
 }
 
 /* Azure container and search controls styling */
-#container-selector,
 #table-container {
   padding: 10px;
 }

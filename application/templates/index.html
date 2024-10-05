@@ -31,8 +31,21 @@
     <div id="StartSearch" class="tabcontent">
       <!-- Main container to hold the map and telemetry panel -->
       <div id="main-container">
-        <!-- Side panel to display searches -->
-        <div id="search-panel">
+        <!-- Side panel for selecting base stations -->
+        <div id="select-panel">
+          <h3>Select Base Stations</h3>
+              <div id="checkbox-container">
+                {% for container in container_names %}
+                <label>
+                  <input
+                    type="checkbox"
+                    class="container-checkbox"
+                    value="{{ container }}"
+                  />
+                  {{ container }}
+                </label>
+                {% endfor %}
+              </div>
         </div>
 
         <!-- Wrapper div to hold the map and the controls -->
@@ -51,21 +64,9 @@
 
           <!-- Controls container -->
           <div id="controls-container">
-            <!-- Dropdown for selecting Azure containers -->
+            <!-- Placeholder to maintain columns - maybe fill this with a 'how to' -->
             <div id="container-selector">
-              <label>Select Base Stations:</label>
-              <div id="checkbox-container">
-                {% for container in container_names %}
-                <label>
-                  <input
-                    type="checkbox"
-                    class="container-checkbox"
-                    value="{{ container }}"
-                  />
-                  {{ container }}
-                </label>
-                {% endfor %}
-              </div>
+
             </div>
 
             <!-- Search controls -->
