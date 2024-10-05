@@ -23,6 +23,33 @@ from to_gpx import convert_json_to_gpx_string
 
 STORAGE_CONNECTION_STRING = get_key.get_blob_storage_key()
 
+def get_presentable_historical_data(selected_base_stations, start_date="2024-01-01", end_date="9999-01-01"):
+    results = historical_database.get_historical_searches(start_date, end_date, selected_base_stations)
+    
+    # Convert results to serializable format
+    serializable_results = []
+    for row in results:
+
+        filename = f'{row[0]}.gpx' # Contains search ID for file name  
+        with open(filename, 'w') as outfile:
+
+            if type(row[6]) == str:
+                outfile.write(row[6]) # row[6] is GPX data
+
+        serializable_row = (
+            row[0],  # Assuming ID is already a string
+            row[1],  # Base station
+            row[2].strftime('%H:%M:%S'),  # Convert time to string
+            row[3].strftime('%H:%M:%S'),  # Convert time to string
+            row[4].strftime('%Y-%m-%d'),  # Convert date to string
+            f"<a href='/download/{filename}' download='{filename}'>Download Data</a>", #Download Link
+            f'<button id="display-historical-button">Display</button>', # Button"
+            row[5] #GPS data
+        )
+        serializable_results.append(serializable_row)
+    
+    return serializable_results
+
 @app.route('/')
 def index():
     '''Default view for landing page of web inteface. This is where the user first gets taken on the app.
@@ -51,7 +78,9 @@ def index():
 
     # Fetch historical searches for the scrollable list
     try:
-        historical_searches = historical_database.get_all_searches()
+        #historical_searches = historical_database.get_all_searches()
+        historical_searches = get_presentable_historical_data(base_stations)
+
     except Exception as e:
         print(f"Error fetching historical searches: {e}")
         historical_searches = []
@@ -92,7 +121,16 @@ def update_map():
     telemetry_data, _, all_blobs = retrieve_from_containers(active_map, STORAGE_CONNECTION_STRING, container_names, active_map_save_path)
 
     # Update session-specific GPS data
-    session['gps_data'] = all_blobs
+    session['base_stations'] = list(all_blobs.keys())
+    #replace existing row in DB
+    update_dict = dict(
+        start_time=session["start_time"], 
+        session_id=session["session_id"], 
+        gps_data=all_blobs
+        )
+
+    historical_database.upload_search_data(update_dict, True)
+
 
     # Return a response indicating where the updated map is saved and include telemetry data
     return jsonify({
@@ -112,9 +150,7 @@ def start_search():
 
     # Store session data in Flask session
     session['session_id'] = session_id
-    session['search_date'] = datetime.now().strftime('%Y-%m-%d')
     session['start_time'] = datetime.now().strftime('%H:%M:%S')
-    session['gps_data'] = {}  # Initialize an empty dict for GPS data
     
     return jsonify({'message': 'Search started', 'session_id': session_id})
 
@@ -129,52 +165,58 @@ def end_search():
     if not session_id:
         return jsonify({'error': 'No active search session'}), 400
 
-    session["end_time"] = datetime.now().strftime('%H:%M:%S')
+    end_time_dt = datetime.now().strftime('%H:%M:%S')
+    search_date_dt = datetime.now().strftime('%Y-%m-%d')
 
-    if not session.get("gps_data"):
+    json_gps_data = historical_database.get_live_searches(session["session_id"], session["base_stations"])
+
+    if not json_gps_data:
         return jsonify({'error': 'No GPS data to convert'}), 400
 
     # Translate all blobs into GPX string and store in a dictionary
-    gpx_data = {}
-    for blob_name, blob_content in session.get("gps_data").items():
+    gpx_data_dict = {}
+    for blob_name, blob_content in json_gps_data.items():
         try:
             if isinstance(blob_content, bytes):
                 decoded_content = blob_content.decode('utf-8')
             else:
                 decoded_content = blob_content
             json_data = json.loads(decoded_content.replace("'", '"'))
-            gpx_string = convert_json_to_gpx_string(json_data)
-            gpx_data[blob_name] = gpx_string
+             
+            gpx_string = convert_json_to_gpx_string(json_data) #replace back to
+            gpx_data_dict[blob_name] = gpx_string
 
         except Exception as e:
             print(f"Error converting blob '{blob_name}' to GPX: {e}")
             traceback.print_exc()
 
-    # Now we got a dict 'gpx_data' containing GPX strings for each blob
+    # Now we got a dict 'gpx_data_dict' containing GPX strings for each blob
+    
+    update_db_dict = dict(
+        session_id = session["session_id"],
+        start_time = session["start_time"],
+        end_time = end_time_dt,
+        search_date = search_date_dt,
+        gpx_data = gpx_data_dict,
+        gps_data = json_gps_data
 
-    # Store GPX data in session
-    session["gpx_data"] = gpx_data
-    print('session["gpx_data"]', session["gpx_data"])
-    print("gpx_data", gpx_data)
+    )
+        
+    historical_database.upload_search_data(update_db_dict)
 
     gpx_filenames = []
-    for gpx in gpx_data:
+    for gpx in gpx_data_dict:
         # Save= GPX data to a file
         filename = f'{gpx}.gpx'
         gpx_filenames.append(filename)
 
         with open(filename, 'w') as outfile:
-            outfile.write(gpx_data[gpx])
-
-    # Save search data to the database (pass gpx_data if needed)
-    historical_database.upload_search_data(session)
+            outfile.write(gpx_data_dict[gpx])
 
     # Clear global dict ready for the next search
-    session.pop('gps_data', None)
     session.pop('session_id', None)
     session.pop('start_time', None)
-    session.pop('end_time', None)
-    session.pop('search_date', None)
+    session.pop('base_stations', None)
     print("SEARCH ENDED, ", gpx_filenames)
     return jsonify({'message': 'Search ended', 'gpx_download_routes' : gpx_filenames})
 
@@ -214,22 +256,10 @@ def download_gpx(filename):
 def submit_date():
     # These two values are from the inputs from the web app, index
     start_date = request.form.get('start-date')
+
     end_date = request.form.get('end-date')
     selected_base_stations = request.form.getlist('base-station')
     
-    results = historical_database.get_historical_searches(start_date, end_date, selected_base_stations)
-    
-    # Convert results to serializable format
-    serializable_results = []
-    for row in results:
-        serializable_row = (
-            row[0],  # Assuming ID is already a string
-            row[1],  # Base station
-            row[2].strftime('%H:%M:%S'),  # Convert time to string
-            row[3].strftime('%H:%M:%S'),  # Convert time to string
-            row[4].strftime('%Y-%m-%d'),  # Convert date to string
-    
-        )
-        serializable_results.append(serializable_row)
+    serializable_results = get_presentable_historical_data(selected_base_stations, start_date, end_date)
 
     return jsonify(serializable_results)

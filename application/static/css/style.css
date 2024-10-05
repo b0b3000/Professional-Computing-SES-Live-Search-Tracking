@@ -233,10 +233,11 @@ html, body {
 }
 
 .left-panel {
-  flex: 1; /* Takes up 1/3rd of the container width */
+  flex: 1.5; /* Takes up 1/3rd of the container width */
   display: flex;
   flex-direction: column;
   margin-right: 20px; /* Adds space between the table and the map */
+  margin-left: 10px;
 }
 
 .scrollable-table {
@@ -246,8 +247,9 @@ html, body {
 }
 
 .map-container {
-  flex: 2; /* Takes up the remaining 2/3rd of the space */
+  flex: 1.5; /* Takes up the remaining 2/3rd of the space */
   height: 600px;
+  padding-right: 10px;
 }
 
 .table {
@@ -259,15 +261,15 @@ html, body {
 
 .table th, .table td {
   padding: 6px 8px;
-  text-align: left;
+  text-align: center;
   border-bottom: 1px solid #ddd;
 }
 
 .table th {
   background-color: #eeaf6f;
   color: #ffffff;
-  text-align: left;
-  position: sticky;
+  text-align: center;
+  position: relative;
   top: 0;
 }
 
@@ -275,9 +277,7 @@ html, body {
   background-color: #f8eddb;
 }
 
-.table td {
-  width: calc(100% / 5); /* Stretch each column evenly */
-}
+
 
 .table tbody tr:hover {
   background-color: #f1f1f1; /* Adds a hover effect */
@@ -292,7 +292,6 @@ html, body {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
   width: 100%; /* calc(33% - 40px); Take up the same width as the table */
   box-sizing: border-box;
-
 }
 
 .filter-inputs {

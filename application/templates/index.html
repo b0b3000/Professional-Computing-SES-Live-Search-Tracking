@@ -155,19 +155,23 @@
                   <th>Start Time</th>
                   <th>End Time</th>
                   <th>Date</th>
+                  <th>GPX Data</th>
+                  <th>Display Search</th>
                 </tr>
               </thead>
               <tbody>
                 <!-- Insert table data dynamically -->
                 {% if historical_searches != None %} {% for search in
                 historical_searches %}
-                <tr class="search-row" data-gps="{{ search[5] }}">
-                  <!-- JSON data is in search[5] -->
+                <tr class="search-row" data-gps="{{ search[7] }}">
+                  <!-- JSON data is in search[7] -->
                   <td>{{ search[0] }}</td>
                   <td>{{ search[1] }}</td>
                   <td>{{ search[2] }}</td>
                   <td>{{ search[3] }}</td>
                   <td>{{ search[4] }}</td>
+                  <td>{{ search[5] | safe }}</td>
+                  <td>{{ search[6] | safe }}</td>
                 </tr>
                 {% endfor %} {% endif %}
               </tbody>
