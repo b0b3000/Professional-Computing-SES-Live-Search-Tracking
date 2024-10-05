@@ -8,3 +8,5 @@ sqlalchemy
 python-dotenv
 pyodbc
 gpxpy
+selenium
+pytest
