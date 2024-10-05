@@ -38,7 +38,7 @@ def get_random_colour():
        Returns: Hex string represnting the chosen colour"""
     return random.choice(list(TrailColour)).value
 
-  # Global list to store all coordinates
+# Global list to store all coordinates
 all_coordinates = []
 
 def process_data_to_map(data, map, telemetry_data=[] ):
@@ -71,16 +71,6 @@ def process_data_to_map(data, map, telemetry_data=[] ):
 
         # Add the current coordinates to the global list
         all_coordinates.extend(coordinates)
-
-        # Calculate the average latitude and longitude from all coordinates
-        avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
-        avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
-
-        # Update the map center to the average lat/long
-        map.location = [avg_lat, avg_long]
-
-        # Adjust the map zoom to fit all coordinates
-        map.fit_bounds([(lat, long) for lat, long in all_coordinates])
 
     telemetry_data.extend(extracted_telemetry)
     
@@ -115,6 +105,11 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
         - map_save_path (str):
         - all_blob_content (list):
     """
+
+    # Clear all_coordinates to ensure fresh updates
+    global all_coordinates
+    all_coordinates.clear()
+
     # Initialize the BlobServiceClient
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
 
@@ -142,6 +137,16 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
             print(f"Error processing container '{container_name}': {e}")
             traceback.print_exc()
     
+    # Calculate the average latitude and longitude from all coordinates
+    avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
+    avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
+
+    # Update the map center to the average lat/long
+    m.location = [avg_lat, avg_long]
+
+    # Adjust the map zoom to fit all coordinates
+    m.fit_bounds([(lat, long) for lat, long in all_coordinates])
+
     m.save(map_save_path)
     return telemetry_data, map_save_path, all_blob_content
         
