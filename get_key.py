@@ -2,7 +2,7 @@
 #USE THE FIRST FUNCTION FOR LOCAL TESTING
 #USE THE SECOND FUNCTION FOR AZURE WEB APP
 # I have not yet figured out a way to access key vaults when testing locally - WORKING ON IT
-
+"""
 
 
 def get_blob_storage_key():
@@ -60,4 +60,4 @@ def get_db_password():
     password = retrieved_secret.value.rstrip()
 
     print("Password: ", password, ", should be meshtastic2024!")
-    return password"""
+    return password
