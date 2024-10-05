@@ -27,16 +27,16 @@ header {
 /* Wrapper to stack map-container and controls-container vertically */
 #map-controls-wrapper {
   display: flex;
-  flex-direction: column; /* Stack map and controls vertically */
-  flex-grow: 2; /* Allows the map-controls section to expand and fit the available space */
-  width: 100%; /* Ensures the wrapper takes up the full width between the panels */
+  flex-direction: column;
+  flex-grow: 2;
+  width: 100%;
   padding: 0;
   margin: 0;
 }
 
 /* Map styling */
 #map-container {
-  flex-grow: 1; /* Map will take up as much space as available above the controls */
+  flex-grow: 1;
   position: relative;
   width: 100%;
   height: 85%;
@@ -62,11 +62,11 @@ header {
   grid-template-columns: 1fr;
   gap: 2px;
   padding: 10px;
+  padding-top: 0;
   width: 100%;
   box-sizing: border-box;
   overflow-y: auto;
 }
-
 
 #checkbox-container label {
   display: flex;
@@ -80,6 +80,15 @@ header {
   transition: background-color 0.3s ease;
   margin-bottom: 2px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#checkbox-container input[type="checkbox"] {
+  margin-right: 15px;
+}
+
+#checkbox-container span {
+  flex-grow: 1;
+  text-align: center;
 }
 
 #checkbox-container label:hover {
