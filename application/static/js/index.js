@@ -77,8 +77,6 @@ $(document).ready(function () {
     displayButton.addEventListener("click", function () {
       session_id = row.getAttribute("session_id");
       base_station = row.getAttribute("base_station");
-      alert(session_id);
-      alert(base_station);
 
       // AJAX request to render the map
       $.ajax({
