@@ -39,7 +39,10 @@ $(document).ready(function () {
 
         // Populate table with returned data
         data.forEach((row) => {
+
           const newRow = `<tr class='search-row' data-gps='${row[7]}'>
+
+
                       <td>${row[0]}</td>
                       <td>${row[1]}</td>
                       <td>${row[4]}</td>
@@ -49,8 +52,11 @@ $(document).ready(function () {
                       <td>${row[6]}</td>    
                   </tr>`;
           tbody.append(newRow);
+          console.log("GPS Data 'new row': ", newRow);
         });
+
         attachButtonListeners();
+
       },
       error: function (error) {
         console.error("Error fetching data:", error);
@@ -61,6 +67,7 @@ $(document).ready(function () {
   // Automatically click the first tab
   document.getElementsByClassName("tablinks")[0].click();
 });
+
 
 // This is in a function and then immeadiately called so its called once for the initial buttons (all searches),
 // And again each time search filters are applied
@@ -87,7 +94,6 @@ $(document).ready(function () {
   });
 }
 attachButtonListeners();
-
 
 // Event listener for the button to fetch the latest GPS data
 document
