@@ -180,7 +180,6 @@ header {
   justify-content: space-between;
   width: 100%;
   height: auto;
-  margin: 0;
 }
 
 #start-search,
@@ -188,7 +187,7 @@ header {
 #fetch-data-button {
   width: 50%;
   padding: 10px;
-  background-color: #4caf50;
+
   color: #333;
   border: none;
   text-align: center;
@@ -197,23 +196,55 @@ header {
   box-sizing: border-box; /* Ensures padding doesn't exceed width */
 }
 
+#start-search,
+#end-search,
+#fetch-data-button {
+  width: 50%;
+  padding: 10px;
+
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 #start-search {
-  background-color: #4caf50;
+  border-radius: 5px 0 0 5px;
+  border-right: none;
+  margin-right: 0;
 }
 
 #end-search {
-  background-color: #e07070;
+  border-radius: 0 5px 5px 0;
+  border-left: none;
+  margin-left: 0;
 }
 
 #fetch-data-button {
+  margin-top: 5px;
   width: 100%;
-  background-color: #c1c1c1;
 }
 
-#start-search:hover,
-#end-search:hover,
 #fetch-data-button:hover {
-  opacity: 0.7;
+  background-color: #e0e0e0;
+}
+
+.ready {
+  background-color: #f57f00 !important;
+  color: #e0e0e0 !important;
+}
+
+.ready:hover {
+  background-color: #f27201 !important;
+}
+
+.disabled {
+  background-color: #aaaaaa !important;
+  color: #3c3c3c !important;
+  cursor: not-allowed !important;
 }
 
 /* Style the tab */

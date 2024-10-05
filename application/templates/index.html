@@ -55,7 +55,6 @@
               >RENDER</iframe
             >
           </div>
-
           <!-- Controls container -->
           <div id="controls-container">
             <!-- Placeholder to maintain columns - maybe fill this with a 'how to' -->
@@ -64,12 +63,13 @@
             <!-- Search controls -->
             <div id="user-buttons">
               <div id="button-container">
-                <button id="start-search">Start Search</button>
-                <button id="end-search">End Search</button>
+                <button id="start-search" class="ready">Start Search</button>
+                <button id="end-search" class="disabled" disabled>
+                  End Search
+                </button>
               </div>
               <button id="fetch-data-button">Fetch Latest GPS Data</button>
             </div>
-
             <!-- Table container -->
             <div id="table-container">
               <label>Download GPX Files:</label>

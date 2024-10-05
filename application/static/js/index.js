@@ -193,6 +193,13 @@ document.getElementById("start-search").addEventListener("click", function () {
       document
         .getElementById("map-container")
         .classList.add("search-running-animation");
+      document.getElementById("end-search").disabled = false;
+      document.getElementById("end-search").classList.remove("disabled");
+      document.getElementById("end-search").classList.add("ready");
+
+      document.getElementById("start-search").disabled = true;
+      document.getElementById("start-search").classList.remove("ready");
+      document.getElementById("start-search").classList.add("disabled");
     })
     .catch((error) => console.error("Error starting search:", error));
 });
@@ -216,6 +223,13 @@ document.getElementById("end-search").addEventListener("click", function () {
 
       // Remove the animated border class
       mapContainer.classList.remove("search-running-animation");
+      document.getElementById("end-search").disabled = true;
+      document.getElementById("end-search").classList.remove("ready");
+      document.getElementById("end-search").classList.add("disabled");
+
+      document.getElementById("start-search").disabled = false;
+      document.getElementById("start-search").classList.remove("disabled");
+      document.getElementById("start-search").classList.add("ready");
 
       // Check if the download URL is present in the response
       if (!data.gpx_download_routes) {
