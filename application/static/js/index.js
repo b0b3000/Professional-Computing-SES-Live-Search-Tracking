@@ -50,8 +50,7 @@ $(document).ready(function () {
           console.log("GPS Data 'new row': ", newRow);
         });
 
-        // Bind double-click event to new rows
-        bindRowDoubleClick();
+        attachButtonListeners();
       },
       error: function (error) {
         console.error("Error fetching data:", error);
@@ -63,35 +62,33 @@ $(document).ready(function () {
   document.getElementsByClassName("tablinks")[0].click();
 });
 
-function bindRowDoubleClick() {
-  // Double-click event handler for search-row
-  document.querySelectorAll(".search-row").forEach(function (row) {
-    row.addEventListener("dblclick", function () {
-      const gpsData = this.getAttribute("data-gps");
-      console.log("GPS Data from getAttribute, before AJAX request: ", gpsData);
 
-      if (gpsData) {
-        // AJAX request to render the map
-        $.ajax({
-          type: "GET",
-          url: "/render-map",
-          data: { gps: gpsData },
-          success: function (response) {
-            document.getElementById("historical-map-iframe").src =
-              response.map_path;
-          },
-          error: function (error) {
-            console.error("Error loading map:", error);
-          },
-        });
-      } else {
-        console.error("No GPS data found for this row.");
-      }
+// This is in a function and then immeadiately called so its called once for the initial buttons (all searches),
+// And again each time search filters are applied
+function attachButtonListeners(){
+  document.querySelectorAll(".search-row").forEach(function (row) {
+    const displayButton = row.querySelector("#display-historical-button");
+    displayButton.addEventListener("click", function () {
+      session_id = row.getAttribute("session_id");
+      base_station = row.getAttribute("base_station");
+
+      // AJAX request to render the map
+      $.ajax({
+        type: "GET",
+        url: "/render-map",
+        data: {session_id: session_id, base_station: base_station},
+        success: function (response) {
+          document.getElementById("historical-map-iframe").src =
+            response.map_path;
+        },
+        error: function (error) {
+          console.error("Error loading map:", error);
+        },
+      });
     });
   });
 }
-// Call the bindRowDoubleClick function on page load to bind existing rows
-bindRowDoubleClick();
+attachButtonListeners();
 
 // Event listener for tile clicks
 document.querySelectorAll(".container-label").forEach((label) => {
