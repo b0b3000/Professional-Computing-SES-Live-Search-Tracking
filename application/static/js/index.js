@@ -52,7 +52,6 @@ $(document).ready(function () {
 
         // Bind double-click event to new rows
         bindRowDoubleClick();
-
       },
       error: function (error) {
         console.error("Error fetching data:", error);
@@ -95,7 +94,7 @@ function bindRowDoubleClick() {
 bindRowDoubleClick();
 
 // Event listener for tile clicks
-document.querySelectorAll(".container-label").forEach(label => {
+document.querySelectorAll(".container-label").forEach((label) => {
   label.addEventListener("click", function () {
     // Toggle the active class on click
     label.classList.toggle("active");
@@ -103,38 +102,40 @@ document.querySelectorAll(".container-label").forEach(label => {
 });
 
 // Event listener for the button to fetch the latest GPS data
-document.getElementById("fetch-data-button").addEventListener("click", function () {
-  // Collect selected containers based on active class
-  const selectedContainers = Array.from(
-    document.querySelectorAll(".container-label.active")
-  ).map((label) => label.getAttribute("data-container"));
+document
+  .getElementById("fetch-data-button")
+  .addEventListener("click", function () {
+    // Collect selected containers based on active class
+    const selectedContainers = Array.from(
+      document.querySelectorAll(".container-label.active"),
+    ).map((label) => label.getAttribute("data-container"));
 
-  // Ensure at least one container is selected
-  if (selectedContainers.length === 0) {
-    alert("Please select at least one container.");
-    return;
-  }
+    // Ensure at least one container is selected
+    if (selectedContainers.length === 0) {
+      alert("Please select at least one container.");
+      return;
+    }
 
-  // Send a request to the server to update the map based on the selected containers
-  fetch(`/api/update-map`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ containers: selectedContainers }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Fetched Data:", data); // Log the data to the console for inspection
-
-      // Display the telemetry data in a nicer format
-      displayTelemetryData(data.telemetry_data);
-
-      // Refresh the iframe to show the updated map
-      document.getElementById("map-iframe").src = data.map_path;
+    // Send a request to the server to update the map based on the selected containers
+    fetch(`/api/update-map`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ containers: selectedContainers }),
     })
-    .catch((error) => console.error("Error updating map:", error));
-});
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Fetched Data:", data); // Log the data to the console for inspection
+
+        // Display the telemetry data in a nicer format
+        displayTelemetryData(data.telemetry_data);
+
+        // Refresh the iframe to show the updated map
+        document.getElementById("map-iframe").src = data.map_path;
+      })
+      .catch((error) => console.error("Error updating map:", error));
+  });
 
 // Displays latest ping from each base in a sidebar, with telemetry data.
 function displayTelemetryData(telemetryData) {
@@ -225,7 +226,7 @@ document.getElementById("end-search").addEventListener("click", function () {
 
       // Get the selected containers based on the active class
       const selectedContainers = Array.from(
-        document.querySelectorAll(".container-label.active") // Updated selector
+        document.querySelectorAll(".container-label.active"), // Updated selector
       ).map((label) => label.getAttribute("data-container"));
 
       // Log selected containers for debugging
@@ -241,7 +242,7 @@ document.getElementById("end-search").addEventListener("click", function () {
         if (
           linkToRemove &&
           linkToRemove.textContent.includes(
-            "Complete a search to create GPX files"
+            "Complete a search to create GPX files",
           )
         ) {
           linkToRemove.remove();

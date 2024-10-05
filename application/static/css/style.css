@@ -92,9 +92,8 @@ header {
 }
 
 #checkbox-container label.active:hover {
-  background-color: #f27201
+  background-color: #f27201;
 }
-
 
 #map-iframe {
   height: 97.5%;
@@ -250,7 +249,8 @@ header {
   display: block;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -272,7 +272,9 @@ html, body {
 .scrollable-table {
   flex-grow: 1;
   overflow-y: auto;
-  height: calc(100% - 210px); /* Adjust height to leave space for the filter above */
+  height: calc(
+    100% - 210px
+  ); /* Adjust height to leave space for the filter above */
 }
 
 .map-container {
@@ -282,12 +284,13 @@ html, body {
 
 .table {
   width: 100%; /* Make the table stretch to fill the container */
-  font-family: 'Iter', sans-serif;
+  font-family: "Iter", sans-serif;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   padding: 6px 8px;
   text-align: left;
   border-bottom: 1px solid #ddd;
@@ -322,7 +325,6 @@ html, body {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
   width: 100%; /* calc(33% - 40px); Take up the same width as the table */
   box-sizing: border-box;
-
 }
 
 .filter-inputs {
