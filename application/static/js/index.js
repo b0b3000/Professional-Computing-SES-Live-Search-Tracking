@@ -39,19 +39,23 @@ $(document).ready(function () {
 
         // Populate table with returned data
         data.forEach((row) => {
-          const newRow = `<tr class="search-row" data-gps='${row[5]}'> 
+
+          const newRow = `<tr class='search-row' data-gps='${row[7]}'>
+
+
                       <td>${row[0]}</td>
                       <td>${row[1]}</td>
                       <td>${row[4]}</td>
                       <td>${row[2]}</td>
                       <td>${row[3]}</td>
+                      <td>${row[5]}</td>
+                      <td>${row[6]}</td>    
                   </tr>`;
           tbody.append(newRow);
           console.log("GPS Data 'new row': ", newRow);
         });
 
-        // Bind double-click event to new rows
-        bindRowDoubleClick();
+        attachButtonListeners();
 
       },
       error: function (error) {
@@ -64,35 +68,32 @@ $(document).ready(function () {
   document.getElementsByClassName("tablinks")[0].click();
 });
 
-function bindRowDoubleClick() {
-  // Double-click event handler for search-row
-  document.querySelectorAll(".search-row").forEach(function (row) {
-    row.addEventListener("dblclick", function () {
-      const gpsData = this.getAttribute("data-gps");
-      console.log("GPS Data from getAttribute, before AJAX request: ", gpsData);
 
-      if (gpsData) {
-        // AJAX request to render the map
-        $.ajax({
-          type: "GET",
-          url: "/render-map",
-          data: { gps: gpsData },
-          success: function (response) {
-            document.getElementById("historical-map-iframe").src =
-              response.map_path;
-          },
-          error: function (error) {
-            console.error("Error loading map:", error);
-          },
-        });
-      } else {
-        console.error("No GPS data found for this row.");
-      }
+// This is in a function and then immeadiately called so its called once for the initial buttons (all searches),
+// And again each time search filters are applied
+  function attachButtonListeners(){
+  document.querySelectorAll(".search-row").forEach(function (row) {
+    const displayButton = row.querySelector("#display-historical-button");
+    displayButton.addEventListener("click", function () {
+      const gpsData = row.getAttribute("data-gps");
+
+      // AJAX request to render the map
+      $.ajax({
+        type: "GET",
+        url: "/render-map",
+        data: { gps: gpsData },
+        success: function (response) {
+          document.getElementById("historical-map-iframe").src =
+            response.map_path;
+        },
+        error: function (error) {
+          console.error("Error loading map:", error);
+        },
+      });
     });
   });
 }
-// Call the bindRowDoubleClick function on page load to bind existing rows
-bindRowDoubleClick();
+attachButtonListeners();
 
 // Event listener for the button to fetch the latest GPS data
 document
@@ -262,7 +263,7 @@ document.getElementById("end-search").addEventListener("click", function () {
 
         const cell2 = row.insertCell(1);
         const downloadButton = document.createElement("a");
-        downloadButton.textContent = "Download GPX";
+        downloadButton.textContent = "Download Data";
         downloadButton.href = `/download/${route}`;
         downloadButton.download = `${route}_search_data.gpx`; // Suggest a filename for the GPX file
         cell2.appendChild(downloadButton);
@@ -270,3 +271,4 @@ document.getElementById("end-search").addEventListener("click", function () {
     })
     .catch((error) => console.error("Error ending search:", error));
 });
+

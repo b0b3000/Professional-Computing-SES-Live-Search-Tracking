@@ -32,9 +32,9 @@ def connect_database():
         print(f"Error: {e}")
         return
 
-def upload_search_data(session):
+def upload_search_data(active_search, incomplete=False):
     
-    base_stations = session["gps_data"].keys()
+    base_stations = active_search["gps_data"].keys()
     
     try:
 
@@ -42,19 +42,22 @@ def upload_search_data(session):
             cursor = conn.cursor()
             
             for base_station in base_stations:
-                
-                session_id = session["session_id"]
-                start_time = session["start_time"]
-                end_time = session["end_time"]
-                gps_JSON = session["gps_data"][base_station]
-                gpx_data = session["gpx_data"][base_station]
-                search_date = session["search_date"]
+                session_id = active_search["session_id"]
+                start_time = active_search["start_time"]
+                gps_JSON = active_search["gps_data"][base_station]
+                if incomplete:
+                    end_time = None
+                    gpx_data = None
+                    search_date = None
+                else:
+                    end_time = active_search["end_time"]
+                    gpx_data = active_search["gpx_data"][base_station]
+                    search_date = active_search["search_date"]
                 
                 # Decode gps_JSON from bytes, then convert to JSON string. Ensures legal storage in Database
                 decoded_data = gps_JSON.decode('utf-8').replace("'", '"')
                 gps_JSON_string = json.dumps(json.loads(decoded_data)) 
-                
-                
+
                 query = """
                     INSERT INTO search_history (session_id, base_station, start_time, end_time, gpx_data, search_date, gps_JSON) 
                     VALUES (?, ?, ?, ?, ?, ?, ?);
@@ -88,6 +91,30 @@ def get_unique_base_stations():
         print(f"Error in get_unique_base_stations: {e}")
         return []
 
+def get_live_searches(session_id, base_stations):
+    try:
+
+        with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
+            cursor = conn.cursor()
+
+        json_data = {}
+        for base_station in base_stations:
+            # SQL query to filter searches based on session_id and base station
+            query = "SELECT gps_JSON FROM search_history WHERE session_id = ? AND base_station = ?"
+
+            cursor.execute(query, (session_id, base_station))
+            json_data[base_station] = cursor.fetchall()[0].gps_JSON
+        
+        conn.close()
+    
+    except Exception as e:
+        print(" ----- ERROR IN get_live_searches ----\n")
+        print(f"Error: {e}")
+        return
+
+    return json_data
+
+
 def get_historical_searches(start_date=None, end_date=None, base_stations=None):
     
     '''
@@ -102,7 +129,7 @@ def get_historical_searches(start_date=None, end_date=None, base_stations=None):
 
 
         # SQL query to filter searches based on date or base station
-        query = "SELECT session_id, base_station, start_time, end_time, search_date, gps_JSON FROM search_history WHERE 1=1"
+        query = "SELECT session_id, base_station, start_time, end_time, search_date, gps_JSON, gpx_data FROM search_history WHERE 1=1"
         
         # Add conditions for date filtering
         params = []
@@ -138,8 +165,6 @@ def get_all_searches():
         with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
             cursor = conn.cursor()
 
-
-        # SQL query to filter searches based on date or base station
         query = "SELECT session_id, base_station, start_time, end_time, search_date, gps_JSON FROM search_history"
         
         cursor.execute(query)
