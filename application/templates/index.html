@@ -4,23 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>GPS Data Visualization v1.0</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
   </head>
 
   <body>
-    <header>GPS Data Visualization v2.0</header>
+
+    <body>
+      <header>
+        <div class="checkered"></div>
+        <div class="title"> SES Live Search</div>
+        <div class="checkered"></div>
+      </header>
 
     <!-- Add the Tab Navigation -->
     <div class="tab">
       <button class="tablinks" onclick="openTab(event, 'StartSearch')">
         Start Search
-      </button>
-      <button class="tablinks" onclick="openTab(event, 'ActiveSearch')">
-        Active Search
       </button>
       <button class="tablinks" onclick="openTab(event, 'HistoricalData')">
         Historical Data
@@ -91,12 +94,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Active Searches Tab Content -->
-    <div id="ActiveSearch" class="tabcontent">
-      <h2>Active Search</h2>
-      <p>Map and Telemetry data to be displayed here.</p>
     </div>
 
     <!-- Historical Data Tab Content -->

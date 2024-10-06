@@ -7,12 +7,52 @@ body {
   text-align: center;
 }
 
+
+ 
 header {
-  background-color: #4caf50;
-  color: white;
-  padding: 15px 0;
-  font-size: 24px;
+  background-color: #F5841E; /* Middle block color */
+  color: white; /* Text color */
+  font-family: 'Bebas Neue', sans-serif; /* Custom font */
+  text-align: center; /* Center text */
+  font-size: 2em; /* Increase font size for better visibility */
+  padding: 30px 0; /* Increase top and bottom padding */
+  position: relative; /* Ensures header is at the top */
+  z-index: 1000; /* Ensures it's above other content */
 }
+
+header::before,
+header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  /*width: 33.33%; One-third width for the left and right sides */
+  height: 100%;
+  background-image: url('../check.png'); /* Path to your checkered image */
+  background-size: contain; /* Ensures the image scales correctly */
+  background-repeat: repeat; /* Repeats the image */
+
+}
+
+/* Adjust the width of the checkered sides */
+header::before {
+  left: 0; /* Position on the left */
+  width: 20%; /* Adjusted width for the left border */
+  background-position: 50% 0; /* Start repeating from the center vertically */
+}
+
+header::after {
+  right: 0; /* Position on the right */
+  width: 20%; /* Adjusted width for the right border */
+}
+
+header > h1 { /* If your title is in an h1 element */
+  margin: 0; /* Remove default margin for centering */
+  width: 60%; /* Ensure title takes the full width */
+  position: relative; /* Position it above the checkered background */
+  z-index: 10; /* Ensure it appears above the checkered background */
+}
+
+/* Adjust the left and right borders if needed for additional checkered effect */
 
 /* Flexbox container to align the map, search, and telemetry panels side by side */
 #main-container {
@@ -247,28 +287,50 @@ header {
   cursor: not-allowed !important;
 }
 
-/* Style the tab */
+
+#Tabs-styling
+/* General styling for tabs */
 .tab {
   display: flex;
-  border-bottom: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-.tab button {
-  background-color: inherit;
+  justify-content: center;
+  margin-top: 10px; /* Adjust the margin as needed */
+  background-color: transparent; /* Remove any box-like appearance */
   border: none;
-  padding: 10px 20px;
+  font-family: 'Bebas Neue', sans-serif; /* Set the same font as the header */
+}
+
+/* Styling the buttons */
+.tab button {
+  font-family: 'Bebas Neue', sans-serif;
+  background-color: transparent; /* Make the background blend with the page */
+  border: none;
+  outline: none;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  padding: 14px 16px;
+  letter-spacing: 1.5px;
+  font-size: 25px;
+  color: #2196F3; /* Highlight the text color instead */
+  transition: color 0.3s ease;
 }
 
+/* On hover, change the text color */
 .tab button:hover {
-  background-color: #ddd;
+  color: #7eb2dd; /* A darker shade on hover */
 }
 
+/* Active tab */
 .tab button.active {
-  background-color: #ccc;
+  border-bottom: 2px solid #3c6997; /* Only underline active tab */
+  font-family: 'Bebas Neue', sans-serif;
 }
+
+/* Tab content */
+.tabcontent {
+  display: none;
+  padding: 20px;
+  border: none; /* Remove borders from tab content */
+}
+
 
 /* Hide all tabcontent by default */
 .tabcontent {
