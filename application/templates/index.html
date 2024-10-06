@@ -31,10 +31,17 @@
     <div id="StartSearch" class="tabcontent">
       <!-- Main container to hold the map and telemetry panel -->
       <div id="main-container">
-        <!-- Side panel to display searches -->
-        <div id="search-panel">
+        <!-- Side panel for selecting base stations -->
+        <div id="select-panel">
+          <h3>Select Base Stations</h3>
+          <div id="checkbox-container">
+            {% for container in container_names %}
+            <label class="container-label" data-container="{{ container }}">
+              <span>{{ container }}</span>
+            </label>
+            {% endfor %}
+          </div>
         </div>
-
         <!-- Wrapper div to hold the map and the controls -->
         <div id="map-controls-wrapper">
           <!-- Map container -->
@@ -48,35 +55,21 @@
               >RENDER</iframe
             >
           </div>
-
           <!-- Controls container -->
           <div id="controls-container">
-            <!-- Dropdown for selecting Azure containers -->
-            <div id="container-selector">
-              <label>Select Base Stations:</label>
-              <div id="checkbox-container">
-                {% for container in container_names %}
-                <label>
-                  <input
-                    type="checkbox"
-                    class="container-checkbox"
-                    value="{{ container }}"
-                  />
-                  {{ container }}
-                </label>
-                {% endfor %}
-              </div>
-            </div>
+            <!-- Placeholder to maintain columns - maybe fill this with a 'how to' -->
+            <div id="container-selector"></div>
 
             <!-- Search controls -->
             <div id="user-buttons">
               <div id="button-container">
-                <button id="start-search">Start Search</button>
-                <button id="end-search">End Search</button>
+                <button id="start-search" class="ready">Start Search</button>
+                <button id="end-search" class="disabled" disabled>
+                  End Search
+                </button>
               </div>
               <button id="fetch-data-button">Fetch Latest GPS Data</button>
             </div>
-
             <!-- Table container -->
             <div id="table-container">
               <label>Download GPX Files:</label>

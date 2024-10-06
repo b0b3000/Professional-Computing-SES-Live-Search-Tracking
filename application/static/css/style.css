@@ -27,16 +27,16 @@ header {
 /* Wrapper to stack map-container and controls-container vertically */
 #map-controls-wrapper {
   display: flex;
-  flex-direction: column; /* Stack map and controls vertically */
-  flex-grow: 2; /* Allows the map-controls section to expand and fit the available space */
-  width: 100%; /* Ensures the wrapper takes up the full width between the panels */
+  flex-direction: column;
+  flex-grow: 2;
+  width: 100%;
   padding: 0;
   margin: 0;
 }
 
 /* Map styling */
 #map-container {
-  flex-grow: 1; /* Map will take up as much space as available above the controls */
+  flex-grow: 1;
   position: relative;
   width: 100%;
   height: 85%;
@@ -56,13 +56,43 @@ header {
   grid-template-columns: repeat(3, 1fr); /* Creates three equal-width columns */
   gap: 0px;
 }
-
 #checkbox-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  padding: 10px;
+  padding-top: 0;
+  width: 100%;
+  box-sizing: border-box;
   overflow-y: auto;
 }
 
 #checkbox-container label {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px;
+  padding-left: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#checkbox-container label:hover {
+  background-color: #e0e0e0;
+}
+
+#checkbox-container .active {
+  background-color: #f57f00;
+  color: #e0e0e0;
+}
+
+#checkbox-container label.active:hover {
+  background-color: #f27201;
 }
 
 #map-iframe {
@@ -98,7 +128,7 @@ header {
 
 /* Sidebar styling */
 #telemetry-panel,
-#search-panel {
+#select-panel {
   width: 300px; /* Fixed width for sidebars */
   height: 100vh; /* Take up full height of the viewport */
   background-color: #f7f7f7;
@@ -133,7 +163,6 @@ header {
 }
 
 /* Azure container and search controls styling */
-#container-selector,
 #table-container {
   padding: 10px;
 }
@@ -151,7 +180,6 @@ header {
   justify-content: space-between;
   width: 100%;
   height: auto;
-  margin: 0;
 }
 
 #start-search,
@@ -159,7 +187,7 @@ header {
 #fetch-data-button {
   width: 50%;
   padding: 10px;
-  background-color: #4caf50;
+
   color: #333;
   border: none;
   text-align: center;
@@ -168,23 +196,55 @@ header {
   box-sizing: border-box; /* Ensures padding doesn't exceed width */
 }
 
+#start-search,
+#end-search,
+#fetch-data-button {
+  width: 50%;
+  padding: 10px;
+
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 #start-search {
-  background-color: #4caf50;
+  border-radius: 5px 0 0 5px;
+  border-right: none;
+  margin-right: 0;
 }
 
 #end-search {
-  background-color: #e07070;
+  border-radius: 0 5px 5px 0;
+  border-left: none;
+  margin-left: 0;
 }
 
 #fetch-data-button {
+  margin-top: 5px;
   width: 100%;
-  background-color: #c1c1c1;
 }
 
-#start-search:hover,
-#end-search:hover,
 #fetch-data-button:hover {
-  opacity: 0.7;
+  background-color: #e0e0e0;
+}
+
+.ready {
+  background-color: #f57f00 !important;
+  color: #e0e0e0 !important;
+}
+
+.ready:hover {
+  background-color: #f27201 !important;
+}
+
+.disabled {
+  background-color: #aaaaaa !important;
+  color: #3c3c3c !important;
+  cursor: not-allowed !important;
 }
 
 /* Style the tab */
@@ -220,7 +280,8 @@ header {
   display: block;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
@@ -243,7 +304,9 @@ html, body {
 .scrollable-table {
   flex-grow: 1;
   overflow-y: auto;
-  height: calc(100% - 210px); /* Adjust height to leave space for the filter above */
+  height: calc(
+    100% - 210px
+  ); /* Adjust height to leave space for the filter above */
 }
 
 .map-container {
@@ -254,12 +317,13 @@ html, body {
 
 .table {
   width: 100%; /* Make the table stretch to fill the container */
-  font-family: 'Iter', sans-serif;
+  font-family: "Iter", sans-serif;
   border-collapse: collapse;
   font-size: 14px;
 }
 
-.table th, .table td {
+.table th,
+.table td {
   padding: 6px 8px;
   text-align: center;
   border-bottom: 1px solid #ddd;

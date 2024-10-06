@@ -56,7 +56,6 @@ $(document).ready(function () {
         });
 
         attachButtonListeners();
-
       },
       error: function (error) {
         console.error("Error fetching data:", error);
@@ -71,7 +70,7 @@ $(document).ready(function () {
 
 // This is in a function and then immeadiately called so its called once for the initial buttons (all searches),
 // And again each time search filters are applied
-  function attachButtonListeners(){
+function attachButtonListeners(){
   document.querySelectorAll(".search-row").forEach(function (row) {
     const displayButton = row.querySelector("#display-historical-button");
     displayButton.addEventListener("click", function () {
@@ -96,14 +95,22 @@ $(document).ready(function () {
 }
 attachButtonListeners();
 
+// Event listener for tile clicks
+document.querySelectorAll(".container-label").forEach((label) => {
+  label.addEventListener("click", function () {
+    // Toggle the active class on click
+    label.classList.toggle("active");
+  });
+});
+
 // Event listener for the button to fetch the latest GPS data
 document
   .getElementById("fetch-data-button")
   .addEventListener("click", function () {
-    // Collect selected containers
+    // Collect selected containers based on active class
     const selectedContainers = Array.from(
-      document.querySelectorAll(".container-checkbox:checked"),
-    ).map((checkbox) => checkbox.value);
+      document.querySelectorAll(".container-label.active"),
+    ).map((label) => label.getAttribute("data-container"));
 
     // Ensure at least one container is selected
     if (selectedContainers.length === 0) {
@@ -188,11 +195,18 @@ document.getElementById("start-search").addEventListener("click", function () {
       document
         .getElementById("map-container")
         .classList.add("search-running-animation");
+      document.getElementById("end-search").disabled = false;
+      document.getElementById("end-search").classList.remove("disabled");
+      document.getElementById("end-search").classList.add("ready");
+
+      document.getElementById("start-search").disabled = true;
+      document.getElementById("start-search").classList.remove("ready");
+      document.getElementById("start-search").classList.add("disabled");
     })
     .catch((error) => console.error("Error starting search:", error));
 });
 
-// Handle the end search button click
+// Handle the end searh button click
 document.getElementById("end-search").addEventListener("click", function () {
   const mapContainer = document.getElementById("map-container");
 
@@ -211,6 +225,13 @@ document.getElementById("end-search").addEventListener("click", function () {
 
       // Remove the animated border class
       mapContainer.classList.remove("search-running-animation");
+      document.getElementById("end-search").disabled = true;
+      document.getElementById("end-search").classList.remove("ready");
+      document.getElementById("end-search").classList.add("disabled");
+
+      document.getElementById("start-search").disabled = false;
+      document.getElementById("start-search").classList.remove("disabled");
+      document.getElementById("start-search").classList.add("ready");
 
       // Check if the download URL is present in the response
       if (!data.gpx_download_routes) {
@@ -219,10 +240,10 @@ document.getElementById("end-search").addEventListener("click", function () {
         return;
       }
 
-      // Get the selected containers
+      // Get the selected containers based on the active class
       const selectedContainers = Array.from(
-        document.querySelectorAll(".container-checkbox:checked"),
-      ).map((checkbox) => checkbox.value);
+        document.querySelectorAll(".container-label.active"), // Updated selector
+      ).map((label) => label.getAttribute("data-container"));
 
       // Log selected containers for debugging
       console.log("Selected Containers:", selectedContainers);
