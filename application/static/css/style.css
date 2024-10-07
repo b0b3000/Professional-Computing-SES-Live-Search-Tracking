@@ -14,10 +14,25 @@ header {
   color: white; /* Text color */
   font-family: 'Bebas Neue', sans-serif; /* Custom font */
   text-align: center; /* Center text */
-  font-size: 2em; /* Increase font size for better visibility */
-  padding: 30px 0; /* Increase top and bottom padding */
+  font-size: 3em; /* Increase font size for better visibility */
+  padding: 10px 0; /* Increase top and bottom padding */
+  height: 90px; /* Fixed height for the entire header */
   position: relative; /* Ensures header is at the top */
   z-index: 1000; /* Ensures it's above other content */
+  overflow: hidden; /* Prevents content from exceeding the header's height */
+}
+
+.title {
+  display: inline-flex; /* Allows elements inside to align horizontally */
+  align-items: center;  /* Aligns logo and text vertically */
+  justify-content: center;
+  height: 100%; /* Ensure the title block takes up the full height of the header */
+}
+
+.header-logo {
+  margin-left: 30px; /* Adjust spacing between text and logo */
+  height: 80px; /* Adjust logo size */
+  width: auto;  /* Keep aspect ratio */
 }
 
 header::before,
@@ -25,11 +40,10 @@ header::after {
   content: "";
   position: absolute;
   top: 0;
-  /*width: 33.33%; One-third width for the left and right sides */
-  height: 100%;
-  background-image: url('../check.png'); /* Path to your checkered image */
+  height: 110px; /* Match the fixed height of the header */
+  background-image: url('../check.png'); /* checkered image */
   background-size: contain; /* Ensures the image scales correctly */
-  background-repeat: repeat; /* Repeats the image */
+  background-repeat: repeat; /* Repeats image */
 
 }
 
@@ -45,14 +59,14 @@ header::after {
   width: 20%; /* Adjusted width for the right border */
 }
 
-header > h1 { /* If your title is in an h1 element */
+header > h1 { 
   margin: 0; /* Remove default margin for centering */
   width: 60%; /* Ensure title takes the full width */
   position: relative; /* Position it above the checkered background */
   z-index: 10; /* Ensure it appears above the checkered background */
+  line-height: 90px; /* Aligns the text vertically within the header */
 }
 
-/* Adjust the left and right borders if needed for additional checkered effect */
 
 /* Flexbox container to align the map, search, and telemetry panels side by side */
 #main-container {
