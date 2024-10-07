@@ -4,7 +4,7 @@
 # I have not yet figured out a way to access key vaults when testing locally - WORKING ON IT
 
 
-
+'''
 def get_blob_storage_key():
 
     # Retrieves key1 from the text file in this directory.
@@ -21,43 +21,39 @@ def get_blob_storage_key():
 
 def get_db_password():
     return "meshtastic2024!"
+'''
 
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
 
+def get_blob_storage_key():    
 
-# from azure.identity import DefaultAzureCredential
-# from azure.keyvault.secrets import SecretClient
+     VAULT_NAME = "cits32004keys"
+     SECRET_NAME = "BlobStorageConnectionString"
+     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
+     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
 
+     # Create a SecretClient using DefaultAzureCredential.
+     credential = DefaultAzureCredential()
+     client = SecretClient(vault_url=vault_url, credential=credential)
 
-# def get_blob_storage_key():    
+     # Retrieve the secret from the Key Vault
+     retrieved_secret = client.get_secret(SECRET_NAME)
+     key = retrieved_secret.value.rstrip()
 
-#     VAULT_NAME = "cits32004keys"
-#     SECRET_NAME = "BlobStorageConnectionString"
-#     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
-#     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+     #Format correctly
+     return conn_string[:69] + key + conn_string[69:]
+def get_db_password():
+     VAULT_NAME = "cits32004keys"
+     SECRET_NAME = "historicalDatabasePassword"
+     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
 
-#     # Create a SecretClient using DefaultAzureCredential.
-#     credential = DefaultAzureCredential()
-#     client = SecretClient(vault_url=vault_url, credential=credential)
+     # Create a SecretClient using DefaultAzureCredential
+     credential = DefaultAzureCredential()
+     client = SecretClient(vault_url=vault_url, credential=credential)
 
-#     # Retrieve the secret from the Key Vault
-#     retrieved_secret = client.get_secret(SECRET_NAME)
-#     key = retrieved_secret.value.rstrip()
+     # Retrieve the secret from the Key Vault
+     retrieved_secret = client.get_secret(SECRET_NAME)
+     password = retrieved_secret.value.rstrip()
 
-#     #Format correctly
-#     return conn_string[:69] + key + conn_string[69:]
-
-# def get_db_password():
-#     VAULT_NAME = "cits32004keys"
-#     SECRET_NAME = "historicalDatabasePassword"
-#     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
-
-#     # Create a SecretClient using DefaultAzureCredential
-#     credential = DefaultAzureCredential()
-#     client = SecretClient(vault_url=vault_url, credential=credential)
-
-#     # Retrieve the secret from the Key Vault
-#     retrieved_secret = client.get_secret(SECRET_NAME)
-#     password = retrieved_secret.value.rstrip()
-
-#     print("Password: ", password, ", should be meshtastic2024!")
-#     return password
+     return password
