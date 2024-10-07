@@ -166,6 +166,16 @@ document
       .catch((error) => console.error("Error updating map:", error));
   });
 
+
+  // Select2 Library for selecting multiple base stations in the historical data filter
+  $(document).ready(function() {
+    $('#base-station').select2({
+        placeholder: "Select Base Stations",
+        allowClear: true,
+        width: '100%' // Ensures the Select2 input takes up the full width of its parent container
+    });
+});
+
 // Displays latest ping from each base in a sidebar, with telemetry data.
 function displayTelemetryData(telemetryData) {
   const telemetryContent = document.getElementById("telemetry-content");

@@ -7,34 +7,35 @@ body {
   text-align: center;
 }
 
-
- 
+/* Header styling, height, position of header, overflow prevents content from exeeding header height */
 header {
   background-color: #F5841E; /* Middle block color */
-  color: white; /* Text color */
-  font-family: 'Bebas Neue', sans-serif; /* Custom font */
-  text-align: center; /* Center text */
-  font-size: 3em; /* Increase font size for better visibility */
-  padding: 10px 0; /* Increase top and bottom padding */
-  height: 90px; /* Fixed height for the entire header */
-  position: relative; /* Ensures header is at the top */
-  z-index: 1000; /* Ensures it's above other content */
-  overflow: hidden; /* Prevents content from exceeding the header's height */
+  color: white; 
+  font-family: 'Bebas Neue', sans-serif;
+  text-align: center; 
+  font-size: 3em; 
+  padding: 10px 0;
+  height: 90px; 
+  position: relative; 
+  z-index: 1000; 
+  overflow: hidden; 
 }
 
 .title {
-  display: inline-flex; /* Allows elements inside to align horizontally */
-  align-items: center;  /* Aligns logo and text vertically */
+  display: inline-flex; /* horizontal algn */
+  align-items: center;  /* Aligns logo  */
   justify-content: center;
   height: 100%; /* Ensure the title block takes up the full height of the header */
 }
 
+/* spacing, size, ratio of logo */
 .header-logo {
-  margin-left: 30px; /* Adjust spacing between text and logo */
-  height: 80px; /* Adjust logo size */
-  width: auto;  /* Keep aspect ratio */
+  margin-left: 30px; 
+  height: 80px; 
+  width: auto;  
 }
 
+/* Places image left and right sides of header*/
 header::before,
 header::after {
   content: "";
@@ -44,19 +45,19 @@ header::after {
   background-image: url('../check.png'); /* checkered image */
   background-size: contain; /* Ensures the image scales correctly */
   background-repeat: repeat; /* Repeats image */
-
 }
 
-/* Adjust the width of the checkered sides */
+/* Adjust the postion and width of the left checkered sides */
 header::before {
-  left: 0; /* Position on the left */
-  width: 20%; /* Adjusted width for the left border */
+  left: 0; 
+  width: 20%; 
   background-position: 50% 0; /* Start repeating from the center vertically */
 }
 
+/* Position on the right, right border width */
 header::after {
-  right: 0; /* Position on the right */
-  width: 20%; /* Adjusted width for the right border */
+  right: 0; 
+  width: 20%;
 }
 
 header > h1 { 
@@ -329,7 +330,7 @@ header > h1 {
 
 /* On hover, change the text color */
 .tab button:hover {
-  color: #7eb2dd; /* A darker shade on hover */
+  color: #7eb2dd; 
 }
 
 /* Active tab */
@@ -436,13 +437,31 @@ body {
 
 .filter-inputs {
   display: flex;
-  flex-wrap: wrap; /* Allows items to wrap to the next line if needed */
-  gap: 15px; /* Adds space between filter items */
+  justify-content: space-between; /* Evenly space filter items */
 }
 
 .filter-item {
   flex: 1; /* Makes each item take equal space */
-  min-width: 150px; /* Sets a minimum width to avoid squishing */
+  /* min-width: 150px; /* Sets a minimum width to avoid squishing */
+  margin-right: 20px; /* Add some space between items */
+
+}
+
+.filter-item:last-child {
+  margin-right: 0; /* Remove margin on the last item */
+}
+
+.filter-item label {
+  display: block; /* Ensures the label is above the input */
+  margin-bottom: 5px; /* Space between label and input */
+  font-weight: bold; /* Optional: make label text bold */
+}
+
+.filter-item input,
+.filter-item select {
+  width: 100%; /* Full width of the filter item */
+  padding: 8px; /* Padding inside the input */
+  box-sizing: border-box;
 }
 
 .filter-submit {
@@ -452,8 +471,14 @@ body {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  width: 100%;
+  margin-top: 20px; /* Add space above the button */
 }
 
+.select2-container {
+  width: 100% !important; /* Makes the Select2 dropdown take the full width */
+}
+=
 .filter-submit:hover {
   background-color: #d59455; /* Darker on hover */
 }
