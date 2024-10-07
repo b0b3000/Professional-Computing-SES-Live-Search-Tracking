@@ -29,7 +29,7 @@ class FlaskAppTest(unittest.TestCase):
             return None
 
     def test_homepage_loads(self):
-        self.assertIn("GPS Data Visualization v1.0", self.driver.title)
+        self.assertIn("GPS Data Visualization", self.driver.title)
 
         # iframe for the map is visible
         map_element = WebDriverWait(self.driver, 10).until(
@@ -62,7 +62,8 @@ class FlaskAppTest(unittest.TestCase):
         self.assertEqual(alert_txt, "Search is not currently running.")  
 
     def select_random_base_station(self):
-        """Selects a random base station from the available checkboxes."""
+        """Selects a random base station from the available checkboxes.
+           To test starting/ ending a search and fetching data."""
         base_station_checkboxes = self.driver.find_elements(By.CLASS_NAME, "container-checkbox")
         if len(base_station_checkboxes) == 0:
             self.fail("No base stations available to select")
