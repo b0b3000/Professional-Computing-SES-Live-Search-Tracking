@@ -28,32 +28,34 @@ from azure.keyvault.secrets import SecretClient
 
 def get_blob_storage_key():    
 
-     VAULT_NAME = "cits32004keys"
-     SECRET_NAME = "BlobStorageConnectionString"
-     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
-     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
-
-     # Create a SecretClient using DefaultAzureCredential.
-     credential = DefaultAzureCredential()
-     client = SecretClient(vault_url=vault_url, credential=credential)
-
-     # Retrieve the secret from the Key Vault
-     retrieved_secret = client.get_secret(SECRET_NAME)
-     key = retrieved_secret.value.rstrip()
-
-     #Format correctly
-     return conn_string[:69] + key + conn_string[69:]
+    VAULT_NAME = "cits32004keys"
+    SECRET_NAME = "BlobStorageConnectionString"
+    vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
+    conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+    
+    
+    # Create a SecretClient using DefaultAzureCredential.
+    credential = DefaultAzureCredential()
+    client = SecretClient(vault_url=vault_url, credential=credential)
+    
+    # Retrieve the secret from the Key Vault
+    retrieved_secret = client.get_secret(SECRET_NAME)
+    key = retrieved_secret.value.rstrip()
+    
+    #Format correctly
+    return conn_string[:69] + key + conn_string[69:]
+    
 def get_db_password():
-     VAULT_NAME = "cits32004keys"
-     SECRET_NAME = "historicalDatabasePassword"
-     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
-
-     # Create a SecretClient using DefaultAzureCredential
-     credential = DefaultAzureCredential()
-     client = SecretClient(vault_url=vault_url, credential=credential)
-
-     # Retrieve the secret from the Key Vault
-     retrieved_secret = client.get_secret(SECRET_NAME)
-     password = retrieved_secret.value.rstrip()
-
-     return password
+    VAULT_NAME = "cits32004keys"
+    SECRET_NAME = "historicalDatabasePassword"
+    vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
+    
+    # Create a SecretClient using DefaultAzureCredential
+    credential = DefaultAzureCredential()
+    client = SecretClient(vault_url=vault_url, credential=credential)
+    
+    # Retrieve the secret from the Key Vault
+    retrieved_secret = client.get_secret(SECRET_NAME)
+    password = retrieved_secret.value.rstrip()
+    
+    return password
