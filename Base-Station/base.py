@@ -174,9 +174,9 @@ def get_nodes(interface, latest_data):
     # Check that the GPS data is new.
     if coords == [latest_data['lat'], latest_data['long']]:
         logging.info("Received GPS data matches old GPS data, not saving.")
-        logging.info(f"OLD DATA: {tracker}")
+        logging.info(f"OLD DATA: {str(tracker)}")
         print("Received GPS data matches old GPS data, not saving.")
-        print("Old data: " + tracker + "\n")
+        print(f"OLD DATA: {str(tracker)}")
         return 0
     
     # If it is new, save it, along with other data from the tracker.

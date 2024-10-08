@@ -11,7 +11,7 @@ import time
 import copy
 import datetime
 
-NUM_BASE_STATIONS = 5
+NUM_BASE_STATIONS = 20
 
 
 def upload():
@@ -28,7 +28,7 @@ def upload():
     fake_data_sets = []
     for i in range(NUM_BASE_STATIONS):
         print(f"Creating container {i}")
-        blob_service_client.create_container(name=f"base-station-{i}")
+        blob_service_client.create_container(name=f"test-{i}")
         time_now = datetime.datetime.now()
         iso_time = time_now.strftime("%Y-%m-%dT%H:%M:%S")
 
@@ -55,7 +55,7 @@ def upload():
         time_now = datetime.datetime.now()
         iso_time = time_now.strftime("%Y-%m-%dT%H:%M:%S")
         for j in range(NUM_BASE_STATIONS):
-            container_client = blob_service_client.get_container_client(container=f"base-station-{j}")
+            container_client = blob_service_client.get_container_client(container=f"test-{j}")
             data_set = copy.deepcopy({
                 f'point{i+1}': {
                     'name': f'!33679a4test{j}', 
@@ -66,7 +66,7 @@ def upload():
                         'battery': test_points[i+1][f'point{i+1}']['telemetry']['battery'],
                         'altitude': test_points[i+1][f'point{i+1}']['telemetry']['altitude'],
                     },
-                    'longname': f'base-station-{j}'
+                    'longname': f'test-{j}'
                 }
             })
             fake_data_sets[j].append(data_set)
@@ -89,7 +89,7 @@ def delete_containers():
     # Deletes containers equal to NUM_BASE_STATIONS.
     for i in range(NUM_BASE_STATIONS):
         print(f"Deleting container {i}")
-        blob_service_client.delete_container(f"base-station-{i}")
+        blob_service_client.delete_container(f"test-{i}")
     print("All test containers deleted.")
 
 
