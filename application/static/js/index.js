@@ -1,3 +1,4 @@
+/* 
 // Tab handling logic
 function openTab(evt, tabName) {
   var i, tabcontent, tablinks;
@@ -23,6 +24,32 @@ function openTab(evt, tabName) {
 document.addEventListener("DOMContentLoaded", function () {
   document.getElementsByClassName("tablinks")[0].click();
 });
+
+    */
+
+function openTab(evt, tabName) {
+  // Hide all tab content
+  const tabcontent = document.getElementsByClassName("tabcontent");
+  for (let i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Remove the active class from all buttons
+  const tablinks = document.getElementsByClassName("tablinks");
+  for (let i = 0; i < tablinks.length; i++) {
+    tablinks[i].classList.remove("active");
+  }
+
+  // Show the clicked tab content and add the active class to the clicked button
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.classList.add("active");
+}
+
+// Default: Show the first tab
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementsByClassName("tablinks")[0].click();
+});
+
 
 // Handle form submission with AJAX
 $(document).ready(function () {
@@ -138,6 +165,16 @@ document
       })
       .catch((error) => console.error("Error updating map:", error));
   });
+
+
+  // Select2 Library for selecting multiple base stations in the historical data filter
+  $(document).ready(function() {
+    $('#base-station').select2({
+        placeholder: "Select Base Stations",
+        allowClear: true,
+        width: '100%' // Ensures the Select2 input takes up the full width of its parent container
+    });
+});
 
 // Displays latest ping from each base in a sidebar, with telemetry data.
 function displayTelemetryData(telemetryData) {

@@ -1,5 +1,6 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 400;
   margin: 0;
   padding: 0;
   background-color: #f4f4f4;
@@ -7,11 +8,58 @@ body {
   text-align: center;
 }
 
+/* Header styling, height, position of header, overflow prevents content from exeeding header height */
 header {
-  background-color: #4caf50;
-  color: white;
-  padding: 15px 0;
-  font-size: 24px;
+  background-color: #F5841E; /* Middle block color */
+  color: white; 
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 800;
+  text-align: center; 
+  font-size: 3em; 
+  padding: 10px 0;
+  height: 90px; 
+  position: relative; 
+  z-index: 1000; 
+  overflow: hidden; 
+}
+
+.title {
+  display: inline-flex; /* horizontal algn */
+  align-items: center;  /* Aligns logo  */
+  justify-content: center;
+  height: 100%; /* Ensure the title block takes up the full height of the header */
+}
+
+/* spacing, size, ratio of logo */
+.header-logo {
+  margin-left: 20px; 
+  height: 90px; 
+  width: auto;  
+}
+
+/* Places image left and right sides of header*/
+header::before,
+header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 110px; /* Match the fixed height of the header */
+  background-image: url('../images/check.png'); /* checkered image */
+  background-size: contain; /* Ensures the image scales correctly */
+  background-repeat: repeat; /* Repeats image */
+}
+
+/* Adjust the postion and width of the left checkered sides */
+header::before {
+  left: 0; 
+  width: 20%; 
+  background-position: 50% 0; /* Start repeating from the center vertically */
+}
+
+/* Position on the right, right border width */
+header::after {
+  right: 0; 
+  width: 20%;
 }
 
 /* Flexbox container to align the map, search, and telemetry panels side by side */
@@ -182,33 +230,25 @@ header {
   height: auto;
 }
 
-#start-search,
-#end-search,
-#fetch-data-button {
-  width: 50%;
-  padding: 10px;
-
-  color: #333;
-  border: none;
-  text-align: center;
-  font-size: auto;
-  cursor: pointer;
-  box-sizing: border-box; /* Ensures padding doesn't exceed width */
-}
 
 #start-search,
 #end-search,
 #fetch-data-button {
   width: 50%;
   padding: 10px;
-
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #f9f9f9;
+  text-align: center;
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  font-family: "Roboto Condensed", sans-serif; 
+  font-size: 18px; 
+  font-weight: 500; 
+  text-transform: uppercase; 
 }
 
 #start-search {
@@ -247,27 +287,51 @@ header {
   cursor: not-allowed !important;
 }
 
-/* Style the tab */
+
+#Tabs-styling
+/* General styling for tabs */
 .tab {
   display: flex;
-  border-bottom: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-.tab button {
-  background-color: inherit;
+  justify-content: center;
+  margin-top: 10px; /* Adjust the margin as needed */
+  background-color: transparent; /* Remove any box-like appearance */
   border: none;
-  padding: 10px 20px;
+  font-family: "Roboto Condensed", sans-serif; /* Set the same font as the header */
+  font-weight: 500;
+}
+
+/* Styling the buttons */
+.tab button {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 500;
+  background-color: transparent; /* Make the background blend with the page */
+  border: none;
+  outline: none;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  padding: 14px 16px;
+  letter-spacing: 1.5px;
+  font-size: 25px;
+  color: #3c6997; /* Highlight the text color instead */
+  transition: color 0.3s ease;
 }
 
+/* On hover, change the text color */
 .tab button:hover {
-  background-color: #ddd;
+  color: #7eb2dd; 
 }
 
+/* Active tab */
 .tab button.active {
-  background-color: #ccc;
+  border-bottom: 2px solid #3c6997; /* Only underline active tab */
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 600;
+}
+
+/* Tab content */
+.tabcontent {
+  display: none;
+  padding: 20px;
+  border: none; /* Remove borders from tab content */
 }
 
 /* Hide all tabcontent by default */
@@ -280,16 +344,10 @@ header {
   display: block;
 }
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
 
 #HistoricalData {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100%;
 }
 
@@ -304,15 +362,26 @@ body {
 .scrollable-table {
   flex-grow: 1;
   overflow-y: auto;
-  height: calc(
-    100% - 210px
-  ); /* Adjust height to leave space for the filter above */
+  height: calc(100% - 210px); /* Adjust height to leave space for the filter above */
 }
 
 .map-container {
-  flex: 1.5; /* Takes up the remaining 2/3rd of the space */
-  height: 600px;
+  flex: 1.5; /* Takes up the remaining 2/3rd of the space  */
   padding-right: 10px;
+  display: flex; /* Allow children to align vertically */
+  flex-direction: column; /* Stack children vertically */
+} 
+
+.map-wrapper {
+  flex-grow: 1; /* Allow it to grow to fill the available space */
+  background-color: #F5841E; 
+ 
+
+  background-clip: padding-box, border-box;
+  border-radius: 5px; 
+  padding: 10px; 
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
+  height: 100%;
 }
 
 .table {
@@ -341,41 +410,100 @@ body {
   background-color: #f8eddb;
 }
 
-
-
 .table tbody tr:hover {
   background-color: #f1f1f1; /* Adds a hover effect */
 }
 
+h3 {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 600;
+  font-size: 1.4em; 
+  color: #3c6997;
+  margin: 0; 
+  padding-bottom: 10px; 
+  text-align: center; 
+}
+
+h4 {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 600;
+  font-size: 1.6em; 
+  color: #3c6997;
+  margin: 0; 
+  padding-bottom: 10px; 
+  text-align: center; 
+}
+
+h5 {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 600;
+  font-size: 1.6em; 
+  color: #3c6997;
+  margin: 0; /* Remove default margin to align with filter box */
+  padding-bottom: 10px; 
+  text-align: center; 
+}
+
 .filter-box {
-  background-color: #f7f7f7; /* Light background color */
-  border: 1px solid #ccc; /* Subtle border */
-  border-radius: 8px; /* Rounded corners */
-  padding: 20px; /* Padding inside the box */
-  margin-bottom: 10px; /* Space between filter box and table */
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-  width: 100%; /* calc(33% - 40px); Take up the same width as the table */
+  font-family: "Roboto Condensed", sans-serif;
+  background-color: #f7f7f7; 
+  border: 1px solid #ccc;
+  border-radius: 8px; 
+  padding: 20px; 
+  margin-bottom: 10px; 
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+  width: 100%; 
   box-sizing: border-box;
 }
 
 .filter-inputs {
   display: flex;
-  flex-wrap: wrap; /* Allows items to wrap to the next line if needed */
-  gap: 15px; /* Adds space between filter items */
+  justify-content: space-between; /* Evenly space filter items */
 }
 
 .filter-item {
   flex: 1; /* Makes each item take equal space */
-  min-width: 150px; /* Sets a minimum width to avoid squishing */
+  margin-right: 20px; 
+}
+
+.filter-item:last-child {
+  margin-right: 0; /* Remove margin on the last item */
+}
+
+.filter-item label {
+  font-family: "Roboto Condensed", sans-serif; 
+  font-size: 1.5em; 
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  color: #3c6997; 
+  margin-bottom: 5px; 
+  display: block; /* Makes the label occupy the full width, allowing space for the input */
+}
+
+.filter-item input,
+.filter-item select {
+  width: 100%; /* Full width of the filter item */
+  padding: 8px; /* Padding inside the input */
+  box-sizing: border-box;
 }
 
 .filter-submit {
   background-color: #eeaf6f;
+  font-family: "Roboto Condensed", sans-serif;
+  letter-spacing: 1.6px;
+  font-weight: 600;
+  font-size: 1em; 
   color: white;
   padding: 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  width: 30%;
+  margin-top: 20px; /* Add space above the button */
+}
+
+.select2-container {
+  width: 100% !important; /* Makes the Select2 dropdown take the full width */
 }
 
 .filter-submit:hover {

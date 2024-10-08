@@ -4,22 +4,31 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>GPS Data Visualization v1.0</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
+     <!--Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100;400;700;900&display=swap" rel="stylesheet">
   </head>
 
   <body>
-    <header>GPS Data Visualization v2.0</header>
+
+    <body>
+      <header>
+        <div class="title">
+          SES Live Search
+          <img src="/static/images/Ses_logo.png" alt="Logo" class="header-logo">
+        </div>
+      </header>
 
     <!-- Add the Tab Navigation -->
     <div class="tab">
       <button class="tablinks" onclick="openTab(event, 'StartSearch')">
-        Start Search
-      </button>
-      <button class="tablinks" onclick="openTab(event, 'ActiveSearch')">
         Active Search
       </button>
       <button class="tablinks" onclick="openTab(event, 'HistoricalData')">
@@ -93,23 +102,16 @@
       </div>
     </div>
 
-    <!-- Active Searches Tab Content -->
-    <div id="ActiveSearch" class="tabcontent">
-      <h2>Active Search</h2>
-      <p>Map and Telemetry data to be displayed here.</p>
-    </div>
-
     <!-- Historical Data Tab Content -->
     <div id="HistoricalData" class="tabcontent">
-      <h2>Search for Historical Data</h2>
 
       <!-- Container for the left panel (filter + scrollable table) and right panel (map) -->
       <div class="filter-map-container">
         <!-- Left Panel: Filter + Scrollable List -->
         <div class="left-panel">
           <!-- Filter Panel -->
+          <h4>Filter Previous Searches</h4>
           <div class="filter-box">
-            <h4>Filter Searches</h4>
             <form method="POST" action="/filter-search">
               <div class="filter-inputs">
                 <div class="filter-item">
@@ -174,7 +176,8 @@
 
         <!-- Right Panel: Map -->
         <div class="map-container">
-          <h3>Historical Map View</h3>
+          <h5>Historical Map View</h5>
+          <div class="map-wrapper">
           <iframe
             src="{{ url_for('static', filename='historical_map.html') }}"
             width="100%"
@@ -183,6 +186,7 @@
             class="map-iframe"
             >RENDER</iframe
           >
+        </div>
         </div>
       </div>
     </div>
