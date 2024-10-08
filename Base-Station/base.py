@@ -270,12 +270,16 @@ def get_key():
     # Sets connection string, where AccountName is the name of the Storage Account, 
     # and AccountKey is a valid Access Key to that account.
     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+    
+    # Find the position where "AccountKey=" appears.
+    key_pos = conn_string.find("AccountKey=") + len("AccountKey=")
+
     with open("keys.txt") as file:
         for line in file:
             if line.rstrip().startswith("key1:"):
-                key = line.rstrip().split("key1:", 1)[1]    # Splits the key from after the first occurence of "key1:".
-                return conn_string[:69] + key + conn_string[69:]    # Places the key in the correct position in the middle of connection string.
-
+                key = line.rstrip().split("key1:", 1)[1]  # Extracts the key after "key1:".
+                # Insert the key after "AccountKey=" in the connection string.
+                return conn_string[:key_pos] + key + conn_string[key_pos:]
 
 if __name__ == "__main__":
     run_base_station()
