@@ -4,18 +4,10 @@ See RaspberryPi setup documentation in this directory's README.md.
 See requirements.txt
 
 Fred's TODO:
-TODO 1: Check that new longname entry works.
-TODO 2: Code that checks for types of telemetry received and dynamically builds the returning dictionary/Json.
-TODO 3: Print meaningful error messages and data to a log file in the event of a crash.
+TODO 1: Comment out all print statements when finished.
 
 Known Issues:
-ISSUE 1: Altitude is often read as ~40,000,000m on the tracker, but sometimes gives the correct altitude of ~3m.
-I assume this is from the strength of GPS lock, happens mostly indoors, will need to test more outdoors.
-Additionally, when altitude shows 0m, Meshtastic doesn't include it in the ping for some reason, leading to a
-lot of KeyErrors.
-
-ISSUE 2: GPS pings dropped out at 500m range when testing. What if the GPS data matches because 
-they are in the same location later, need to check the time as well.
+ISSUE 1: 
 
 Written by Fred Leman
 """
@@ -28,6 +20,7 @@ import time
 import traceback
 import json
 import logging
+logger = logging.getLogger(__name__)
 
 BASE_STATION_ID = '!7c5cb2a0'
 BASE_STATION_LONG_NAME = 'base-3200-c'
@@ -37,6 +30,8 @@ TRACKER_LONG_NAME = 'fredtastic'
 
 def run_base_station():
     """Performs startup operations."""
+    logging.basicConfig(filename='base.log', level=logging.INFO)
+    logger.info('Started')
 
     # ---------- Establishes connection with Azure Storage, creates blob file for uploading. ----------
 
@@ -61,8 +56,8 @@ def run_base_station():
 
     # ---------- Initialises variables and gets first GPS point from tracker. ----------
 
-    print("Beginning base station setup process with base station ID and name = " + BASE_STATION_ID + " , " + BASE_STATION_LONG_NAME
-          + ". and tracker ID and name = " + TRACKER_ID + " , " + TRACKER_LONG_NAME)
+    logging.info(f"Beginning base station setup process with base station ID and name = {BASE_STATION_ID}, {BASE_STATION_LONG_NAME}, and tracker ID and name = {TRACKER_ID} + {TRACKER_LONG_NAME}")
+    print(f"Beginning base station setup process with base station ID and name = {BASE_STATION_ID}, {BASE_STATION_LONG_NAME}, and tracker ID and name = {TRACKER_ID} + {TRACKER_LONG_NAME}")
 
     json_upload = []        # Holds all current GPS data from the tracker.
     json_key = 0            # Control variable to give each GPS point a unique identifier.
@@ -71,6 +66,7 @@ def run_base_station():
 
     new_data = get_nodes_verbose(interface)                     # Gets data for base station and tracker.
     if new_data == 0:
+        logging.error("Tracker has no GPS lock, achieve lock then run program again.")
         print("Tracker has no GPS lock, achieve lock then run program again.")
         interface.close()
         return 0
@@ -79,12 +75,14 @@ def run_base_station():
     json_upload.append({"point" + str(json_key): new_data})
     json_key += 1
 
+    logging.info(f"Writing new GPS point {str(new_data)}")
     print("\nWriting new GPS point: " + str(new_data))
     with open(BASE_STATION_LONG_NAME, "w") as f:        # Writes all current GPS data to file (this will be uploaded to server eventually).
         f.write(json.dumps(json_upload))
 
     # Initial upload to container.
     container_client.upload_blob(name=BASE_STATION_LONG_NAME, data=str(json_upload), overwrite=True)
+    logging.info(f"Uploaded total: {str(json_upload)}")
     print("\n Uploaded total: " + str(json_upload) + "\n")
 
     # ---------- Every 30 (changeable) seconds, checks for new GPS data from the tracker. ----------
@@ -101,12 +99,14 @@ def run_base_station():
 
             # If the GPS data is new, save it to file.
             else: 
+                logging.info(f"Writing new GPS point {str(new_data)}")
                 print("\nWriting new GPS point: " + str(new_data))
                 json_upload.append({"point" + str(json_key): new_data})
                 json_key += 1
                 with open(BASE_STATION_LONG_NAME, "w") as f:
                     f.write(json.dumps(json_upload))
                 container_client.upload_blob(name=BASE_STATION_LONG_NAME, data=str(json_upload), overwrite=True)
+                logging.info(f"Uploaded total: {str(json_upload)}")
                 print("\nUploaded total: " + str(json_upload) + "\n")
                 latest_data = new_data      # Updates latest_data for future changes reference.
 
@@ -117,6 +117,7 @@ def run_base_station():
         # TODO: Create a log file that stores crash data and current variables.
         print("Encountered an unexpected error, shutting down...")
         interface.close()
+        logging.fatal(traceback.format_exc)
         traceback.print_exc()
 
     # ---------------------------------------------------------------------------------
@@ -136,13 +137,15 @@ def get_nodes(interface, latest_data):
     try:    
         nodes = interface.nodes
     except AttributeError as e:
+        logging.error("AttributeError: ", e)
+        logging.error("No LoRa devices were found to be serially connected, check USB connection cable and device.")
         print("AttributeError:", e)
         print("No LoRa devices were found to be serially connected, check USB connection cable and device.")
-        # Print to the log file that the serial connection was disrupted.
         sys.exit(1)
 
     # ---------- Iterates through all nodes to find the tracker ----------
 
+    logging.info("Retrieving tracker data...")
     print("\nRetrieving tracker data...")
     foundTracker = False
     tracker = {}
@@ -151,6 +154,7 @@ def get_nodes(interface, latest_data):
             foundTracker = True
             tracker = value
     if foundTracker == False:
+        logging.fatal("Failed to find GPS tracker amongst nodes. Restart program and ensure tracker is on.")
         print("\n ----------  Failed to find GPS tracker. ---------- \n")
 
     # ---------- Checks the tracker data received, if the GPS data is new returns it. ----------
@@ -159,16 +163,20 @@ def get_nodes(interface, latest_data):
     try:
         coords = [tracker['position']['latitude'], tracker['position']['longitude']]
     except KeyError as e:
+        logging.warning("No GPS data found for tracker. Please check GPS lock.")
         print("\nNo GPS data found for tracker. Please check GPS lock.")
         return 0
     
     # Check that the GPS data is new.
     if coords == [latest_data['lat'], latest_data['long']]:
+        logging.info("Received GPS data matches old GPS data, not saving.")
+        logging.info(f"OLD DATA: {tracker}")
         print("Received GPS data matches old GPS data, not saving.")
         print("Old data: " + tracker + "\n")
         return 0
     
     # If it is new, save it, along with other data from the tracker.
+    logging.info("Received GPS data is new, saving")
     print("\nReceived GPS data is new, saving.")
     battLevel = tracker['deviceMetrics']['batteryLevel']
     times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")
@@ -193,51 +201,59 @@ def get_nodes_verbose(interface):
     try:    
         nodes = interface.nodes
     except AttributeError as e:
+        logging.error("AttributeError: ", e)
+        logging.error("No LoRa devices were found to be serially connected, check USB connection cable and device.")
         print("AttributeError:", e)
         print("No LoRa devices were found to be serially connected, check USB connection cable and device.")
-        # Print to the log file that the serial connection was disrupted.
-        sys.exit(1)
 
     # ---------- Iterates through all nodes and prints their data verbosely. ----------
 
     baseStation = {}
     tracker = {}
     otherDevices = []
+    logging.info("Getting all nodes information...")
     print("Getting all nodes information...")
     for value in nodes.values(): 
         if value['user']['id'] == BASE_STATION_ID:
             baseStation = value
+            logging.info(f"Base station details: {baseStation}")
             print("\nBase Station Details:")
             print(baseStation)
         if value['user']['id'] == TRACKER_ID:
             tracker = value
+            logging.info(f"Tracker details: {tracker}")
             print("\nTracker Details:")
             print(tracker)
         else:
             otherDevices.append(value['user']['longName'])
+    logging.info("Other previously connected devices found:")
     print("\nOther previously connected devices found:")
     for device in otherDevices:
+        logging.info(device)
         print(device)
 
     # ---------- Adds retrieved tracker data to saved data. ----------
     
+    logging.info("Processing tracker data...")
     print("\nProcessing tracker data...")
 
     # Check that GPS data was included in the tracker data.
     try:
         coords = [tracker['position']['latitude'], tracker['position']['longitude']]
     except KeyError as e:
+        logging.warning("No GPS data found for tracker. Please check GPS lock.")
         print("\nNo GPS data found for tracker. Please check GPS lock.")
         return 0
     
     # Save the GPS data, along with other data from the tracker.
+    logging.info("Received GPS data is new, saving.")
     print("\nReceived GPS data is new, saving.")
     battLevel = tracker['deviceMetrics']['batteryLevel']
     times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")
     new_data = {"name": TRACKER_ID, "time": times, "lat": coords[0], "long": coords[1], 
                 "telemetry": {"battery": battLevel, "altitude": " "}, "longname": BASE_STATION_LONG_NAME}
 
-    try:        # Method to fix altitude bug.
+    try:        # Ensures that the telemetry exists, to avoid KeyErrors.
         new_data["telemetry"]["altitude"] = tracker['position']['altitude']
     except KeyError:
         pass
