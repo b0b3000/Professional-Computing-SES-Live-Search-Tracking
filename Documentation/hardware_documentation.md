@@ -169,7 +169,7 @@ Connect the following to your base station:
 
 - Get the requirements.txt file from Github, move it into the `Trackers` and run `pip install -r requirements.txt` to install required packages.
 
-- Get the `base_py` file from Github, move it into the `Trackers` directory.
+- Get the `base_py` (either from Github, copy-pasting into terminal, or use the `scp` command), move it into the `Trackers` directory.
 
 ## Base/Tracker Pair Configuration
 

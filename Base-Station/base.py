@@ -9,7 +9,7 @@ TODO 1: Comment out all print statements when finished.
 Known Issues:
 ISSUE 1: 
 
-Written by Fred Leman
+Written by Fred Leman.
 """
 
 import meshtastic.serial_interface
@@ -145,7 +145,7 @@ def get_nodes(interface, latest_data):
         logging.error("No LoRa devices were found to be serially connected, check USB connection cable and device.")
         print("AttributeError:", e)
         print("No LoRa devices were found to be serially connected, check USB connection cable and device.")
-        sys.exit(1)
+        quit()
 
     # ---------- Iterates through all nodes to find the tracker ----------
 
@@ -281,6 +281,7 @@ def get_azure_key():
                 key = line.rstrip().split("key1:", 1)[1]  # Extracts the key after "key1:".
                 # Insert the key after "AccountKey=" in the connection string.
                 return CONN_STRING[:key_pos] + key + CONN_STRING[key_pos:]
+
 
 if __name__ == "__main__":
     run_base_station()
