@@ -32,6 +32,7 @@ def get_blob_storage_key():
     SECRET_NAME = "BlobStorageConnectionString"
     vault_url = f"https://{VAULT_NAME}.vault.azure.net/"
     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+    test = 0
     
     
     # Create a SecretClient using DefaultAzureCredential.
