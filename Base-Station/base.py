@@ -27,6 +27,8 @@ BASE_STATION_LONG_NAME = 'base-3200-c'
 TRACKER_ID = '!33679a4c'
 TRACKER_LONG_NAME = 'fredtastic'
 
+POLL_RATE_SECONDS = 30
+
 
 def run_base_station():
     """Performs startup operations."""
@@ -85,9 +87,9 @@ def run_base_station():
     logging.info(f"Uploaded total: {str(json_upload)}")
     print("\n Uploaded total: " + str(json_upload) + "\n")
 
-    # ---------- Every 30 (changeable) seconds, checks for new GPS data from the tracker. ----------
+    # ---------- Checks for new GPS data from the tracker, based on poll rate (default 30 seconds) ----------
 
-    time.sleep(30)
+    time.sleep(POLL_RATE_SECONDS)
     try:
         while True:
             print("\n--------------- LOOP ---------------\n")
@@ -110,7 +112,7 @@ def run_base_station():
                 print("\nUploaded total: " + str(json_upload) + "\n")
                 latest_data = new_data      # Updates latest_data for future changes reference.
 
-            time.sleep(30)
+            time.sleep(POLL_RATE_SECONDS)
 
     except Exception as e:
         # Catches any unexpected error in running the entire code while looping.
