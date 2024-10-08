@@ -55,7 +55,11 @@ def upload_search_data(active_search, incomplete=False):
                     search_date = active_search["search_date"]
                 
                 # Decode gps_JSON from bytes, then convert to JSON string. Ensures legal storage in Database
-                decoded_data = gps_JSON.decode('utf-8').replace("'", '"')
+                    
+                if (type(gps_JSON) == bytes): #It will be in this format after pulling the first time, but then always will already be a string
+                    gps_JSON = gps_JSON.decode('utf-8')
+
+                decoded_data = gps_JSON.replace("'", '"')
                 gps_JSON_string = json.dumps(json.loads(decoded_data)) 
 
                 query = """
