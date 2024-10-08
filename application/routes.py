@@ -172,7 +172,12 @@ def end_search():
 
     # Translate all blobs into GPX string and store in a dictionary
     gpx_data_dict = {}
+    blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
+
+    print(json_gps_data)
     for blob_name, blob_content in json_gps_data.items():
+        # TODO: Comment this back in to delete containers after a search is ended.
+        # blob_service_client.delete_container(blob_name)
         try:
             if isinstance(blob_content, bytes):
                 decoded_content = blob_content.decode('utf-8')

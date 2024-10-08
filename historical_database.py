@@ -8,7 +8,7 @@ def get_database_url():
     
     '''
         NOTE: For local testing using the Azure database, you will need to install the required ODBC Driver (As below)
-        This will not be an issue when we are hosting on Azure as Azure already comeS with default drivers to use.    
+        This will not be an issue when we are hosting on Azure as Azure already comes with default drivers to use.    
     '''
     
     server = 'cits3200server.database.windows.net'

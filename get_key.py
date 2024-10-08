@@ -3,7 +3,7 @@
 #USE THE SECOND FUNCTION FOR AZURE WEB APP
 # I have not yet figured out a way to access key vaults when testing locally - WORKING ON IT
 
-'''
+
 def get_blob_storage_key():
 
     # Retrieves key1 from the text file in this directory.
@@ -20,6 +20,7 @@ def get_blob_storage_key():
 
 def get_db_password():
     return "meshtastic2024!"
+  
 '''
 
 from azure.identity import DefaultAzureCredential
@@ -43,7 +44,8 @@ def get_blob_storage_key():
     
     #Format correctly
     return conn_string[:69] + key + conn_string[69:]
-    
+
+
 def get_db_password():
     VAULT_NAME = "cits32004keys"
     SECRET_NAME = "historicalDatabasePassword"

@@ -11,7 +11,7 @@ import time
 import copy
 import datetime
 
-NUM_BASE_STATIONS = 20
+NUM_BASE_STATIONS = 5
 
 
 def upload():
@@ -42,7 +42,7 @@ def upload():
                     'battery': test_points[0]['point0']['telemetry']['battery'],
                     'altitude': test_points[0]['point0']['telemetry']['altitude'],
                 },
-                'longname': f'base-station-{i}'
+                'longname': f'test-{i}'
             }
         }
         fake_data_sets.append([data_set])     # Adds the first data point as a list.
@@ -71,9 +71,9 @@ def upload():
             })
             fake_data_sets[j].append(data_set)
             print(f"{fake_data_sets[j]}\n")
-            container_client.upload_blob(name=f"base-station{j}", data=str(fake_data_sets[j]), overwrite=True)
+            container_client.upload_blob(name=f"test-{j}", data=str(fake_data_sets[j]), overwrite=True)
         print("Sleeping for 30 secs.")
-        time.sleep(30)      # Modify this to make it run a bit faster.
+        # time.sleep(30)      # Modify this to make it run a bit faster.
 
     for set in fake_data_sets:
         print(f"{set}\n")
