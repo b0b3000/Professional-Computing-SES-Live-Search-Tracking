@@ -32,6 +32,44 @@ class TrailColour(Enum):
     LIME = "#A8FF33"
 
 
+def assign_colour(initial_coord):
+    """
+    Assigns a colour in hex format based on the last three digits of the fractional part
+    of the given coordinate.
+    """
+    # Get the last three digits using colour_helper
+    last_three_digits = colour_helper(initial_coord)
+    
+    min_value = 0
+    max_value = 9
+    
+    # Normalise each value to the range 0-255
+    normalised_values = [
+        int((value - min_value) / (max_value - min_value) * 255)
+        for value in last_three_digits
+    ]
+    
+    # Convert to hexadecimal format and return as hex colour code
+    hex_colour = '#{:02x}{:02x}{:02x}'.format(*normalised_values)
+    
+    return hex_colour
+
+def colour_helper(initial_coord):
+    """
+    Takes a float coordinate, extracts the last three digits of the fractional part,
+    and returns them as a list of integers.
+    """
+    coord_str = str(initial_coord)
+    
+    # Split the string at the decimal point and extract the fractional part
+    # Then take the last 3 digits
+    fractional_part = coord_str.split(".")[1][-3:]
+    
+    # Convert each character in the fractional part to an integer and store in a list
+    last_three_digits = [int(digit) for digit in fractional_part]
+    
+    return last_three_digits
+    
 def get_random_colour():
     """Chooses a random colour from the given enum.
     
@@ -48,6 +86,9 @@ def process_data_to_map(data, map, telemetry_data=[] ):
 
     # taken from folium docs, stackoverflow, and integrated with the help of ChatGPT
     # Add points to map using folium.Marker
+
+    initial_coord = 0
+
     for feature in features:
         point_location = feature["geometry"]["coordinates"][::-1]  # Reversing [long, lat] to [lat, long]
         folium.Marker(
@@ -56,9 +97,13 @@ def process_data_to_map(data, map, telemetry_data=[] ):
             icon=folium.Icon(color="blue", icon="info-sign")
         ).add_to(map)
 
+    initial_coord = features[0]["geometry"]["coordinates"][0]
+
+    trail_colour = assign_colour(initial_coord)
+
     # Choose a colour for this trail
     #TODO: pass in the last chosen colour and make it impossible to choose that again.
-    trail_colour = get_random_colour()
+    # trail_colour = get_random_colour()
 
     # Draw a line connecting coordinates
     if coordinates:
@@ -138,8 +183,11 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
             traceback.print_exc()
     
     # Calculate the average latitude and longitude from all coordinates
-    avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
-    avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
+    if len(all_coordinates) != 0:
+        avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
+        avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
+    else:
+        avg_lat, avg_long = -31.9775, 115.8163
 
     # Update the map center to the average lat/long
     m.location = [avg_lat, avg_long]

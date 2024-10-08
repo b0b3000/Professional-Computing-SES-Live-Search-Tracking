@@ -169,14 +169,14 @@ Connect the following to your base station:
 
 - Get the requirements.txt file from Github, move it into the `Trackers` and run `pip install -r requirements.txt` to install required packages.
 
-- Get the `base_py` file from Github, move it into the `Trackers` directory.
+- Get the `base_py` (either from Github, copy-pasting into terminal, or use the `scp` command), move it into the `Trackers` directory.
 
 ## Base/Tracker Pair Configuration
 
 #### **LoRa/Meshtastic Device Physical Connection**
 - Connect a preconfigured LoRa/Meshtastic device (setup in `CLIENT` mode) to RaspberryPi via the USB-A port, this will act as the **base station**. Ensure that this device boots up and stays on with no power issues.
 
-- Connect a second preconfigured LoRa device (setup in `TRACKER` mode and equipped with a GPS module) into an adequate power supply (5V), this will be the **tracker**. Ensure that this device boots up and stays on with no power issues, and that it has established a GPS lock. 
+- Connect a second preconfigured LoRa device (setup in `TRACKER` mode and equipped with a GPS module) into an adequate power supply (5V), this will be the **tracker**. Ensure that this device boots up and stays on with no power issues, and that it has established a GPS lock. **If a GPS lock is not established, the base station code will exit with an error status.**
 	
 - You may have to take the tracker outdoors to establish the GPS lock, after which, you can take it back inside to continue the setup.
 
@@ -185,7 +185,7 @@ Connect the following to your base station:
 
 - Run the Python code using `python3 base.py`
 
-- Note the global variables in the Python file `TRACKER_ID`, `TRACKER_LONG_NAME`, `BASE_ID`, `BASE_LONG_NAME`.
+- Note the global variables in the Python file `TRACKER_ID`, `TRACKER_LONG_NAME`, `BASE_ID`, `BASE_LONG_NAME`, `CONN_STRING`.
 
 - When the code runs for the first time you will be able to find these details in the nodes summary printout, enter them into the code and run it again.
 

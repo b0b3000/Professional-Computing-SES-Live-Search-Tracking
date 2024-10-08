@@ -1,0 +1,24 @@
+INFO:__main__:Started
+INFO:__main__:Started
+INFO:azure.core.pipeline.policies.http_logging_policy:Request URL: 'https://cits3200testv1.blob.core.windows.net/?comp=REDACTED&include=REDACTED'
+Request method: 'GET'
+Request headers:
+    'x-ms-version': 'REDACTED'
+    'Accept': 'application/xml'
+    'User-Agent': 'azsdk-python-storage-blob/12.23.1 Python/3.12.6 (macOS-12.2-arm64-arm-64bit)'
+    'x-ms-date': 'REDACTED'
+    'x-ms-client-request-id': '52098a72-8513-11ef-ba6f-ea258d38e8e0'
+    'Authorization': 'REDACTED'
+No body was attached to the request
+INFO:azure.core.pipeline.policies.http_logging_policy:Response status: 200
+Response headers:
+    'Transfer-Encoding': 'chunked'
+    'Content-Type': 'application/xml'
+    'Server': 'Windows-Azure-Blob/1.0 Microsoft-HTTPAPI/2.0'
+    'x-ms-request-id': 'a776a734-b01e-002b-2b20-19dfeb000000'
+    'x-ms-client-request-id': '52098a72-8513-11ef-ba6f-ea258d38e8e0'
+    'x-ms-version': 'REDACTED'
+    'Date': 'Tue, 08 Oct 2024 01:19:10 GMT'
+INFO:root:Beginning base station setup process with base station ID and name = !7c5cb2a0, base-3200-c, and tracker ID and name = !33679a4c + fredtastic
+ERROR:root:No LoRa devices were found to be serially connected, check USB connection cable and device.
+INFO:root:Getting all nodes information...
