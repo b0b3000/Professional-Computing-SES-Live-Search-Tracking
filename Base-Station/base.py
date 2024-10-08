@@ -9,7 +9,7 @@ TODO 1: Comment out all print statements when finished.
 Known Issues:
 ISSUE 1: 
 
-Written by Fred Leman
+Written by Fred Leman.
 """
 
 import meshtastic.serial_interface
@@ -20,12 +20,15 @@ import time
 import traceback
 import json
 import logging
+
 logger = logging.getLogger(__name__)
 
+# Change these variables for different base stations.
 BASE_STATION_ID = '!7c5cb2a0'
 BASE_STATION_LONG_NAME = 'base-3200-c'
 TRACKER_ID = '!33679a4c'
 TRACKER_LONG_NAME = 'fredtastic'
+CONN_STRING = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
 
 
 def run_base_station():
@@ -36,7 +39,7 @@ def run_base_station():
     # ---------- Establishes connection with Azure Storage, creates blob file for uploading. ----------
 
     # Retrieves the Azure Storage key.
-    storage_key = get_key()
+    storage_key = get_azure_key()
 
     # Initialises client to interact with the Storage Account.
     blob_service_client = BlobServiceClient.from_connection_string(conn_str=storage_key)
@@ -141,7 +144,7 @@ def get_nodes(interface, latest_data):
         logging.error("No LoRa devices were found to be serially connected, check USB connection cable and device.")
         print("AttributeError:", e)
         print("No LoRa devices were found to be serially connected, check USB connection cable and device.")
-        sys.exit(1)
+        quit()
 
     # ---------- Iterates through all nodes to find the tracker ----------
 
@@ -263,16 +266,15 @@ def get_nodes_verbose(interface):
     # ---------------------------------------------------------------------------------
 
 
-def get_key():
+def get_azure_key():
     """Retrieves an Azure Storage key from a text file in this directory."""
     # Sets connection string, where AccountName is the name of the Storage Account, 
     # and AccountKey is a valid Access Key to that account.
-    conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
     with open("keys.txt") as file:
         for line in file:
             if line.rstrip().startswith("key1:"):
                 key = line.rstrip().split("key1:", 1)[1]    # Splits the key from after the first occurence of "key1:".
-                return conn_string[:69] + key + conn_string[69:]    # Places the key in the correct position in the middle of connection string.
+                return CONN_STRING[:69] + key + CONN_STRING[69:]    # Places the key in the correct position in the middle of connection string.
 
 
 if __name__ == "__main__":
