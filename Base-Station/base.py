@@ -29,6 +29,7 @@ BASE_STATION_LONG_NAME = 'base-3200-c'
 TRACKER_ID = '!33679a4c'
 TRACKER_LONG_NAME = 'fredtastic'
 CONN_STRING = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+POLL_RATE_SECONDS = 30
 
 
 def run_base_station():
@@ -88,9 +89,9 @@ def run_base_station():
     logging.info(f"Uploaded total: {str(json_upload)}")
     print("\n Uploaded total: " + str(json_upload) + "\n")
 
-    # ---------- Every 30 (changeable) seconds, checks for new GPS data from the tracker. ----------
+    # ---------- Checks for new GPS data from the tracker, based on poll rate (default 30 seconds) ----------
 
-    time.sleep(30)
+    time.sleep(POLL_RATE_SECONDS)
     try:
         while True:
             print("\n--------------- LOOP ---------------\n")
@@ -113,7 +114,7 @@ def run_base_station():
                 print("\nUploaded total: " + str(json_upload) + "\n")
                 latest_data = new_data      # Updates latest_data for future changes reference.
 
-            time.sleep(30)
+            time.sleep(POLL_RATE_SECONDS)
 
     except Exception as e:
         # Catches any unexpected error in running the entire code while looping.
@@ -152,10 +153,10 @@ def get_nodes(interface, latest_data):
     print("\nRetrieving tracker data...")
     foundTracker = False
     tracker = {}
-    for value in nodes.values():
-        if value['user']['id'] == TRACKER_ID:
+    for tracker_data in nodes.values():
+        if tracker_data['user']['id'] == TRACKER_ID:
             foundTracker = True
-            tracker = value
+            tracker = tracker_data
     if foundTracker == False:
         logging.fatal("Failed to find GPS tracker amongst nodes. Restart program and ensure tracker is on.")
         print("\n ----------  Failed to find GPS tracker. ---------- \n")
@@ -270,11 +271,16 @@ def get_azure_key():
     """Retrieves an Azure Storage key from a text file in this directory."""
     # Sets connection string, where AccountName is the name of the Storage Account, 
     # and AccountKey is a valid Access Key to that account.
+
+    # Find the position where "AccountKey=" appears.
+    key_pos = CONN_STRING.find("AccountKey=") + len("AccountKey=")
+
     with open("keys.txt") as file:
         for line in file:
             if line.rstrip().startswith("key1:"):
-                key = line.rstrip().split("key1:", 1)[1]    # Splits the key from after the first occurence of "key1:".
-                return CONN_STRING[:69] + key + CONN_STRING[69:]    # Places the key in the correct position in the middle of connection string.
+                key = line.rstrip().split("key1:", 1)[1]  # Extracts the key after "key1:".
+                # Insert the key after "AccountKey=" in the connection string.
+                return CONN_STRING[:key_pos] + key + CONN_STRING[key_pos:]
 
 
 if __name__ == "__main__":
