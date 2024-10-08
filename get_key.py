@@ -60,5 +60,3 @@ def get_db_password():
     password = retrieved_secret.value.rstrip()
     
     return password
-
-"""
