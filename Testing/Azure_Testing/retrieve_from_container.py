@@ -13,8 +13,12 @@ from folium.plugins import TimestampedGeoJson
 from azure.storage.blob import BlobServiceClient
 
 
+# Change this variable to reflect Azure connection
+CONN_STRING = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+
+
 def retrieve_from_containers(m, path):
-    STORAGE_CONNECTION_STRING = get_key()
+    STORAGE_CONNECTION_STRING = get_azure_key()
     
     # Initialises client.
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)   # The BlobServiceClient interacts with the Storage Account itself.
@@ -73,17 +77,20 @@ def mapify(blob_content):
     )
     return trail
 
-def get_key():
-    # Retrieves key1 from the text file in this directory.
-    # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
-    conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+def get_azure_key():
+    """Retrieves an Azure Storage key from a text file in this directory."""
+    # Sets connection string, where AccountName is the name of the Storage Account, 
+    # and AccountKey is a valid Access Key to that account.
+
+    # Find the position where "AccountKey=" appears.
+    key_pos = CONN_STRING.find("AccountKey=") + len("AccountKey=")
+
     with open("keys.txt") as file:
         for line in file:
             if line.rstrip().startswith("key1:"):
-                # Splits the key from after the first occurence of "key1:".
-                key = line.rstrip().split("key1:", 1)[1]
-                # Places the key in the correct position in the middle of connection string.
-                return conn_string[:69] + key + conn_string[69:]
+                key = line.rstrip().split("key1:", 1)[1]  # Extracts the key after "key1:".
+                # Insert the key after "AccountKey=" in the connection string.
+                return CONN_STRING[:key_pos] + key + CONN_STRING[key_pos:]
 
 if __name__ == "__main__":
     current_dir = os.path.dirname(__file__)
