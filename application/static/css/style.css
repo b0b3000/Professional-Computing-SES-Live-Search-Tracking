@@ -44,7 +44,7 @@ header::after {
   position: absolute;
   top: 0;
   height: 110px; /* Match the fixed height of the header */
-  background-image: url('../check.png'); /* checkered image */
+  background-image: url('../images/check.png'); /* checkered image */
   background-size: contain; /* Ensures the image scales correctly */
   background-repeat: repeat; /* Repeats image */
 }
