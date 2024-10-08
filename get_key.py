@@ -3,7 +3,7 @@
 #USE THE SECOND FUNCTION FOR AZURE WEB APP
 # I have not yet figured out a way to access key vaults when testing locally - WORKING ON IT
 
-
+'''
 def get_blob_storage_key():
 
     # Retrieves key1 from the text file in this directory.
