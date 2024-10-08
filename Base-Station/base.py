@@ -20,13 +20,15 @@ import time
 import traceback
 import json
 import logging
+
 logger = logging.getLogger(__name__)
 
+# Change these variables for different base stations.
 BASE_STATION_ID = '!7c5cb2a0'
 BASE_STATION_LONG_NAME = 'base-3200-c'
 TRACKER_ID = '!33679a4c'
 TRACKER_LONG_NAME = 'fredtastic'
-
+CONN_STRING = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
 POLL_RATE_SECONDS = 30
 
 
@@ -38,7 +40,7 @@ def run_base_station():
     # ---------- Establishes connection with Azure Storage, creates blob file for uploading. ----------
 
     # Retrieves the Azure Storage key.
-    storage_key = get_key()
+    storage_key = get_azure_key()
 
     # Initialises client to interact with the Storage Account.
     blob_service_client = BlobServiceClient.from_connection_string(conn_str=storage_key)
@@ -265,21 +267,20 @@ def get_nodes_verbose(interface):
     # ---------------------------------------------------------------------------------
 
 
-def get_key():
+def get_azure_key():
     """Retrieves an Azure Storage key from a text file in this directory."""
     # Sets connection string, where AccountName is the name of the Storage Account, 
     # and AccountKey is a valid Access Key to that account.
-    conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
-    
+
     # Find the position where "AccountKey=" appears.
-    key_pos = conn_string.find("AccountKey=") + len("AccountKey=")
+    key_pos = CONN_STRING.find("AccountKey=") + len("AccountKey=")
 
     with open("keys.txt") as file:
         for line in file:
             if line.rstrip().startswith("key1:"):
                 key = line.rstrip().split("key1:", 1)[1]  # Extracts the key after "key1:".
                 # Insert the key after "AccountKey=" in the connection string.
-                return conn_string[:key_pos] + key + conn_string[key_pos:]
+                return CONN_STRING[:key_pos] + key + CONN_STRING[key_pos:]
 
 if __name__ == "__main__":
     run_base_station()
