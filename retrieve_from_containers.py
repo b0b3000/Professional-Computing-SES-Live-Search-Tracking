@@ -183,8 +183,11 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
             traceback.print_exc()
     
     # Calculate the average latitude and longitude from all coordinates
-    avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
-    avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
+    if len(all_coordinates) != 0:
+        avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
+        avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
+    else:
+        avg_lat, avg_long = -31.9775, 115.8163
 
     # Update the map center to the average lat/long
     m.location = [avg_lat, avg_long]
