@@ -149,10 +149,10 @@ def get_nodes(interface, latest_data):
     print("\nRetrieving tracker data...")
     foundTracker = False
     tracker = {}
-    for value in nodes.values():
-        if value['user']['id'] == TRACKER_ID:
+    for tracker_data in nodes.values():
+        if tracker_data['user']['id'] == TRACKER_ID:
             foundTracker = True
-            tracker = value
+            tracker = tracker_data
     if foundTracker == False:
         logging.fatal("Failed to find GPS tracker amongst nodes. Restart program and ensure tracker is on.")
         print("\n ----------  Failed to find GPS tracker. ---------- \n")
