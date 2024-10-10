@@ -15,9 +15,10 @@ header {
   font-family: "Roboto Condensed", sans-serif;
   font-weight: 800;
   text-align: center; 
-  font-size: 3em; 
+  font-size: 2.8em;
+  letter-spacing: 1.5; 
   padding: 10px 0;
-  height: 90px; 
+  height: 55px; 
   position: relative; 
   z-index: 1000; 
   overflow: hidden; 
@@ -33,7 +34,7 @@ header {
 /* spacing, size, ratio of logo */
 .header-logo {
   margin-left: 20px; 
-  height: 90px; 
+  height: 60px; 
   width: auto;  
 }
 
@@ -43,7 +44,7 @@ header::after {
   content: "";
   position: absolute;
   top: 0;
-  height: 110px; /* Match the fixed height of the header */
+  height: 75px; /* Match the fixed height of the header */
   background-image: url('../images/check.png'); /* checkered image */
   background-size: contain; /* Ensures the image scales correctly */
   background-repeat: repeat; /* Repeats image */
@@ -53,7 +54,7 @@ header::after {
 header::before {
   left: 0; 
   width: 20%; 
-  background-position: 50% 0; /* Start repeating from the center vertically */
+  background-position: 52% 0; /* Start repeating from the center vertically */
 }
 
 /* Position on the right, right border width */
@@ -67,7 +68,7 @@ header::after {
   display: flex;
   justify-content: space-between; /* Ensures spacing between panels */
   width: 100%;
-  height: calc(100vh - 100px); /* Adjust height to fit under the header */
+  height: calc(100vh - 180px); /* Adjust height to fit under the header */
   margin-top: 0;
   margin-bottom: 0;
 }
@@ -178,7 +179,7 @@ header::after {
 #telemetry-panel,
 #select-panel {
   width: 300px; /* Fixed width for sidebars */
-  height: 100vh; /* Take up full height of the viewport */
+  height:  calc(100vh - 160px); /* Take up full height of the viewport */
   background-color: #f7f7f7;
   padding: 10px;
   box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
@@ -308,9 +309,9 @@ header::after {
   border: none;
   outline: none;
   cursor: pointer;
-  padding: 14px 16px;
-  letter-spacing: 1.5px;
-  font-size: 25px;
+  padding: 8px 18px;
+  letter-spacing: 1px;
+  font-size: 22px;
   color: #3c6997; /* Highlight the text color instead */
   transition: color 0.3s ease;
 }
@@ -375,13 +376,14 @@ header::after {
 .map-wrapper {
   flex-grow: 1; /* Allow it to grow to fill the available space */
   background-color: #F5841E; 
- 
-
   background-clip: padding-box, border-box;
   border-radius: 5px; 
   padding: 10px; 
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
   height: 100%;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
 }
 
 .table {
