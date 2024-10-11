@@ -4,7 +4,6 @@ meshtastic==2.5.1
 azure-storage-blob==12.23.1
 azure-identity==1.18.0
 azure-keyvault-secrets==4.8.0
-sqlalchemy==2.0.35
 python-dotenv==1.0.1
 pyodbc==5.1.0
 gpxpy==1.6.2
