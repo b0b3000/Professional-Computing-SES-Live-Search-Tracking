@@ -8,15 +8,15 @@ body {
   text-align: center;
 }
 
-/* Header styling, height, position of header, overflow prevents content from exeeding header height */
+/* Header styling, height, position of header, overflow prevents content from exceeding header height. */
 header {
-  background-color: #F5841E; /* Middle block color */
+  background-color: #F5841E; /* Middle block color. */
   color: white; 
   font-family: "Roboto Condensed", sans-serif;
   font-weight: 800;
   text-align: center; 
   font-size: 2.8em;
-  letter-spacing: 1.5; 
+  letter-spacing: 1.5px; 
   padding: 10px 0;
   height: 55px; 
   position: relative; 
@@ -55,13 +55,12 @@ h5 {
 }
 
 .title {
+  display: inline-flex; /* Horizontally align. */
+  align-items: center;  /* Aligns logo.  */
   position: relative;
-  display: inline-flex; /* horizontal algn */
-  align-items: center;  /* Aligns logo  */
   justify-content: center;
-  height: 100%; /* Ensure the title block takes up the full height of the header */
+  height: 100%; /* Ensures the title block takes up the full height of the header. */
 }
-
 
 .tutorial-wrapper {
   position: absolute;
@@ -132,42 +131,42 @@ h5 {
   width: auto;  
 }
 
-/* Places image left and right sides of header*/
+/* Places image left and right sides of header. */
 header::before,
 header::after {
   content: "";
   position: absolute;
   top: 0;
-  height: 75px; /* Match the fixed height of the header */
-  background-image: url('../images/check.png'); /* checkered image */
-  background-size: contain; /* Ensures the image scales correctly */
-  background-repeat: repeat; /* Repeats image */
+  height: 75px; /* Match the fixed height of the header. */
+  background-image: url('../images/check.png'); /* Checkered image. */
+  background-size: contain; /* Ensures the image scales correctly. */
+  background-repeat: repeat; /* Repeats image. */
 }
 
-/* Adjust the postion and width of the left checkered sides */
+/* Adjusts the postion and width of the left checkered sides. */
 header::before {
   left: 0; 
   width: 20%; 
-  background-position: 52% 0; /* Start repeating from the center vertically */
+  background-position: 52% 0; /* Starts repeating from the center vertically. */
 }
 
-/* Position on the right, right border width */
+/* Position on the right, right border width. */
 header::after {
   right: 0; 
   width: 20%;
 }
 
-/* Flexbox container to align the map, search, and telemetry panels side by side */
+/* Flexbox container to align the map, search, and telemetry panels side by side. */
 #main-container {
   display: flex;
   justify-content: space-between; /* Ensures spacing between panels */
   width: 100%;
-  height: calc(100vh - 180px); /* Adjust height to fit under the header */
+  height: calc(100vh - 180px); /* Adjusts height to fit under the header. */
   margin-top: 0;
   margin-bottom: 0;
 }
 
-/* Wrapper to stack map-container and controls-container vertically */
+/* Wrapper to stack map-container and controls-container vertically. */
 #map-controls-wrapper {
   display: flex;
   flex-direction: column;
@@ -177,7 +176,7 @@ header::after {
   margin: 0;
 }
 
-/* Map styling */
+/* Map styling. */
 #map-container {
   flex-grow: 1;
   position: relative;
@@ -193,10 +192,10 @@ header::after {
   margin-bottom: 0;
 }
 
-/* Controls container for Azure containers, search, and table */
+/* Controls container for Azure containers, search, and table. */
 #controls-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Creates three equal-width columns */
+  grid-template-columns: repeat(3, 1fr); /* Creates three equal-width columns. */
   gap: 0px;
 }
 #checkbox-container {
@@ -269,18 +268,18 @@ header::after {
   }
 }
 
-/* Sidebar styling */
+/* Sidebar styling. */
 #telemetry-panel,
 #select-panel {
-  width: 300px; /* Fixed width for sidebars */
-  height:  calc(100vh - 160px); /* Take up full height of the viewport */
+  width: 300px; /* Fixed width for sidebars. */
+  height:  calc(100vh - 160px); /* Takes up full height of the viewport. */
   background-color: #f7f7f7;
   padding: 10px;
   box-shadow: -3px 0 5px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
 }
 
-/* Telemetry card styling */
+/* Telemetry card styling. */
 .telemetry-card {
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -305,26 +304,25 @@ header::after {
   margin: 10px 0;
 }
 
-/* Azure container and search controls styling */
+/* Azure container and search controls styling. */
 #table-container {
   padding: 10px;
 }
 
-/* Table styling */
+/* Table styling. */
 .gpx-table {
   padding: 20px;
   border-collapse: collapse;
   width: 100%;
 }
 
-/* Container styling to ensure the buttons take up half the width each */
+/* Container styling to ensure the buttons take up half the width each. */
 #button-container {
   display: flex;
   justify-content: space-between;
   width: 100%;
   height: auto;
 }
-
 
 #start-search,
 #end-search,
@@ -382,63 +380,61 @@ header::after {
   cursor: not-allowed !important;
 }
 
-
 #Tabs-styling
-/* General styling for tabs */
+/* General styling for tabs. */
 .tab {
   display: flex;
   justify-content: center;
-  margin-top: 10px; /* Adjust the margin as needed */
-  background-color: transparent; /* Remove any box-like appearance */
+  margin-top: 10px; /* Adjusts the margin as needed. */
+  background-color: transparent; /* Removes any box-like appearance. */
   border: none;
-  font-family: "Roboto Condensed", sans-serif; /* Set the same font as the header */
+  font-family: "Roboto Condensed", sans-serif; /* Sets the same font as the header. */
   font-weight: 500;
 }
 
-/* Styling the buttons */
+/* Styling the buttons. */
 .tab button {
   font-family: "Roboto Condensed", sans-serif;
   font-weight: 500;
-  background-color: transparent; /* Make the background blend with the page */
+  background-color: transparent; /* Makes the background blend with the page. */
   border: none;
   outline: none;
   cursor: pointer;
   padding: 8px 18px;
   letter-spacing: 1px;
   font-size: 22px;
-  color: #3c6997; /* Highlight the text color instead */
+  color: #3c6997; /* Highlights the text color instead. */
   transition: color 0.3s ease;
 }
 
-/* On hover, change the text color */
+/* On hover, changes the text color. */
 .tab button:hover {
   color: #7eb2dd; 
 }
 
 /* Active tab */
 .tab button.active {
-  border-bottom: 2px solid #3c6997; /* Only underline active tab */
+  border-bottom: 2px solid #3c6997; /* Only underline active tab. */
   font-family: "Roboto Condensed", sans-serif;
   font-weight: 600;
 }
 
-/* Tab content */
+/* Tab content. */
 .tabcontent {
   display: none;
   padding: 20px;
-  border: none; /* Remove borders from tab content */
+  border: none; /* Removes borders from tab content. */
 }
 
-/* Hide all tabcontent by default */
+/* Hides all tabcontent by default. */
 .tabcontent {
   display: none;
 }
 
-/* When tab is active, show the tab content */
+/* When tab is active, shows the tab content. */
 .tabcontent.active {
   display: block;
 }
-
 
 .filter-header {
   display: flex;
@@ -476,28 +472,28 @@ header::after {
 }
 
 .left-panel {
-  flex: 1.5; /* Takes up 1/3rd of the container width */
+  flex: 1.5; /* Takes up 1/3rd of the container width. */
   display: flex;
   flex-direction: column;
-  margin-right: 20px; /* Adds space between the table and the map */
+  margin-right: 20px; /* Adds space between the table and the map. */
   margin-left: 10px;
 }
 
 .scrollable-table {
   flex-grow: 1;
   overflow-y: auto;
-  height: calc(100% - 210px); /* Adjust height to leave space for the filter above */
+  height: calc(100% - 210px); /* Adjusts height to leave space for the filter above. */
 }
 
 .map-container {
-  flex: 1.5; /* Takes up the remaining 2/3rd of the space  */
+  flex: 1.5; /* Takes up the remaining 2/3rd of the space.  */
   padding-right: 10px;
-  display: flex; /* Allow children to align vertically */
-  flex-direction: column; /* Stack children vertically */
+  display: flex; /* Allow children to align vertically. */
+  flex-direction: column; /* Stack children vertically. */
 } 
 
 .map-wrapper {
-  flex-grow: 1; /* Allow it to grow to fill the available space */
+  flex-grow: 1; /* Allows it to grow to fill the available space. */
   background-color: #F5841E; 
   background-clip: padding-box, border-box;
   border-radius: 5px; 
@@ -505,12 +501,12 @@ header::after {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); 
   height: 100%;
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally. */
+  align-items: center; /* Center vertically. */
 }
 
 .table {
-  width: 100%; /* Make the table stretch to fill the container */
+  width: 100%; /* Makes the table stretch to fill the container. */
   font-family: "Iter", sans-serif;
   border-collapse: collapse;
   font-size: 14px;
@@ -536,7 +532,37 @@ header::after {
 }
 
 .table tbody tr:hover {
-  background-color: #f1f1f1; /* Adds a hover effect */
+  background-color: #f1f1f1; /* Adds a hover effect. */
+}
+
+h3 {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 600;
+  font-size: 1.4em; 
+  color: #3c6997;
+  margin: 0; 
+  padding-bottom: 10px; 
+  text-align: center; 
+}
+
+h4 {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 600;
+  font-size: 1.6em; 
+  color: #3c6997;
+  margin: 0; 
+  padding-bottom: 10px; 
+  text-align: center; 
+}
+
+h5 {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 600;
+  font-size: 1.6em; 
+  color: #3c6997;
+  margin: 0; /* Remove default margin to align with filter box. */
+  padding-bottom: 10px; 
+  text-align: center; 
 }
 
 .filter-box {
@@ -553,16 +579,16 @@ header::after {
 
 .filter-inputs {
   display: flex;
-  justify-content: space-between; /* Evenly space filter items */
+  justify-content: space-between; /* Evenly spaces filter items. */
 }
 
 .filter-item {
-  flex: 1; /* Makes each item take equal space */
+  flex: 1; /* Makes each item take equal space. */
   margin-right: 20px; 
 }
 
 .filter-item:last-child {
-  margin-right: 0; /* Remove margin on the last item */
+  margin-right: 0; /* Removes margin on the last item. */
 }
 
 .filter-item label {
@@ -572,13 +598,13 @@ header::after {
   letter-spacing: 1.5px;
   color: #3c6997; 
   margin-bottom: 5px; 
-  display: block; /* Makes the label occupy the full width, allowing space for the input */
+  display: block; /* Makes the label occupy the full width, allowing space for the input. */
 }
 
 .filter-item input,
 .filter-item select {
-  width: 100%; /* Full width of the filter item */
-  padding: 8px; /* Padding inside the input */
+  width: 100%; /* Full width of the filter item. */
+  padding: 8px; /* Padding inside the input. */
   box-sizing: border-box;
 }
 
@@ -594,15 +620,15 @@ header::after {
   border-radius: 4px;
   cursor: pointer;
   width: 30%;
-  margin-top: 20px; /* Add space above the button */
+  margin-top: 20px; /* Adds space above the button. */
 }
 
 .select2-container {
-  width: 100% !important; /* Makes the Select2 dropdown take the full width */
+  width: 100% !important; /* Makes the Select2 dropdown take the full width. */
 }
 
 .filter-submit:hover {
-  background-color: #d59455; /* Darker on hover */
+  background-color: #d59455; /* Darker on hover. */
 }
 
 .filter-map-container {

@@ -1,54 +1,51 @@
-
-
+// Function to open a specific tab and hide the others.
 function openTab(evt, tabName) {
-  // Hide all tab content
+  // Hides all tab content elements.
   const tabcontent = document.getElementsByClassName("tabcontent");
   for (let i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
   }
 
-  // Remove the active class from all buttons
+  // Removes the active class from all buttons
   const tablinks = document.getElementsByClassName("tablinks");
   for (let i = 0; i < tablinks.length; i++) {
     tablinks[i].classList.remove("active");
   }
 
-  // Show the clicked tab content and add the active class to the clicked button
+  // Shows the clicked tab content and add the active class to the clicked button
   document.getElementById(tabName).style.display = "block";
   evt.currentTarget.classList.add("active");
 }
 
-// Default: Show the first tab
+// Default: Show the first tab when the DOM is fully loaded.
 document.addEventListener('DOMContentLoaded', function() {
   document.getElementsByClassName("tablinks")[0].click();
 });
 
-
-// Handle form submission with AJAX
+// Handles form submission with AJAX
 $(document).ready(function () {
   $(".filter-box form").on("submit", function (e) {
-    e.preventDefault(); // Prevent the default form submission
+    e.preventDefault();    // Prevents the default form submission
 
     $.ajax({
       type: "POST",
       url: "/filter-search",
-      data: $(this).serialize(), // Serialize form data
+      data: $(this).serialize(),    // Serializes form data
       success: function (data) {
         const tbody = $(".scrollable-table tbody");
-        tbody.empty(); // Clear existing rows
+        tbody.empty();    // Clears existing rows
 
-        // Populate table with returned data
+        // Populates table with returned data
         data.forEach((row) => {
 
           const newRow = `<tr class='search-row' session_id='${row[0]}' base_station ='${row[1]}'>
-
-                      <td>${row[0]}</td>
-                      <td>${row[1]}</td>
-                      <td>${row[2]}</td>
-                      <td>${row[3]}</td>
-                      <td>${row[4]}</td>
-                      <td>${row[5]}</td>
-                      <td>${row[6]}</td>    
+                      <td>${row[0]}</td> <!-- ID -->
+                      <td>${row[1]}</td> <!-- Base Station -->
+                      <td>${row[4]}</td> <!-- Date -->
+                      <td>${row[2]}</td> <!-- Start Time -->
+                      <td>${row[3]}</td> <!-- End Time -->
+                      <td>${row[5]}</td> <!-- GPS Data -->
+                      <td>${row[6]}</td> <!-- Download Link -->
                   </tr>`;
           tbody.append(newRow);
           console.log("GPS Data 'new row': ", newRow);
@@ -62,13 +59,11 @@ $(document).ready(function () {
     });
   });
 
-  // Automatically click the first tab
+  // Automatically clicks the first tab on page load.
   document.getElementsByClassName("tablinks")[0].click();
 });
 
-
-// This is in a function and then immeadiately called so its called once for the initial buttons (all searches),
-// And again each time search filters are applied
+// Attaches event listeners for display buttons in each search result row.
 function attachButtonListeners(){
   document.querySelectorAll(".search-row").forEach(function (row) {
     const displayButton = row.querySelector("#display-historical-button");
@@ -76,7 +71,7 @@ function attachButtonListeners(){
       session_id = row.getAttribute("session_id");
       base_station = row.getAttribute("base_station");
 
-      // AJAX request to render the map
+      // AJAX request to render the map based on the session and base station.
       $.ajax({
         type: "GET",
         url: "/render-map",
@@ -94,30 +89,30 @@ function attachButtonListeners(){
 }
 attachButtonListeners();
 
-// Event listener for tile clicks
+// Event listener for container label clicks to toggle selection.
 document.querySelectorAll(".container-label").forEach((label) => {
   label.addEventListener("click", function () {
-    // Toggle the active class on click
+    // Toggles the active class on click
     label.classList.toggle("active");
   });
 });
 
-// Event listener for the button to fetch the latest GPS data
+// Event listener for the button to fetch the latest GPS data.
 document
   .getElementById("fetch-data-button")
   .addEventListener("click", function () {
-    // Collect selected containers based on active class
+    // Collect selected containers based on active class.
     const selectedContainers = Array.from(
       document.querySelectorAll(".container-label.active"),
     ).map((label) => label.getAttribute("data-container"));
 
-    // Ensure at least one container is selected
+    // Ensures at least one container is selected.
     if (selectedContainers.length === 0) {
       alert("Please select at least one container.");
       return;
     }
 
-    // Send a request to the server to update the map based on the selected containers
+    // Sends a request to the server to update the map based on the selected containers.
     fetch(`/api/update-map`, {
       method: "POST",
       headers: {
@@ -127,33 +122,33 @@ document
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched Data:", data); // Log the data to the console for inspection
+        console.log("Fetched Data:", data);    // Logs the data to the console for inspection.
 
-        // Display the telemetry data in a nicer format
+        // Displays the telemetry data in a nicer format.
         displayTelemetryData(data.telemetry_data);
 
-        // Refresh the iframe to show the updated map
+        // Refreshes the iframe to show the updated map.
         document.getElementById("map-iframe").src = data.map_path;
       })
       .catch((error) => console.error("Error updating map:", error));
   });
 
 
-  // Select2 Library for selecting multiple base stations in the historical data filter
+// Select2 Library for selecting multiple base stations in the historical data filter.
   $(document).ready(function() {
     $('#base-station').select2({
         placeholder: "Select Base Stations",
         allowClear: true,
-        width: '100%' // Ensures the Select2 input takes up the full width of its parent container
+        width: '100%'    // Ensures the Select2 input takes up the full width of its parent container.
     });
 });
 
-// Displays latest ping from each base in a sidebar, with telemetry data.
+// Function to display the latest telemetry data from each base station in the sidebar.
 function displayTelemetryData(telemetryData) {
   const telemetryContent = document.getElementById("telemetry-content");
-  telemetryContent.innerHTML = ""; // Clear previous content
+  telemetryContent.innerHTML = "";    // Clears previous content
 
-  const latestPingsByBase = {}; // Stores only most recent ping for each base.
+  const latestPingsByBase = {};    // Stores only most recent ping for each base.
   telemetryData.forEach((entry) => {
     const baseName = entry.name;
     if (
@@ -192,7 +187,7 @@ function displayTelemetryData(telemetryData) {
   });
 }
 
-// Handle the start search button click
+// Handles the click event for the start search button.
 document.getElementById("start-search").addEventListener("click", function () {
   fetch("/api/start-search", {
     method: "POST",
@@ -215,7 +210,7 @@ document.getElementById("start-search").addEventListener("click", function () {
     .catch((error) => console.error("Error starting search:", error));
 });
 
-// Handle the end searh button click
+// Handles the click event for the end search button.
 document.getElementById("end-search").addEventListener("click", function () {
   const mapContainer = document.getElementById("map-container");
 
@@ -232,7 +227,7 @@ document.getElementById("end-search").addEventListener("click", function () {
       alert("Search ended! Click below to download the GPX file.");
       console.log("End Search Response:", data);
 
-      // Remove the animated border class
+      // Removes the animated border class.
       mapContainer.classList.remove("search-running-animation");
       document.getElementById("end-search").disabled = true;
       document.getElementById("end-search").classList.remove("ready");
@@ -242,28 +237,28 @@ document.getElementById("end-search").addEventListener("click", function () {
       document.getElementById("start-search").classList.remove("disabled");
       document.getElementById("start-search").classList.add("ready");
 
-      // Check if the download URL is present in the response
+      // Checks if the download URL is present in the response.
       if (!data.gpx_download_routes) {
         console.error("GPX download URL is missing in the response.");
         alert("GPX download URL is missing. Please try again later.");
         return;
       }
 
-      // Get the selected containers based on the active class
+      // Gets the selected containers based on the active class.
       const selectedContainers = Array.from(
-        document.querySelectorAll(".container-label.active"), // Updated selector
+        document.querySelectorAll(".container-label.active"),    // Updated selector.
       ).map((label) => label.getAttribute("data-container"));
 
-      // Log selected containers for debugging
+      // Logs selected containers for debugging.
       console.log("Selected Containers:", selectedContainers);
 
-      // Check if the table exists
+      // Checks if the table exists.
       let downloadTable = document.getElementById("download-table");
 
       if (!downloadTable) {
         const tableContainer = document.getElementById("table-container");
         const linkToRemove = tableContainer.querySelector("a");
-        // Check if the link contains the specific text
+        // Checks if the link contains the specific text.
         if (
           linkToRemove &&
           linkToRemove.textContent.includes(
@@ -273,19 +268,19 @@ document.getElementById("end-search").addEventListener("click", function () {
           linkToRemove.remove();
         }
 
-        // Create the table if it doesn't exist
+        // Creates the table if it doesn't exist.
         downloadTable = document.createElement("table");
         downloadTable.className = "gpx-table";
         downloadTable.id = "download-table";
 
-        // Append the table to the container
+        // Appends the table to the container.
         document.getElementById("table-container").appendChild(downloadTable);
       } else {
-        // Clear existing rows if the table exists
+        // Clears existing rows if the table exists.
         downloadTable.innerHTML = "";
       }
 
-      // Add rows for each selected container
+      // Adds rows for each selected container.
       data.gpx_download_routes.forEach((route) => {
         const row = downloadTable.insertRow();
 
@@ -296,13 +291,12 @@ document.getElementById("end-search").addEventListener("click", function () {
         const downloadButton = document.createElement("a");
         downloadButton.textContent = "Download Data";
         downloadButton.href = `/download/${route}`;
-        downloadButton.download = `${route}_search_data.gpx`; // Suggest a filename for the GPX file
+        downloadButton.download = `${route}_search_data.gpx`; // Suggests a filename for the GPX file.
         cell2.appendChild(downloadButton);
       });
     })
     .catch((error) => console.error("Error ending search:", error));
 });
-
 // Js for tutorial Boxes Historical Data
 // Show the tutorial boxes
 function showTutorial() {
@@ -314,4 +308,3 @@ function showTutorial() {
 function hideBox(boxNumber) {
   document.getElementById('tutorial-box-' + boxNumber).style.display = 'none';
 }
-
