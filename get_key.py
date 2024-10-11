@@ -1,16 +1,25 @@
-#IMPORTANT:
-#USE THE FIRST FUNCTION FOR LOCAL TESTING
-#USE THE SECOND FUNCTION FOR AZURE WEB APP
-# I have not yet figured out a way to access key vaults when testing locally - WORKING ON IT
+"""
+Python program for retrieving keys/passwords from Azure key vault.
+Also has utility function for retrieving from manually created local key txt files.
+
+Use the first 2 functions for local testing, as you wont be able to access Azure keyvault if not a running instance of the web app
+Otherwise, leave that section commented out
+
+Written by Bob Beashel
 
 """
 
+KEY_FILEPATH = "keys.txt"
+from azure.identity import DefaultAzureCredential
+from azure.keyvault.secrets import SecretClient
+
+"""
 def get_blob_storage_key():
 
     # Retrieves key1 from the text file in this directory.
     # Sets connection string, where AccountName is the name of the Storage Account, and AccountKey is a valid Access Key to that account.
     conn_string = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
-    with open("keys.txt") as file:
+    with open(KEY_FILEPATH) as file:
         for line in file:
             if line.rstrip().startswith("key1:"):
                 # Splits the key from after the first occurence of "key1:".
@@ -20,7 +29,7 @@ def get_blob_storage_key():
 
 
 def get_db_password():
-    with open("keys.txt") as file:
+    with open(KEY_FILEPATH) as file:
         for line in file:
             if line.rstrip().startswith("password:"):
                 # Splits the key from after the first occurence of "password:".
@@ -29,9 +38,6 @@ def get_db_password():
                 return password
   
 """
-
-from azure.identity import DefaultAzureCredential
-from azure.keyvault.secrets import SecretClient
 
 def get_blob_storage_key():    
 

@@ -4,7 +4,7 @@ Routes:
     - update_map(): Updates the map with new data and returns a success message.
     - push_data_to_server(): Pushes data to Azure storage container and returns a success message. (Testing Purposes).
 
-Written by Susheel Utagi, Lilee Hammond
+Written by Bob Beashel, Susheel Utagi, Lilee Hammond
 """
 
 import traceback
