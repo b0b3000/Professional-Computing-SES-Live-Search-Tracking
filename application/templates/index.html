@@ -34,7 +34,19 @@
       <button class="tablinks" onclick="openTab(event, 'HistoricalData')">
         Historical Data
       </button>
+
+        <!-- Wrapper for tutorial boxes (outside left panel and filter-map container) -->
+      <div class="tutorial-wrapper">
+      <div id="tutorial-box-1" class="tutorial-box" style="top: 10px; left: 0;">
+        <p>This page has access to all previous searches.
+          To find a specific search, use the filter and visualise the data by pressing the 'display' button.
+        </p>
+        <button id="got-it-button" onclick="hideBox(1)">Got it!</button>
+      </div>
+
     </div>
+  </div>
+
 
     <!-- Start Search Tab Content -->
     <div id="StartSearch" class="tabcontent">
@@ -107,6 +119,8 @@
 
       <!-- Container for the left panel (filter + scrollable table) and right panel (map) -->
       <div class="filter-map-container">
+
+
         <!-- Left Panel: Filter + Scrollable List -->
         <div class="left-panel">
           <!-- Filter Panel -->
@@ -114,21 +128,7 @@
             <h4>Filter Previous Searches</h4>
             <button id="help-btn" class="help-button" onclick="showTutorial()">?</button>
           </div>
-
-           <!-- Wrapper for tutorial boxes -->
-          <div class="tutorial-wrapper">
-            <div id="tutorial-box-1" class="tutorial-box" style="top: 10; left: 0;">
-              <p>Here is where you can filter the historical data by date and base station.</p>
-              <button onclick="hideBox(1)">Got it!</button>
-            </div>
-
-            <div id="tutorial-box-2" class="tutorial-box" style="top: 300px; left: 500px;">
-              <p>This map shows the search areas.</p>
-              <button onclick="hideBox(2)">Got it!</button>
-            </div>
-          </div>
-          
-
+      
           <div class="filter-box">
             <form method="POST" action="/filter-search">
               <div class="filter-inputs">
