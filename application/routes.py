@@ -21,32 +21,6 @@ from to_gpx import convert_json_to_gpx_string
 
 STORAGE_CONNECTION_STRING = get_key.get_blob_storage_key()
 
-def get_presentable_historical_data(selected_base_stations, start_date="2024-01-01", end_date="9999-01-01"):
-    results = historical_database.get_historical_searches(start_date, end_date, selected_base_stations)
-    
-    # Convert results to serializable format
-    serializable_results = []
-    for row in results:
-
-        filename = f'{row[0]}.gpx' # Contains search ID for file name  
-        with open(filename, 'w') as outfile:
-
-            if type(row[6]) == str:
-                outfile.write(row[6]) # row[6] is GPX data
-
-        serializable_row = (
-            row[0],  # Assuming ID is already a string
-            row[1],  # Base station
-            row[2].strftime('%H:%M:%S'),  # Convert time to string
-            row[3].strftime('%H:%M:%S'),  # Convert time to string
-            row[4].strftime('%Y-%m-%d'),  # Convert date to string
-            f"<a href='/download/{filename}' download='{filename}'>Download Data</a>", #Download Link
-            f'<button id="display-historical-button">Display</button>', # Button"
-            row[5] #GPS data
-        )
-        serializable_results.append(serializable_row)
-    
-    return serializable_results
 
 @app.route('/')
 def index():
@@ -148,6 +122,7 @@ def start_search():
     session['start_time'] = datetime.now().strftime('%H:%M:%S')
     
     return jsonify({'message': 'Search started', 'session_id': session_id})
+
 
 @app.route('/api/end-search', methods=['POST'])
 def end_search():
@@ -254,6 +229,7 @@ def render_map():
         "map_path": url_for('static', filename='/historical_map.html'),
     })
 
+
 # Route to serve the GPX ZIP file for download
 @app.route('/download/<filename>')
 def download_gpx(filename):
@@ -262,6 +238,7 @@ def download_gpx(filename):
         return send_file(file_path, as_attachment=True)
     else:
         return jsonify({'error': 'File not found'}), 404
+
 
 @app.route('/filter-search', methods=['POST'])
 def submit_date():
@@ -274,3 +251,31 @@ def submit_date():
     serializable_results = get_presentable_historical_data(selected_base_stations, start_date, end_date)
 
     return jsonify(serializable_results)
+
+
+def get_presentable_historical_data(selected_base_stations, start_date="2024-01-01", end_date="9999-01-01"):
+    results = historical_database.get_historical_searches(start_date, end_date, selected_base_stations)
+    
+    # Convert results to serializable format
+    serializable_results = []
+    for row in results:
+
+        filename = f'{row[0]}.gpx' # Contains search ID for file name  
+        with open(filename, 'w') as outfile:
+
+            if type(row[6]) == str:
+                outfile.write(row[6]) # row[6] is GPX data
+
+        serializable_row = (
+            row[0],  # Assuming ID is already a string
+            row[1],  # Base station
+            row[2].strftime('%H:%M:%S'),  # Convert time to string
+            row[3].strftime('%H:%M:%S'),  # Convert time to string
+            row[4].strftime('%Y-%m-%d'),  # Convert date to string
+            f"<a href='/download/{filename}' download='{filename}'>Download Data</a>", #Download Link
+            f'<button id="display-historical-button">Display</button>', # Button"
+            row[5] #GPS data
+        )
+        serializable_results.append(serializable_row)
+    
+    return serializable_results

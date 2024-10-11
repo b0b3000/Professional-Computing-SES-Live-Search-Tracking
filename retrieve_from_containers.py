@@ -1,19 +1,13 @@
-# pip install azure-storage-blob, folium
 """
 Python program for retrieving data from Azure blob storage.
 
 Naming convention for Containers: "base-station-[id]", and for Blobs: "search_[id]".
 Data storage format: TimestampedGeoJSON
-
-Written by Bob Beashel, Fred Leman
-Implemented/ Further developed by Susheel Utagi, Lilee Hammond
 """
-import os
+
 import folium
-from folium.plugins import TimestampedGeoJson
 from azure.storage.blob import BlobServiceClient
 import traceback
-import get_key
 import json
 import random
 from enum import Enum
