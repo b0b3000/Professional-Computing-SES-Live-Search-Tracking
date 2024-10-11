@@ -31,10 +31,6 @@ Contained in this folder is:
 
 ```
 /project-root
-├──
-└──
-│
-
 ├── application
 │   ├── static
 │   │   ├── css                     # Stylesheets
