@@ -5,6 +5,11 @@ import pyodbc
 import get_key
 
 TIMEOUT = 30
+SERVER = 'cits3200server.database.windows.net'
+DATABASE = 'cits3200DB'
+USERNAME = 'cits3200group4'
+PASSWORD = get_key.get_db_password()
+DRIVER_VERSION = "ODBC Driver 18 for SQL Server"
 
 
 def get_database_url():
@@ -17,7 +22,7 @@ def get_database_url():
     database = "cits3200DB"
     username = "cits3200group4"
     password = get_key.get_db_password()
-    connection_string = f"DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}"
+    connection_string = f'DRIVER={DRIVER_VERSION};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
 
     return connection_string
 
@@ -81,7 +86,7 @@ def upload_search_data(active_search, incomplete=False):
 
     except Exception as e:
         print(f"An error occured when uploading search data to the database: {e}")
-
+        
 
 def get_unique_base_stations():
     """Finds all unique base stations present in the database.
@@ -101,7 +106,8 @@ def get_unique_base_stations():
         return base_stations
 
     except Exception as e:
-        print(f"Error in get_unique_base_stations: {e}")
+        print(" ----- ERROR IN get_unqiue_base_stations ----\n")
+        print(f"Error: {e}")
         return []
 
 
@@ -198,18 +204,4 @@ def get_all_searches():
         return None
 
     return results
-
-
-# Temporary function for testing purposes only.
-# def create_columns_in_table(col_name, data_type):
-#     try:
-#         with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
-#             cursor = conn.cursor()
-#             print("Here", flush=True)
-#             # Testing, Creating another column in table
-#             alter_table_query = f"""ALTER TABLE search_history ADD "{col_name}" "{data_type}";"""
-#             cursor.execute(alter_table_query)
-#             conn.commit()
-
-#     except Exception as e:
-#         print(f"Error: {e}")
+  

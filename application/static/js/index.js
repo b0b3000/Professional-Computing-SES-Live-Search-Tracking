@@ -297,3 +297,14 @@ document.getElementById("end-search").addEventListener("click", function () {
     })
     .catch((error) => console.error("Error ending search:", error));
 });
+// Js for tutorial Boxes Historical Data
+// Show the tutorial boxes
+function showTutorial() {
+  document.getElementById('tutorial-box-1').style.display = 'block';
+  document.getElementById('tutorial-box-2').style.display = 'block';
+}
+
+// Hide the individual tutorial boxes when the user clicks "Got it!"
+function hideBox(boxNumber) {
+  document.getElementById('tutorial-box-' + boxNumber).style.display = 'none';
+}
