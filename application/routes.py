@@ -10,9 +10,7 @@ Written by Susheel Utagi, Lilee Hammond
 import traceback
 import json
 import os
-import shutil
-import tempfile
-from flask import render_template, request, url_for, current_app as app, jsonify, send_file, Response, session
+from flask import render_template, request, url_for, current_app as app, jsonify, send_file, session
 import folium
 from retrieve_from_containers import retrieve_from_containers, retrieve_historical_data
 import get_key
