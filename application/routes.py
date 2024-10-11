@@ -4,14 +4,12 @@ Routes:
     - update_map(): Updates the map with new data and returns a success message.
     - push_data_to_server(): Pushes data to Azure storage container and returns a success message. (Testing Purposes).
 
-Written by Susheel Utagi, Lilee Hammond
+Written by Bob Beashel, Susheel Utagi, Lilee Hammond
 """
 
 import traceback
 import json
 import os
-import shutil
-import tempfile
 from flask import render_template, request, url_for, current_app as app, jsonify, send_file, Response, session
 import folium
 from retrieve_from_containers import retrieve_from_containers, retrieve_historical_data
@@ -25,6 +23,7 @@ STORAGE_CONNECTION_STRING = get_key.get_blob_storage_key()
 
 def get_presentable_historical_data(selected_base_stations, start_date="2024-01-01", end_date="9999-01-01"):
     results = historical_database.get_historical_searches(start_date, end_date, selected_base_stations)
+
     
     # Convert results to serializable format
     serializable_results = []

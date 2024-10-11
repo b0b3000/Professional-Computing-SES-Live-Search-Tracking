@@ -1,8 +1,5 @@
 '''
-pip install gpxpy (requirements.txt has been updated)
-Python program for translating between gpx and json data.
-
-#TODO: reverse trnalsation from GPX to geoJson for rendering on web-app.
+Python program for translating from JSON to GPX data format
 
 Written by Jack Donaghy.
 Extended and modified by Susheel Utagi.

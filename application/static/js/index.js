@@ -69,12 +69,11 @@ $(document).ready(function () {
 
           const newRow = `<tr class='search-row' session_id='${row[0]}' base_station ='${row[1]}'>
 
-
                       <td>${row[0]}</td>
                       <td>${row[1]}</td>
-                      <td>${row[4]}</td>
                       <td>${row[2]}</td>
                       <td>${row[3]}</td>
+                      <td>${row[4]}</td>
                       <td>${row[5]}</td>
                       <td>${row[6]}</td>    
                   </tr>`;

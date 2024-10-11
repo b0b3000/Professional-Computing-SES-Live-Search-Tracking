@@ -1,8 +1,20 @@
+'''
+Python program for uploading and retrieving data from the Cloud 'Historical Search' Database
+Includes several utility functions to be used for uploading or downloading specific datasets
+
+Written by Bob Beashel, Lilee Hammond.
+'''
+
 import json
 import pyodbc
 import get_key
 
 TIMEOUT = 30
+SERVER = 'cits3200server.database.windows.net'
+DATABASE = 'cits3200DB'
+USERNAME = 'cits3200group4'
+PASSWORD = get_key.get_db_password()
+DRIVER_VERSION = "ODBC Driver 18 for SQL Server"
 
 def get_database_url():
     
@@ -11,11 +23,7 @@ def get_database_url():
         This will not be an issue when we are hosting on Azure as Azure already comes with default drivers to use.    
     '''
     
-    server = 'cits3200server.database.windows.net'
-    database = 'cits3200DB'
-    username = 'cits3200group4'
-    password = get_key.get_db_password()
-    connection_string = f'DRIVER={{ODBC Driver 18 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
+    connection_string = f'DRIVER={DRIVER_VERSION};SERVER={SERVER};DATABASE={DATABASE};UID={USERNAME};PWD={PASSWORD}'
 
     return connection_string
 
@@ -29,6 +37,7 @@ def connect_database():
             return cursor
 
     except Exception as e:
+        print(" ----- ERROR IN connect_database ----\n")
         print(f"Error: {e}")
         return
 
@@ -73,6 +82,7 @@ def upload_search_data(active_search, incomplete=False):
             print("Upload successful")
 
     except Exception as e:
+        print(" ----- ERROR IN upload_search_data ----\n")
         print(f"Error: {e}")
         return
     
@@ -92,7 +102,8 @@ def get_unique_base_stations():
         return base_stations
 
     except Exception as e:
-        print(f"Error in get_unique_base_stations: {e}")
+        print(" ----- ERROR IN get_unqiue_base_stations ----\n")
+        print(f"Error: {e}")
         return []
 
 def get_live_searches(session_id, base_stations):
@@ -182,23 +193,4 @@ def get_all_searches():
         return
 
     return results
-    
-    
-# Temporary function for testing purposes
-def create_colums_in_table(col_name, data_type):
-    try:
-
-        with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
-            cursor = conn.cursor()
-
-            print("Here", flush=True)
-            # Testing, Creating another column in table
-            alter_table_query = f"""ALTER TABLE search_history ADD '{col_name}' '{data_type}';"""
-            cursor.execute(alter_table_query)
-            conn.commit()
-
-    except Exception as e:
-        
-        print(f"Error: {e}")
-        return
     
