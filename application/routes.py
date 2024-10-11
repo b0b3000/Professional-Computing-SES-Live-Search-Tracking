@@ -3,8 +3,6 @@ Routes:
     - index(): Renders the index.html template and passes device data to it.
     - update_map(): Updates the map with new data and returns a success message.
     - push_data_to_server(): Pushes data to Azure storage container and returns a success message. (Testing Purposes).
-
-Written by Susheel Utagi, Lilee Hammond
 """
 
 import traceback
@@ -12,7 +10,7 @@ import json
 import os
 from flask import render_template, request, url_for, current_app as app, jsonify, send_file, session
 import folium
-from retrieve_from_containers import retrieve_from_containers, retrieve_historical_data
+from retrieve_from_containers import retrieve_from_containers, historical_data_to_map
 import get_key
 from azure.storage.blob import BlobServiceClient
 from datetime import datetime
@@ -87,7 +85,7 @@ def update_map():
     active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
     active_map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint.html')
     
-    telemetry_data, _, all_blobs = retrieve_from_containers(active_map, STORAGE_CONNECTION_STRING, container_names, active_map_save_path)
+    telemetry_data, all_blobs = retrieve_from_containers(active_map, STORAGE_CONNECTION_STRING, container_names, active_map_save_path)
 
     # Update session-specific GPS data
     session['base_stations'] = list(all_blobs.keys())
@@ -220,7 +218,7 @@ def render_map():
     
     # Render GPS points
     map_save_path = os.path.join(os.path.dirname(__file__), 'static/historical_map.html')
-    retrieve_historical_data(m, gps_points, map_save_path)
+    historical_data_to_map(m, gps_points, map_save_path)
 
     # Save the map and render the template
     m.save(map_save_path)

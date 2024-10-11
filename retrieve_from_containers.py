@@ -1,218 +1,61 @@
-"""
-Python program for retrieving data from Azure blob storage.
+"""This module contains functions for retrieveing data from the Azure storage containers."""
 
-Naming convention for Containers: "base-station-[id]", and for Blobs: "search_[id]".
-Data storage format: TimestampedGeoJSON
-"""
-
-import folium
-from azure.storage.blob import BlobServiceClient
 import traceback
 import json
-import random
-from enum import Enum
+import folium
+from azure.storage.blob import BlobServiceClient
 
-"""Simple enum to assign colours to trails"""
-class TrailColour(Enum):
-    RED = "#FF5733"
-    ORANGE = "#FF8D33"
-    YELLOW = "#FFC300"
-    GREEN = "#33FF57"
-    CYAN = "#33FFF3"
-    BLUE = "#3375FF"
-    PURPLE = "#B833FF"
-    PINK = "#FF33F3"
-    MAGENTA = "#FF33B8"
-    LIME = "#A8FF33"
+all_coordinates = []    # Global list to store all coordinates.
+
+default_coord_avg = -31.9775, 115.8163    # Changes the default map centring location.
 
 
 def assign_colour(initial_coord):
-    """
-    Assigns a colour in hex format based on the last three digits of the fractional part
+    """Assigns a colour in hex format based on the last three digits of the fractional part
     of the given coordinate.
+
+    Arg: initial_coord(str): The latitude value of a base station's first ping.
+    Returns: string (str): The associated hex colour.
     """
-    # Get the last three digits using colour_helper
-    last_three_digits = colour_helper(initial_coord)
-    
+    # Gets the last three digits of the coordinate.
+    last_three_digits = [int(digit) for digit in str(initial_coord).split(".")[1][-3:]]
     min_value = 0
     max_value = 9
-    
-    # Normalise each value to the range 0-255
+
+    # Normalises each value to the range 0-255.
     normalised_values = [
         int((value - min_value) / (max_value - min_value) * 255)
         for value in last_three_digits
     ]
     
-    # Convert to hexadecimal format and return as hex colour code
+    # Converts to hexadecimal format and return as hex colour code.
     hex_colour = '#{:02x}{:02x}{:02x}'.format(*normalised_values)
     
     return hex_colour
 
-def colour_helper(initial_coord):
-    """
-    Takes a float coordinate, extracts the last three digits of the fractional part,
-    and returns them as a list of integers.
-    """
-    coord_str = str(initial_coord)
+
+def convert_to_geojson(data):
+    """Converts raw data taken from the Azure containers into GeoJSON data.
     
-    # Split the string at the decimal point and extract the fractional part
-    # Then take the last 3 digits
-    fractional_part = coord_str.split(".")[1][-3:]
-    
-    # Convert each character in the fractional part to an integer and store in a list
-    last_three_digits = [int(digit) for digit in fractional_part]
-    
-    return last_three_digits
-    
-def get_random_colour():
-    """Chooses a random colour from the given enum.
-    
-       Returns: Hex string represnting the chosen colour"""
-    return random.choice(list(TrailColour)).value
-
-# Global list to store all coordinates
-all_coordinates = []
-
-def process_data_to_map(data, map, telemetry_data=[] ):
-
-    # Call mapify to process and get points and coordinates
-    features, coordinates, extracted_telemetry = mapify(data)
-
-    # taken from folium docs, stackoverflow, and integrated with the help of ChatGPT
-    # Add points to map using folium.Marker
-
-    initial_coord = 0
-
-    for feature in features:
-        point_location = feature["geometry"]["coordinates"][::-1]  # Reversing [long, lat] to [lat, long]
-        folium.Marker(
-            location=point_location,
-            popup=feature["properties"]["tooltip"],
-            icon=folium.Icon(color="blue", icon="info-sign")
-        ).add_to(map)
-
-    initial_coord = features[0]["geometry"]["coordinates"][0]
-
-    trail_colour = assign_colour(initial_coord)
-
-    # Choose a colour for this trail
-    #TODO: pass in the last chosen colour and make it impossible to choose that again.
-    # trail_colour = get_random_colour()
-
-    # Draw a line connecting coordinates
-    if coordinates:
-        folium.PolyLine(
-            locations=coordinates,
-            color=trail_colour,  # Assign a random color to each trail
-            weight=5,
-            opacity=0.7  
-        ).add_to(map)
-
-        # Add the current coordinates to the global list
-        all_coordinates.extend(coordinates)
-
-    telemetry_data.extend(extracted_telemetry)
-    
-
-def retrieve_historical_data(m, gps_points, map_save_path):
-    """
-    Retrieve and display historical GPS data on the map.
-
-    Parameters:
-        - m (folium.Map): The folium map object to add the GeoJSON data to.
-        - gps_points: Historical GPS data.
-        - map_save_path (str): Path to save the updated map.
-    """
-    # Process historical GPS data into the map
-    process_data_to_map(gps_points, m, telemetry_data=[])
-
-    # Save the updated map
-    m.save(map_save_path)
-    
-    
-def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, map_save_path):
-    """
-    Retrieve data from Azure blob storage and add the points and lines to the map.
-
-    Parameters:
-        - m (folium.Map): The folium map object to add the GeoJSON data to.
-        - STORAGE_CONNECTION_STRING (str): The connection string for the Azure storage account.
-        - active_containers: a list of strings, of the names of the storage containers.
+    Args:
+        data (dict): A base station's full data.
 
     Returns:
-        - telemetry_data (list):
-        - map_save_path (str):
-        - all_blob_content (list):
+        features (list): A list of GeoJSON features to add to the map.
+        coordinates (list): A list of coordinate tuples for drawing a PolyLine.
+        telemetry_list (list): A list of telemetry data points to be sent to the frontend.
     """
-
-    # Clear all_coordinates to ensure fresh updates
-    global all_coordinates
-    all_coordinates.clear()
-
-    # Initialize the BlobServiceClient
-    blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
-
-    telemetry_data = []
-    all_blob_content = {}
-    for container_name in active_containers:
+    # Decodes the data from UTF-8 to JSON if necessary.
+    if isinstance(data, bytes):
         try:
-            container_client = blob_service_client.get_container_client(container_name)
-            if not container_client.exists():
-                print(f"Container '{container_name}' does not exist. Skipping...")
-                continue
-
-            blobs_list = list(container_client.list_blobs())
-            if len(blobs_list) != 1:
-                print(f"Unexpected blob count in '{container_name}'. Expected 1, found {len(blobs_list)}.")
-                continue
-            
-            # Download and process blob content
-            blob = blobs_list[0]
-            blob_content = container_client.download_blob(blob).readall()
-            all_blob_content[blob.name] = blob_content
-            process_data_to_map(blob_content, m, telemetry_data)
-
-        except Exception as e:
-            print(f"Error processing container '{container_name}': {e}")
-            traceback.print_exc()
-    
-    # Calculate the average latitude and longitude from all coordinates
-    if len(all_coordinates) != 0:
-        avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
-        avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
-    else:
-        avg_lat, avg_long = -31.9775, 115.8163
-
-    # Update the map center to the average lat/long
-    m.location = [avg_lat, avg_long]
-
-    # Adjust the map zoom to fit all coordinates
-    m.fit_bounds([(lat, long) for lat, long in all_coordinates])
-
-    m.save(map_save_path)
-    return telemetry_data, map_save_path, all_blob_content
-        
-        
-def mapify(geojson_data):
-    """
-    Process and display GPS data with telemetry on the map.
-    
-    Returns:
-        - features (list): A list of GeoJSON features to add to the map.
-        - coordinates (list): A list of coordinate tuples for drawing a PolyLine.
-        - telemetry_list (list): A list of telemetry data points to be sent to the frontend.
-    """
-    
-    if isinstance(geojson_data, bytes):
-        try:
-            decoded_data = geojson_data.decode('utf-8').replace("'", '"')
+            decoded_data = data.decode('utf-8').replace("'", '"')
             points = json.loads(decoded_data)
-            #print("decoded data:", points)
+            
         except Exception as e:
             print(f"Error decoding JSON data: {e}")
             return None, [], []
     else:
-        points = geojson_data
+        points = data
 
     features = []
     coordinates = []
@@ -228,7 +71,7 @@ def mapify(geojson_data):
             longname = point_data.get('longname')
             coordinates.append([lat, lon])
 
-            # Add the point as a GeoJSON `feature` (this will display points as an icon on map)
+            # From each point, creates a GeoJSON `feature` (these will display points as icons on the Folium map).
             features.append({
                 "type": "Feature",
                 "geometry": {
@@ -242,8 +85,6 @@ def mapify(geojson_data):
                     "telemetry": telemetry,
                 },
             })
-
-            # Collect telemetry data for returning
             telemetry_list.append({
                 "name": name,
                 "time": time,
@@ -256,16 +97,114 @@ def mapify(geojson_data):
     return features, coordinates, telemetry_list 
 
 
+def process_data_to_map(data, map, telemetry_data=[] ):
+    """For a given dataset, draws its GPS points and connecting lines on a Folium map.
+
+    Args:
+        data (dict): A base stations GPS data.
+        map (_type_): The folium map that is being used.
+        telemetry_data (list, optional): _description_. The telemetry data of the base station.
+    """
+    features, coordinates, extracted_telemetry = convert_to_geojson(data)
+    initial_coord = 0
+
+    # Draws points on the Folium map.
+    for feature in features:
+        point_location = feature["geometry"]["coordinates"][::-1]  # Reverses [long, lat] to [lat, long].
+        folium.Marker(
+            location=point_location,
+            popup=feature["properties"]["tooltip"],
+            icon=folium.Icon(color="blue", icon="info-sign")
+        ).add_to(map)
+
+    initial_coord = features[0]["geometry"]["coordinates"][0]
+    trail_colour = assign_colour(initial_coord)     # Assigns the custom hex colour.
+
+    # Draws lines that connect coordinates on the Folium map.
+    if coordinates:
+        folium.PolyLine(
+            locations=coordinates,
+            color=trail_colour,
+            weight=5,
+            opacity=0.7  
+        ).add_to(map)
+        all_coordinates.extend(coordinates)
+
+    telemetry_data.extend(extracted_telemetry)
+    
+
+def historical_data_to_map(m, gps_points, map_save_path):
+    """Displays historical data on the historical Folium map, then saves the map.
+
+    Args:
+        m (folium.Map): The historical Folium map.
+        gps_points: Historical GPS data.
+        map_save_path (str): Path to save the updated historical map.
+    """
+    process_data_to_map(gps_points, m, telemetry_data=[])
+    m.save(map_save_path)
+    
+    
+def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, map_save_path):
+    """Fetches Azure storage container data and adds it to the live map.
+
+    Args:
+        m (folium.Map): The folium map object to add the GeoJSON data to.
+        STORAGE_CONNECTION_STRING (str): The connection string for the Azure storage account.
+        active_containers (list): A list of strings, of the names of the storage containers.
+
+    Returns:
+        telemetry_data (list): A list of all selected blob's telemetry data, in dictionaries.
+        all_blob_content (list): A list of all selected blob's data, in dictionaries.
+    """
+    global all_coordinates
+    all_coordinates.clear()    # Clears 'all_coordinates' to ensure fresh updates.
+
+    blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
+
+    # For each container in the storage account, fetch its blobs data.
+    telemetry_data = []
+    all_blob_content = {}
+    for container_name in active_containers:
+        try:
+            container_client = blob_service_client.get_container_client(container_name)
+            if not container_client.exists():
+                print(f"Container '{container_name}' does not exist. Skipping...")
+                continue
+
+            blobs_list = list(container_client.list_blobs())
+            if len(blobs_list) != 1:
+                print(f"Unexpected blob count in '{container_name}'. Expected 1, found {len(blobs_list)}.")
+                continue
+            
+            blob = blobs_list[0]
+            blob_content = container_client.download_blob(blob).readall()
+            all_blob_content[blob.name] = blob_content
+            process_data_to_map(blob_content, m, telemetry_data)
+
+        except Exception as e:
+            print(f"Error processing container '{container_name}': {e}")
+            traceback.print_exc()
+    
+    # Calculates average lat and lon in order to centre the map.
+    if len(all_coordinates) != 0:
+        avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
+        avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
+    else:
+        avg_lat, avg_long = default_coord_avg    # (See global variable)
+    m.location = [avg_lat, avg_long]
+    m.fit_bounds([(lat, long) for lat, long in all_coordinates])    # Adjusts the map zoom to fit all coordinates.
+
+    m.save(map_save_path)
+    return telemetry_data, all_blob_content
+
+
 # Testing purposes (Uncomment if needed to test)
 # if __name__ == "__main__":
-    
 #     active_containers = ['base-3200-b']  # Replace with the containers you want to test
 #     STORAGE_CONNECTION_STRING = get_key.get_key()
-    
-    
 #     # Create a new map object to test the updates
 #     m = folium.Map(location=(-31.9505, 115.8605), control_scale=True, zoom_start=17)
-    
 #     # Call the function with test parameters
 #     try:
 #         retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers)
