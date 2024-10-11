@@ -20,7 +20,13 @@ def get_blob_storage_key():
 
 
 def get_db_password():
-    return "meshtastic2024!"
+    with open("keys.txt") as file:
+        for line in file:
+            if line.rstrip().startswith("password:"):
+                # Splits the key from after the first occurence of "password:".
+                password = line.rstrip().split("password:", 1)[1]
+                # Places the key in the correct position in the middle of connection string.
+                return password
   
 """
 
