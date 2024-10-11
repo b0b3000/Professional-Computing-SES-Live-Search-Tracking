@@ -1,31 +1,4 @@
-/* 
-// Tab handling logic
-function openTab(evt, tabName) {
-  var i, tabcontent, tablinks;
 
-  // Hide all elements with class="tabcontent"
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-
-  // Remove the "active" class from all tablinks
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-
-  // Show the current tab, and add an "active" class to the button that opened the tab
-  document.getElementById(tabName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
-
-// Automatically click on the first tab to show it by default
-document.addEventListener("DOMContentLoaded", function () {
-  document.getElementsByClassName("tablinks")[0].click();
-});
-
-    */
 
 function openTab(evt, tabName) {
   // Hide all tab content
@@ -330,4 +303,16 @@ document.getElementById("end-search").addEventListener("click", function () {
     })
     .catch((error) => console.error("Error ending search:", error));
 });
+
+// Js for tutorial Boxes Historical Data
+// Show the tutorial boxes
+function showTutorial() {
+  document.getElementById('tutorial-box-1').style.display = 'block';
+  document.getElementById('tutorial-box-2').style.display = 'block';
+}
+
+// Hide the individual tutorial boxes when the user clicks "Got it!"
+function hideBox(boxNumber) {
+  document.getElementById('tutorial-box-' + boxNumber).style.display = 'none';
+}
 
