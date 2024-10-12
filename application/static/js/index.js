@@ -21,26 +21,25 @@ function openTab(evt, tabName) {
 }
 
 // Default: Show the first tab when the DOM is fully loaded.
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function () {
   document.getElementsByClassName("tablinks")[0].click();
 });
 
 // Handles form submission with AJAX
 $(document).ready(function () {
   $(".filter-box form").on("submit", function (e) {
-    e.preventDefault();    // Prevents the default form submission
+    e.preventDefault(); // Prevents the default form submission
 
     $.ajax({
       type: "POST",
       url: "/filter-search",
-      data: $(this).serialize(),    // Serializes form data
+      data: $(this).serialize(), // Serializes form data
       success: function (data) {
         const tbody = $(".scrollable-table tbody");
-        tbody.empty();    // Clears existing rows
+        tbody.empty(); // Clears existing rows
 
         // Populates table with returned data
         data.forEach((row) => {
-
           const newRow = `<tr class='search-row' session_id='${row[0]}' base_station ='${row[1]}'>
                       <td>${row[0]}</td> <!-- ID -->
                       <td>${row[1]}</td> <!-- Base Station -->
@@ -67,7 +66,7 @@ $(document).ready(function () {
 });
 
 // Attaches event listeners for display buttons in each search result row.
-function attachButtonListeners(){
+function attachButtonListeners() {
   document.querySelectorAll(".search-row").forEach(function (row) {
     const displayButton = row.querySelector("#display-historical-button");
     displayButton.addEventListener("click", function () {
@@ -78,7 +77,7 @@ function attachButtonListeners(){
       $.ajax({
         type: "GET",
         url: "/render-map",
-        data: {session_id: session_id, base_station: base_station},
+        data: { session_id: session_id, base_station: base_station },
         success: function (response) {
           document.getElementById("historical-map-iframe").src =
             response.map_path;
@@ -125,7 +124,7 @@ document
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Fetched Data:", data);    // Logs the data to the console for inspection.
+        console.log("Fetched Data:", data); // Logs the data to the console for inspection.
 
         // Displays the telemetry data in a nicer format.
         displayTelemetryData(data.telemetry_data);
@@ -136,22 +135,21 @@ document
       .catch((error) => console.error("Error updating map:", error));
   });
 
-
 // Select2 Library for selecting multiple base stations in the historical data filter.
-  $(document).ready(function() {
-    $('#base-station').select2({
-        placeholder: "Select Base Stations",
-        allowClear: true,
-        width: '100%'    // Ensures the Select2 input takes up the full width of its parent container.
-    });
+$(document).ready(function () {
+  $("#base-station").select2({
+    placeholder: "Select Base Stations",
+    allowClear: true,
+    width: "100%", // Ensures the Select2 input takes up the full width of its parent container.
+  });
 });
 
 // Function to display the latest telemetry data from each base station in the sidebar.
 function displayTelemetryData(telemetryData) {
   const telemetryContent = document.getElementById("telemetry-content");
-  telemetryContent.innerHTML = "";    // Clears previous content
+  telemetryContent.innerHTML = ""; // Clears previous content
 
-  const latestPingsByBase = {};    // Stores only most recent ping for each base.
+  const latestPingsByBase = {}; // Stores only most recent ping for each base.
   telemetryData.forEach((entry) => {
     const baseName = entry.name;
     if (
@@ -249,7 +247,7 @@ document.getElementById("end-search").addEventListener("click", function () {
 
       // Gets the selected containers based on the active class.
       const selectedContainers = Array.from(
-        document.querySelectorAll(".container-label.active"),    // Updated selector.
+        document.querySelectorAll(".container-label.active"), // Updated selector.
       ).map((label) => label.getAttribute("data-container"));
 
       // Logs selected containers for debugging.
@@ -303,15 +301,15 @@ document.getElementById("end-search").addEventListener("click", function () {
 // Js for tutorial Boxes Historical Data
 // Show the tutorial boxes
 function showSearchTutorial() {
-  document.getElementById('tutorial-box-search').style.display = 'block';
+  document.getElementById("tutorial-box-search").style.display = "block";
 }
 
 function showTutorial() {
-  document.getElementById('tutorial-box-1').style.display = 'block';
-  document.getElementById('tutorial-box-2').style.display = 'block';
+  document.getElementById("tutorial-box-1").style.display = "block";
+  document.getElementById("tutorial-box-2").style.display = "block";
 }
 
 // Hide the individual tutorial boxes when the user clicks "Got it!"
 function hideBox(boxNumber) {
-  document.getElementById('tutorial-box-' + boxNumber).style.display = 'none';
+  document.getElementById("tutorial-box-" + boxNumber).style.display = "none";
 }
