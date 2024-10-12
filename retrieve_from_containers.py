@@ -97,6 +97,16 @@ def convert_to_geojson(data):
 
     return features, coordinates, telemetry_list 
 
+def center_and_zoom(m):
+    # Calculates average lat and lon in order to centre the map.
+    if len(all_coordinates) != 0:
+        avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
+        avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
+    else:
+        avg_lat, avg_long = default_coord_avg    # (See global variable)
+    m.location = [avg_lat, avg_long]
+    m.fit_bounds([(lat, long) for lat, long in all_coordinates])    # Adjusts the map zoom to fit all coordinates.
+    return m
 
 def process_data_to_map(data, map, telemetry_data=[] ):
     """For a given dataset, draws its GPS points and connecting lines on a Folium map.
@@ -143,6 +153,7 @@ def historical_data_to_map(m, gps_points, map_save_path):
         map_save_path (str): Path to save the updated historical map.
     """
     process_data_to_map(gps_points, m, telemetry_data=[])
+    m = center_and_zoom(m)
     m.save(map_save_path)
     
     
@@ -182,19 +193,13 @@ def retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, ma
             blob_content = container_client.download_blob(blob).readall()
             all_blob_content[blob.name] = blob_content
             process_data_to_map(blob_content, m, telemetry_data)
+            
 
         except Exception as e:
             print(f"Error processing container '{container_name}': {e}")
             traceback.print_exc()
     
-    # Calculates average lat and lon in order to centre the map.
-    if len(all_coordinates) != 0:
-        avg_lat = sum(lat for lat, _ in all_coordinates) / len(all_coordinates)
-        avg_long = sum(long for _, long in all_coordinates) / len(all_coordinates)
-    else:
-        avg_lat, avg_long = default_coord_avg    # (See global variable)
-    m.location = [avg_lat, avg_long]
-    m.fit_bounds([(lat, long) for lat, long in all_coordinates])    # Adjusts the map zoom to fit all coordinates.
+    m = center_and_zoom(m)
 
     m.save(map_save_path)
     return telemetry_data, all_blob_content
