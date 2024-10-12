@@ -138,23 +138,48 @@ header::after {
   content: "";
   position: absolute;
   top: 0;
-  height: 75px; /* Match the fixed height of the header. */
-  background-image: url('../images/check.png'); /* Checkered image. */
-  background-size: contain; /* Ensures the image scales correctly. */
-  background-repeat: repeat; /* Repeats image. */
+  height: 75px; /* Match the fixed height of the header */
+  background-image: url('../images/check.png'); /* Checkered image */
+  background-repeat: repeat-x; /* Repeat image only horizontally */
+  background-size: 25% 100%; /* Ensures exactly 4 checks fit horizontally */
 }
 
-/* Adjusts the postion and width of the left checkered sides. */
+/* Left side configuration */
 header::before {
-  left: 0; 
-  width: 20%; 
-  background-position: 52% 0; /* Starts repeating from the center vertically. */
+  left: 0;
+  width: 20%; /* 20% width of the header */
+  background-position: left; /* Starts from the left edge */
 }
 
-/* Position on the right, right border width. */
+/* Right side configuration with flip */
 header::after {
-  right: 0; 
+  right: 0;
   width: 20%;
+  background-position: right; /* Starts from the right edge */
+  transform: scaleX(-1); /* Flip horizontally across the vertical axis */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1400px) {
+  header::before,
+  header::after {
+    background-size: 33.33% 100%; /* Ensure 3 checks fit horizontally */
+  }
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1000px) {
+  header::before,
+  header::after {
+    background-size: 50% 100%; /* Ensure 2 checks fit horizontally */
+  }
+}
+
+@media (max-width: 700px) {
+  header::before,
+  header::after {
+    background-size: 0% 0%; /* Only 1 check spans the entire area */
+  }
 }
 
 /* Flexbox container to align the map, search, and telemetry panels side by side. */
