@@ -206,9 +206,58 @@ document.getElementById("start-search").addEventListener("click", function () {
       document.getElementById("start-search").disabled = true;
       document.getElementById("start-search").classList.remove("ready");
       document.getElementById("start-search").classList.add("disabled");
+
+      filterButton = document.getElementById("filter-pings-button");
+      filterButton.disabled = false;
+
     })
     .catch((error) => console.error("Error starting search:", error));
 });
+
+
+// FILTER PINGS BUTTON
+document
+  .getElementById("filter-pings-button")
+  .addEventListener("click", function () {
+    const filterButton = this;
+    const isFiltering = filterButton.getAttribute("data-filtering") === "true";
+
+    if (!isFiltering) {
+      const filterTime = new Date().toISOString().split(".")[0]; // milliseconds omitted
+      console.log("Current time captured for filtering:", filterTime);
+
+      // Send the filter time to the /filter-pings route
+      $.ajax({
+        type: "POST",
+        url: "/filter-pings",
+        data: { filter_time: filterTime },
+        success: function (response) {
+          console.log("Pings filtered successfully:", response.message);
+
+          // Update the map iframe new filtered map
+          const iframe = document.getElementById("map-iframe");
+          if (iframe) {
+            iframe.src = response.map_path;
+          }
+
+          filterButton.innerHTML = "Revert Pings";
+          filterButton.setAttribute("data-filtering", "true");
+        },
+        error: function (error) {
+          console.error("Error filtering pings:", error);
+        },
+      });
+    } else {
+      console.log("Reverting to original pings...");
+      const iframe = document.getElementById("map-iframe");
+      if (iframe) {
+        iframe.src = "/static/footprint.html";
+      }
+      filterButton.innerHTML = "Filter Pings";
+      filterButton.setAttribute("data-filtering", "false");
+    }
+  });
+
 
 // Handles the click event for the end search button.
 document.getElementById("end-search").addEventListener("click", function () {

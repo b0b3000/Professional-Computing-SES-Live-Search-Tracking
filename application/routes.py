@@ -305,6 +305,49 @@ def submit_date():
     return jsonify(serializable_results)
 
 
+@app.route('/filter-pings', methods=['POST'])
+def filter_pings():
+    """
+    Filter pings stored in the database before a given time. (this is the time user clicks on filter button)
+    This will create a foloium map with only the pings that occur after the specified time.
+    """
+    filter_time_str = request.form.get('filter_time') # time given will be the time that filter button is clicked
+    if not filter_time_str:
+        return jsonify({'error': 'No filter time provided'}), 400
+
+    try:
+        filter_time = datetime.strptime(filter_time_str, '%Y-%m-%dT%H:%M:%S')
+    except ValueError:
+        return jsonify({'error': 'Invalid timestamp format. Expected format: %Y-%m-%dT%H:%M:%S'}), 400
+    base_stations = session.get('base_stations', [])
+    session_id = session.get('session_id')
+    if not base_stations or not session_id:
+        return jsonify({'error': 'No active session or base stations available'}), 400
+
+    # Query the database to retrieve only the pings after the filter time
+    filtered_pings = {}
+    for base_station in base_stations:
+        pings = historical_database.get_pings_after_time(session_id, base_station, filter_time)
+        if pings:
+            filtered_pings[base_station] = pings
+
+    # Create new map with the filtered pings and return its path for rendering
+    active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
+    for base_station, pings in filtered_pings.items():
+        for ping in pings:
+            folium.Marker(
+                location=(ping['lat'], ping['lon']),
+                popup=f"Time: {ping['time']}<br>Base: {base_station}",
+                icon=folium.Icon(color='blue', icon='info-sign')
+            ).add_to(active_map)
+    active_map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint_filtered.html')
+    active_map.save(active_map_save_path)
+    return jsonify({
+        "map_path": url_for('static', filename='footprint_filtered.html'),
+        "message": "Pings filtered successfully."
+    })
+
+
 def get_presentable_historical_data(selected_base_stations, start_date="2024-01-01", end_date="9999-01-01"):
     """Retrieves and formats historical search data for presentation.
 

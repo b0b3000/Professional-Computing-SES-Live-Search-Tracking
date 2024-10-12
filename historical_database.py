@@ -205,3 +205,29 @@ def get_all_searches():
 
     return results
   
+def get_pings_after_time(session_id, base_station, filter_time):
+    """
+    Retrieve pings from the database for a specific base station and session after a given time.
+    Returns empty list if we encounter errors or if we simply have no pings.
+    """
+    try:
+        with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
+            cursor = conn.cursor()
+
+            # select pings after a specific time for a given session and base station
+            query = """
+            SELECT gps_JSON 
+            FROM search_history 
+            WHERE session_id = ? AND base_station = ? AND CAST(start_time AS DATETIME) >= ?
+            """
+            cursor.execute(query, (session_id, base_station, filter_time))
+            result = cursor.fetchone()
+            if result:
+                gps_data = result[0]
+                decoded_data = json.loads(gps_data) if isinstance(gps_data, str) else gps_data
+                return decoded_data
+            else:
+                return []
+    except Exception as e:
+        print(f"Error in get_pings_after_time: {e}")
+        return []
