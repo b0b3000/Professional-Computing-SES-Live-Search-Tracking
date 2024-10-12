@@ -387,7 +387,8 @@ header::after {
 
 #start-search,
 #end-search,
-#fetch-data-button {
+#fetch-data-button,
+#filter-pings-button{
   width: 50%;
   padding: 10px;
   border: 1px solid #ddd;
@@ -424,12 +425,14 @@ header::after {
   margin-left: 0;
 }
 
-#fetch-data-button {
+#fetch-data-button,
+#filter-pings-button {
   margin-top: 5px;
   width: 100%;
 }
 
-#fetch-data-button:hover {
+#fetch-data-button:hover,
+#filter-pings-button:hover {
   background-color: #e0e0e0;
 }
 
