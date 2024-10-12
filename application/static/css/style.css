@@ -277,6 +277,7 @@ header::after {
   z-index: 10;
   border-radius: 2px;
   border: none;
+  position: absolute; /* Ensure it is positioned relative to the parent */
 }
 
 .search-running-animation {
@@ -287,7 +288,7 @@ header::after {
   content: "";
   position: absolute;
   width: 25%;
-  height: 225%;
+  height: 250%;
   background-color: #94d096;
   box-shadow: 0 0 40px #94d096;
   animation: animate 12s linear infinite;
@@ -300,6 +301,17 @@ header::after {
   100% {
     transform: rotate(360deg);
   }
+}
+
+#loading-box {
+  position: absolute; /* Ensure it is positioned relative to the parent */
+  top: 10;
+  left: 10;
+  height: 97.3%;
+  width: 98.2%;
+  border-radius: 2px;
+  background-color: black;
+  z-index: 5; /* Lower than map-iframe */
 }
 
 /* Sidebar styling. */
