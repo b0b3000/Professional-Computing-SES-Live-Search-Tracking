@@ -316,12 +316,23 @@ header::after {
   width: 100%;
 }
 
+#user-buttons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* Container styling to ensure the buttons take up half the width each. */
 #button-container {
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  height: auto;
+  flex-direction: column;
+  width: 90%;
+}
+
+#start-end {
+  display: flex;
+  gap: 0px; /* Ensures the Start and End buttons are next to each other without a gap */
 }
 
 #start-search,
@@ -342,6 +353,12 @@ header::after {
   font-size: 18px; 
   font-weight: 500; 
   text-transform: uppercase; 
+}
+
+#user-buttons #help-btn {
+  position: absolute;
+  left: -50px;
+  top: 40px;
 }
 
 #start-search {
@@ -462,7 +479,7 @@ header::after {
   
 }
 .help-button:hover {
-  background-color: #ff9a30; /* Slight color change on hover */
+  background-color: #f27201; /* Slight color change on hover */
 }
 
 #HistoricalData {
