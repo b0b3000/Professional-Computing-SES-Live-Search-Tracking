@@ -53,6 +53,7 @@ def index():
 
     try:    # Fetches historical searches for the scrollable list.
         historical_searches = get_presentable_historical_data(base_stations)
+        print(historical_searches[0])
 
     except Exception as e:
         print(f"Error fetching historical searches: {e}")
@@ -173,11 +174,12 @@ def end_search():
         # blob_service_client.delete_container(blob_name)
 
         try:
+            print(type(blob_content))
             if isinstance(blob_content, bytes):
                 decoded_content = blob_content.decode("utf-8")
             else:
                 decoded_content = blob_content
-            json_data = json.loads(decoded_content.replace(""", """))
+            json_data = json.loads(decoded_content.replace("'", '"'))
              
             gpx_string = convert_json_to_gpx_string(json_data)
             gpx_data_dict[blob_name] = gpx_string
@@ -347,7 +349,7 @@ def get_presentable_historical_data(selected_base_stations, start_date="2024-01-
             row[2].strftime("%H:%M:%S"),  # Converts time to string.
             row[3].strftime("%H:%M:%S"),  # Converts time to string.
             row[4].strftime("%Y-%m-%d"),  # Converts date to string.
-            f"<a href='/download/{filename}' download='{filename}'>Download Data</a>"    # Download link.
+            f"<a href='/download/{filename}' download='{filename}'>Download Data</a>",    # Download link.
             f"<button id='display-historical-button'>Display</button>",    # Button.
             row[5]    # GPS data.
         )
