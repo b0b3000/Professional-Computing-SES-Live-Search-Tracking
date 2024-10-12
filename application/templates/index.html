@@ -1,24 +1,33 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SES Live Search</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+      rel="stylesheet"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-     <!--Google font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100;400;700;900&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <!--Google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@100;400;700;900&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
     <header>
       <div class="title">
         SES Live Search
-        <img src="/static/images/Ses_logo.png" alt="Logo" class="header-logo">
+        <img src="/static/images/Ses_logo.png" alt="Logo" class="header-logo" />
       </div>
     </header>
 
@@ -31,18 +40,50 @@
         Historical Data
       </button>
 
-        <!-- Wrapper for tutorial boxes -->
+      <!-- Wrapper for tutorial boxes -->
       <div class="tutorial-wrapper">
-      <div id="tutorial-box-1" class="tutorial-box" style="top: 10px; left: 0;">
-        <p>This page has access to all previous searches.
-          To find a specific search, use the filter and visualise the data by pressing the 'display' button.
-        </p>
-        <button id="got-it-button" onclick="hideBox(1)">Got it!</button>
+        <div
+          id="tutorial-box-1"
+          class="tutorial-box"
+          style="top: 10px; left: 0"
+        >
+          <p>
+            This page has access to all previous searches. To find a specific
+            search, use the filter and visualise the data by pressing the
+            'display' button.
+          </p>
+          <button id="got-it-button" onclick="hideBox(1)">Got it!</button>
+        </div>
+        <div
+          id="tutorial-box-search"
+          class="tutorial-box"
+          style="top: 10px; left: 0"
+        >
+          <p><b>To begin a search:</b><br /><br /></p>
+          <ul>
+            <li>Select the relevant base stations in the left-hand panel.</li>
+            <li>Click the 'Start Search' button.</li>
+            <li>
+              While a search is running, the map can be updated by clicking the
+              'Fetch latest GPS data' button.
+            </li>
+            <li>When a search is complete, click 'End Search'.</li>
+            <li>
+              GPX data for this search will populate the 'Download GPX Files'
+              table.
+            </li>
+            <li>
+              This search will also become available in the 'Historical Data'
+              tab (this may require refreshing the page).
+            </li>
+          </ul>
+          <br />
+          <button id="got-it-button" onclick="hideBox('search')">
+            Got it!
+          </button>
+        </div>
       </div>
-
     </div>
-  </div>
-
 
     <!-- Start Search Tab Content -->
     <div id="StartSearch" class="tabcontent">
@@ -69,8 +110,9 @@
               height="100%"
               id="map-iframe"
               class="map-iframe"
-              >RENDER</iframe
-            >
+              >RENDER
+            </iframe>
+            <div id="loading-box"></div>
           </div>
           <!-- Controls container -->
           <div id="controls-container">
@@ -79,13 +121,21 @@
 
             <!-- Search controls -->
             <div id="user-buttons">
-              <button id="help-btn" class="help-button" onclick="showTutorial()">?</button>
+              <button
+                id="help-search-btn"
+                class="help-search-button"
+                onclick="showSearchTutorial()"
+              >
+                ?
+              </button>
               <div id="button-container">
                 <div id="start-end">
                   <button id="start-search" class="ready">Start Search</button>
-                  <button id="end-search" class="disabled" disabled>End Search</button>
+                  <button id="end-search" class="disabled" disabled>
+                    End Search
+                  </button>
                 </div>
-                <button id="fetch-data-button">Fetch Latest GPS Data</button>                  
+                <button id="fetch-data-button">Fetch Latest GPS Data</button>
               </div>
             </div>
             <!-- Table container -->
@@ -113,19 +163,18 @@
 
     <!-- Historical Data Tab Content -->
     <div id="HistoricalData" class="tabcontent">
-
       <!-- Container for the left panel (filter + scrollable table) and right panel (map) -->
       <div class="filter-map-container">
-
-
         <!-- Left Panel: Filter + Scrollable List -->
         <div class="left-panel">
           <!-- Filter Panel -->
           <div class="filter-header">
             <h4>Filter Previous Searches</h4>
-            <button id="help-btn" class="help-button" onclick="showTutorial()">?</button>
+            <button id="help-btn" class="help-button" onclick="showTutorial()">
+              ?
+            </button>
           </div>
-      
+
           <div class="filter-box">
             <form method="POST" action="/filter-search">
               <div class="filter-inputs">
@@ -136,17 +185,17 @@
                     id="start-date"
                     name="start-date"
                     required
-                  >
+                  />
                 </div>
                 <div class="filter-item">
                   <label for="end-date">End Date:</label>
-                  <input type="date" id="end-date" name="end-date">
+                  <input type="date" id="end-date" name="end-date" />
                 </div>
                 <div class="filter-item">
                   <label for="base-station">Base Station:</label>
                   <select id="base-station" name="base-station" multiple>
                     {% for station in base_stations %}
-                      <option value="{{ station }}">{{ station }}</option>
+                    <option value="{{ station }}">{{ station }}</option>
                     {% endfor %}
                   </select>
                 </div>
@@ -173,7 +222,11 @@
                 <!-- Insert table data dynamically -->
                 {% if historical_searches != None %} {% for search in
                 historical_searches %}
-                <tr class="search-row" session_id = "{{ search[0] }}" base_station = "{{ search[1] }}">
+                <tr
+                  class="search-row"
+                  session_id="{{ search[0] }}"
+                  base_station="{{ search[1] }}"
+                >
                   <!-- JSON data is in search[7] -->
                   <td>{{ search[0] }}</td>
                   <td>{{ search[1] }}</td>
@@ -193,15 +246,15 @@
         <div class="map-container">
           <h5>Historical Map View</h5>
           <div class="map-wrapper">
-          <iframe
-            src="{{ url_for('static', filename='historical_map.html') }}"
-            width="100%"
-            height="100%"
-            id="historical-map-iframe"
-            class="map-iframe"
-            >RENDER</iframe
-          >
-        </div>
+            <iframe
+              src="{{ url_for('static', filename='historical_map.html') }}"
+              width="100%"
+              height="100%"
+              id="historical-map-iframe"
+              class="map-iframe"
+              >RENDER</iframe
+            >
+          </div>
         </div>
       </div>
     </div>
