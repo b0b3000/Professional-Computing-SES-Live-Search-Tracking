@@ -16,6 +16,8 @@ from azure.storage.blob import BlobServiceClient
 from datetime import datetime
 import historical_database
 from to_gpx import convert_json_to_gpx_string
+from config import Config
+
 
 STORAGE_CONNECTION_STRING = get_key.get_blob_storage_key()
 
@@ -37,8 +39,8 @@ def index():
             - historical_searches (list): Historical search data.
     """
     # Initialises the active map and the historical map.
-    active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
-    historical_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
+    active_map = folium.Map(location=Config.MAP_DEFAULT_COORDS, control_scale=True, zoom_start=Config.MAP_DEFAULT_ZOOM)
+    historical_map = folium.Map(location=Config.MAP_DEFAULT_COORDS, control_scale=True, zoom_start=Config.MAP_DEFAULT_ZOOM)
     
     # Fetches names of available base stations from Azure (for live searches).
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
@@ -96,7 +98,7 @@ def update_map():
     if not container_names:
         return jsonify({"error": "No containers selected"}), 400
 
-    active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
+    active_map = folium.Map(location=Config.MAP_DEFAULT_COORDS, control_scale=True, zoom_start=Config.MAP_DEFAULT_ZOOM)
     active_map_save_path = os.path.join(os.path.dirname(__file__), "static/footprint.html")
     
     telemetry_data, all_blobs = retrieve_from_containers(active_map, STORAGE_CONNECTION_STRING, container_names, active_map_save_path)
@@ -246,7 +248,7 @@ def render_map():
     gps_points = json.loads(gps_data[base_station])
 
     # Initialises map and plots the GPS points onto it.
-    m = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
+    m = folium.Map(location=Config.MAP_DEFAULT_COORDS, control_scale=True, zoom_start=Config.MAP_DEFAULT_ZOOM)
     map_save_path = os.path.join(os.path.dirname(__file__), "static/historical_map.html")
     historical_data_to_map(m, gps_points, map_save_path)
     m.save(map_save_path)
