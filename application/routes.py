@@ -55,7 +55,6 @@ def index():
 
     try:    # Fetches historical searches for the scrollable list.
         historical_searches = get_presentable_historical_data(base_stations)
-        print(historical_searches[0])
 
     except Exception as e:
         print(f"Error fetching historical searches: {e}")
@@ -119,7 +118,6 @@ def update_map():
     historical_database.upload_search_data(update_dict, True)
 
     if session["footprint"] == "static/footprint_filtered.html":
-        print(session["filter_time"])
         create_filtered_map(session["filter_time"])
 
     # Returns a response indicating where the updated map is saved, and telemetry data from selected containers.
@@ -186,7 +184,6 @@ def end_search():
         # blob_service_client.delete_container(blob_name)
 
         try:
-            print(type(blob_content))
             if isinstance(blob_content, bytes):
                 decoded_content = blob_content.decode("utf-8")
             else:
@@ -422,6 +419,5 @@ def get_presentable_historical_data(selected_base_stations, start_date="2024-01-
 
 @app.route('/api/revert', methods=['POST'])
 def revert():
-    print("ABC\n\n\n\n")
     session["footprint"] = "static/footprint.html"
     return jsonify({"message": "Reverted successfully"}), 200
