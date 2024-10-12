@@ -100,7 +100,7 @@ The web application follows a standard Flask directory structure. For more infor
 
 - **External Dependencies:** 
     - Libraries: `flask`, `folium`, `azure.storage.blob`.
-    - Python Files: `retrieve_from_containers.py`, `get_key.py`.
+    - Python Files: `retrieve_from_containers.py`, `get_key.py`, `historical_database.py`.
 
 - **Example Usage:** 
 
@@ -109,7 +109,6 @@ The web application follows a standard Flask directory structure. For more infor
     - `'/api/update-map'` - Uses `retrieve_from_containers.py` to update the Folium map.
     - `'/api/start-search'` - Allows user to manually begin a search, all data from this search is saved in the data path.
     - `'/api/end-search'` - Allows user to manually end a search, data stops being collected and is packaged into a GPX file.
-    - `'/download/<session_id>.zip'` - Bound to a button on main page, allows user to download the GPX file.
 
 <br>
 
@@ -119,7 +118,8 @@ The web application follows a standard Flask directory structure. For more infor
 
 - **File Name:** `get_key.py`
 
-- **Description:** Retrieves the Azure storage key from the `keys.txt` file in this directory.
+- **Description:** Retrieves the Azure storage key and database password from the Azure key vault.
+Alternatively, retrieves the key and password from local key/password txt files, if app ran locally.
 
 <br>
 
@@ -127,21 +127,17 @@ The web application follows a standard Flask directory structure. For more infor
 
 <br>
 
-- **File Name:** `db_setup.py`
+- **File Name:** `historical_database.py`
 
-- **Description:** Specifies the schema/tables for the historical search database.
+- **Description:** Facilitates upload and download of data to and from cloud database
 
 - **External Dependencies:** 
-    - `sqlaclhemy` (Required for all database functions).
-
-- **Example Usage:** 
+    - `pyodbc` Provides drivers and connection functions for server hosted database
 
 - **Key Classes and Functions:**
-    - `class SearchData()` - 
-    - `get_database_url()` - 
-    - `setup_database()` - 
-
-- **Assumptions:**
+    - `get_historical_searches()` - 
+    - `upload_search_data()` - 
+    - `connect_database()` - 
 
 <br>
 
@@ -173,17 +169,7 @@ The web application follows a standard Flask directory structure. For more infor
 
 - **File Name:** `index.js`
 
-- **Description:** Handles various button clicks on the web application and calls the `'/api/'` routes accordingly.
-
-- **External Dependencies:** 
-    - Dependency
-
-- **Example Usage:** 
-
-- **Key Classes and Functions:**
-    - `example_function()`
-
-- **Assumptions:**
+- **Description:** Handles various button clicks and navigations on the web app and calls flask routes accordingly.
 
 <br>
 
@@ -195,7 +181,19 @@ System architecture documentation here.
 
 # Microsoft Peripherals Documentation
 
-This Flask web application is designed to visualize GPS data on a map. Data is pulled from Azure cloud server. This guide will walk you through the steps to set up and run the application on your local machine. 
+This Flask web application is designed to visualize GPS data on a map. Data is pulled from Azure cloud server. 
+
+# Local Web-App Deployment
+
+This guide will walk you through the steps to set up and run the application on your local machine, rather than hosting it through an Azure web application as intended. This may be useful for development or testing purposes.
+
+### Setup: Changes to make to code to enable it to run locally
+
+1: Create a file 'keys.txt' in the root directory<br>
+2: In this file, add a line containing the storage container connection key of the form 'key1: {key}'<br>
+3: Add another line containing the database connection password of the form 'password: {password}'<br>
+4: Comment out the two functions in 'get_key.py' which access key/password from the Azure key vault<br>
+5: Uncomment the two functions in 'get_key.py' which access key/password locally. (More information can be found in get_key.py)<br>
 
 ### Step 1: (Optional) Create and Activate a Python Virtual Environment
 
