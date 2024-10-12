@@ -59,7 +59,9 @@ def index():
         historical_searches = []
 
     # Saves both maps.
-    active_map_save_path = os.path.join(os.path.dirname(__file__), "static/footprint.html")
+    session["footprint"] = "static/footprint.html"
+    session["filer_time"] = None
+    active_map_save_path = os.path.join(os.path.dirname(__file__), session["footprint"])
     active_map.save(active_map_save_path)
     historical_map_save_path = os.path.join(os.path.dirname(__file__), "static/historical_map.html")
     historical_map.save(historical_map_save_path)
@@ -96,9 +98,11 @@ def update_map():
         return jsonify({"error": "No containers selected"}), 400
 
     active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
-    active_map_save_path = os.path.join(os.path.dirname(__file__), "static/footprint.html")
+    print(session["footprint"])
+    active_map_save_path = os.path.join(os.path.dirname(__file__), session["footprint"])
     
     telemetry_data, all_blobs = retrieve_from_containers(active_map, STORAGE_CONNECTION_STRING, container_names, active_map_save_path)
+
 
     session["base_stations"] = list(all_blobs.keys())    # Updates session-specific GPS data
     # Replaces existing row in the database.
@@ -111,9 +115,14 @@ def update_map():
     # Upload the latest retrieved data to the historical database.
     historical_database.upload_search_data(update_dict, True)
 
+    if session["footprint"] == "static/footprint_filtered.html":
+        print(session["filter_time"])
+        create_filtered_map(session["filter_time"])
+
     # Returns a response indicating where the updated map is saved, and telemetry data from selected containers.
     return jsonify({
-        "map_path": url_for("static", filename="footprint.html"),
+        #"map_path": url_for("static", filename=session["footprint"]),
+        "map_path": session["footprint"],
         "telemetry_data": telemetry_data
     })
 
@@ -133,6 +142,7 @@ def start_search():
     session_id = datetime.now().strftime("%Y%m%d%H%M%S")
     session["session_id"] = session_id
     session["start_time"] = datetime.now().strftime("%H:%M:%S")
+    session["footprint"] = "static/footprint.html"
     
     return jsonify({"message": "Search started", "session_id": session_id})
 
@@ -177,7 +187,7 @@ def end_search():
                 decoded_content = blob_content.decode("utf-8")
             else:
                 decoded_content = blob_content
-            json_data = json.loads(decoded_content.replace(""", """))
+            json_data = json.loads(decoded_content.replace("'", '"'))
              
             gpx_string = convert_json_to_gpx_string(json_data)
             gpx_data_dict[blob_name] = gpx_string
@@ -300,10 +310,33 @@ def submit_date():
     start_date = request.form.get("start-date")
     end_date = request.form.get("end-date")
     selected_base_stations = request.form.getlist("base-station")
+    
     serializable_results = get_presentable_historical_data(selected_base_stations, start_date, end_date)
 
     return jsonify(serializable_results)
 
+def create_filtered_map(filter_time):
+    base_stations = session.get('base_stations', [])
+    session_id = session.get('session_id')
+    # Query the database to retrieve only the pings after the filter time
+    filtered_pings = {}
+    for base_station in base_stations:
+        pings = historical_database.get_pings_after_time(session_id, base_station, filter_time)
+        if pings:
+            filtered_pings[base_station] = pings
+
+    # Create new map with the filtered pings and return its path for rendering
+    active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
+    for base_station, pings in filtered_pings.items():
+        for ping in pings:
+            folium.Marker(
+                location=(list(ping.values())[0]['lat'], list(ping.values())[0]['long']),
+                popup=f"Time: {list(ping.values())[0]['time']}<br>Base: {base_station}",
+                icon=folium.Icon(color='blue', icon='info-sign')
+            ).add_to(active_map)
+    session["footprint"] = 'static/footprint_filtered.html'
+    active_map_save_path = os.path.join(os.path.dirname(__file__), session["footprint"])
+    active_map.save(active_map_save_path)
 
 @app.route('/filter-pings', methods=['POST'])
 def filter_pings():
@@ -317,6 +350,7 @@ def filter_pings():
 
     try:
         filter_time = datetime.strptime(filter_time_str, '%Y-%m-%dT%H:%M:%S')
+        session["filter_time"] = filter_time
     except ValueError:
         return jsonify({'error': 'Invalid timestamp format. Expected format: %Y-%m-%dT%H:%M:%S'}), 400
     base_stations = session.get('base_stations', [])
@@ -324,26 +358,10 @@ def filter_pings():
     if not base_stations or not session_id:
         return jsonify({'error': 'No active session or base stations available'}), 400
 
-    # Query the database to retrieve only the pings after the filter time
-    filtered_pings = {}
-    for base_station in base_stations:
-        pings = historical_database.get_pings_after_time(session_id, base_station, filter_time)
-        if pings:
-            filtered_pings[base_station] = pings
-
-    # Create new map with the filtered pings and return its path for rendering
-    active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
-    for base_station, pings in filtered_pings.items():
-        for ping in pings:
-            folium.Marker(
-                location=(ping['lat'], ping['lon']),
-                popup=f"Time: {ping['time']}<br>Base: {base_station}",
-                icon=folium.Icon(color='blue', icon='info-sign')
-            ).add_to(active_map)
-    active_map_save_path = os.path.join(os.path.dirname(__file__), 'static/footprint_filtered.html')
-    active_map.save(active_map_save_path)
+    create_filtered_map(filter_time)
+    
     return jsonify({
-        "map_path": url_for('static', filename='footprint_filtered.html'),
+        "map_path": session["footprint"],
         "message": "Pings filtered successfully."
     })
 
@@ -397,3 +415,9 @@ def get_presentable_historical_data(selected_base_stations, start_date="2024-01-
         serializable_results.append(serializable_row)
     
     return serializable_results
+
+@app.route('/api/revert', methods=['POST'])
+def revert():
+    print("ABC\n\n\n\n")
+    session["footprint"] = "static/footprint.html"
+    return jsonify({"message": "Reverted successfully"}), 200

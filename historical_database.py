@@ -3,6 +3,7 @@
 import json
 import pyodbc
 import get_key
+import datetime
 
 TIMEOUT = 30
 SERVER = 'cits3200server.database.windows.net'
@@ -74,11 +75,29 @@ def upload_search_data(active_search, incomplete=False):
                 decoded_data = gps_json.replace("'", '"')
                 gps_json_string = json.dumps(json.loads(decoded_data))
 
-                query = """
-                    INSERT INTO search_history (session_id, base_station, start_time, end_time, gpx_data, search_date, gps_JSON)
-                    VALUES (?, ?, ?, ?, ?, ?, ?);
+                # Check if the record already exists
+                check_query = """
+                    SELECT COUNT(*)
+                    FROM search_history
+                    WHERE session_id = ? AND base_station = ?
                 """
-                cursor.execute(query, (session_id, base_station, start_time, end_time,
+                cursor.execute(check_query, (session_id, base_station))
+                exists = cursor.fetchone()[0]
+
+                if exists > 0:
+                # Update the existing row
+                    update_query = """
+                        UPDATE search_history
+                        SET start_time = ?, end_time = ?, gpx_data = ?, search_date = ?, gps_JSON = ?
+                        WHERE session_id = ? AND base_station = ?
+                    """
+                    cursor.execute(update_query, (start_time, end_time, gpx_data, search_date, gps_json_string, session_id, base_station))
+                else:
+                    query = """
+                        INSERT INTO search_history (session_id, base_station, start_time, end_time, gpx_data, search_date, gps_JSON)
+                        VALUES (?, ?, ?, ?, ?, ?, ?);
+                    """
+                    cursor.execute(query, (session_id, base_station, start_time, end_time,
                                        gpx_data, search_date, gps_json_string))
                 conn.commit()
 
@@ -218,13 +237,34 @@ def get_pings_after_time(session_id, base_station, filter_time):
             query = """
             SELECT gps_JSON 
             FROM search_history 
-            WHERE session_id = ? AND base_station = ? AND CAST(start_time AS DATETIME) >= ?
+            WHERE session_id = ? AND base_station = ?
             """
-            cursor.execute(query, (session_id, base_station, filter_time))
+            print(query, session_id, base_station)
+            cursor.execute(query, (session_id, base_station))
             result = cursor.fetchone()
             if result:
                 gps_data = result[0]
+                print(gps_data[-1])
                 decoded_data = json.loads(gps_data) if isinstance(gps_data, str) else gps_data
+                filter_time = filter_time.strftime("%Y-%m-%dT%H:%M:%S")
+                filter_time = datetime.datetime.strptime(filter_time, '%Y-%m-%dT%H:%M:%S')
+                broken_out = False
+                print(decoded_data[-1])
+                for i, ping in enumerate(decoded_data):
+                    ping_time = datetime.datetime.strptime(list(ping.values())[0]['time'], '%Y-%m-%dT%H:%M:%S')
+
+                    #print(ping_time)
+                    #print(filter_time)
+                    #print(type(ping_time))
+                    #print(type(filter_time))
+                    if ping_time > filter_time:
+                        print("REACHED CURRENT POINT")
+                        decoded_data = decoded_data[i:]
+                        broken_out = True
+                        break
+                if not broken_out:
+                    decoded_data = []
+                    
                 return decoded_data
             else:
                 return []

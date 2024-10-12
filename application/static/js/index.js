@@ -223,7 +223,17 @@ document
     const isFiltering = filterButton.getAttribute("data-filtering") === "true";
 
     if (!isFiltering) {
-      const filterTime = new Date().toISOString().split(".")[0]; // milliseconds omitted
+      //const filterTime = new Date().toLocaleString("en-GB", { hour12: false }).replace(",", "").replaceAll("/","-").replace(" ", "T"); // Optional: "en-GB" format without AM/PM
+      const now = new Date();
+
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      const filterTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
       console.log("Current time captured for filtering:", filterTime);
 
       // Send the filter time to the /filter-pings route
@@ -249,10 +259,19 @@ document
       });
     } else {
       console.log("Reverting to original pings...");
-      const iframe = document.getElementById("map-iframe");
+      fetch("/api/revert", {
+        method: "POST",
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      });
+      /*const iframe = document.getElementById("map-iframe");
       if (iframe) {
         iframe.src = "/static/footprint.html";
-      }
+      }*/
+
       filterButton.innerHTML = "Filter Pings";
       filterButton.setAttribute("data-filtering", "false");
     }
