@@ -6,6 +6,9 @@ function openTab(evt, tabName) {
     tabcontent[i].style.display = "none";
   }
 
+  hideBox("1");
+  hideBox("search");
+
   // Removes the active class from all buttons
   const tablinks = document.getElementsByClassName("tablinks");
   for (let i = 0; i < tablinks.length; i++) {
