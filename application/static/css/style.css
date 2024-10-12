@@ -314,7 +314,7 @@ header::after {
   height: 97.3%;
   width: 98.2%;
   border-radius: 2px;
-  background-color: black;
+  background-color: #F3EFE9;
   z-index: 5; /* Lower than map-iframe */
 }
 
