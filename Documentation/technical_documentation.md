@@ -189,11 +189,11 @@ This guide will walk you through the steps to set up and run the application on 
 
 ### Setup: Changes to make to code to enable it to run locally
 
-1: Create a file 'keys.txt' in the root directory
-2: In this file, add a line containing the storage container connection key of the form 'key1: {key}'
-3: Add another line containing the database connection password of the form 'password: {password}'
-4: Comment out the two functions in 'get_key.py' which access key/password from the Azure key vault
-5: Uncomment the two functions in 'get_key.py' which access key/password locally. (More information can be found in get_key.py) 
+1: Create a file 'keys.txt' in the root directory\n
+2: In this file, add a line containing the storage container connection key of the form 'key1: {key}'\n
+3: Add another line containing the database connection password of the form 'password: {password}'\n
+4: Comment out the two functions in 'get_key.py' which access key/password from the Azure key vault\n
+5: Uncomment the two functions in 'get_key.py' which access key/password locally. (More information can be found in get_key.py)\n
 
 ### Step 1: (Optional) Create and Activate a Python Virtual Environment
 
