@@ -171,14 +171,6 @@ def get_nodes(interface, latest_data):
         print("\nNo GPS data found for tracker. Please check GPS lock.")
         return 0
     
-    # Check that the GPS data is new.
-    if coords == [latest_data['lat'], latest_data['long']]:
-        logging.info("Received GPS data matches old GPS data, not saving.")
-        logging.info(f"OLD DATA: {str(tracker)}")
-        print("Received GPS data matches old GPS data, not saving.")
-        print(f"OLD DATA: {str(tracker)}")
-        return 0
-    
     # If it is new, save it, along with other data from the tracker.
     logging.info("Received GPS data is new, saving")
     print("\nReceived GPS data is new, saving.")
@@ -191,6 +183,14 @@ def get_nodes(interface, latest_data):
         new_data["telemetry"]["altitude"] = tracker['position']['altitude']
     except KeyError:
         pass
+
+    # Check that the GPS data is new.
+    if coords == [latest_data['lat'], latest_data['long']] and times == latest_data['time']:
+        logging.info("Received GPS data matches old GPS data, not saving.")
+        logging.info(f"OLD DATA: {str(tracker)}")
+        print("Received GPS data matches old GPS data, not saving.")
+        print(f"OLD DATA: {str(tracker)}")
+        return 0
 
     return new_data
     
