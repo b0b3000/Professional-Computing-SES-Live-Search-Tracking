@@ -207,9 +207,77 @@ document.getElementById("start-search").addEventListener("click", function () {
       document.getElementById("start-search").disabled = true;
       document.getElementById("start-search").classList.remove("ready");
       document.getElementById("start-search").classList.add("disabled");
+
+      filterButton = document.getElementById("filter-pings-button");
+      filterButton.disabled = false;
+
     })
     .catch((error) => console.error("Error starting search:", error));
 });
+
+
+// FILTER PINGS BUTTON
+document
+  .getElementById("filter-pings-button")
+  .addEventListener("click", function () {
+    const filterButton = this;
+    const isFiltering = filterButton.getAttribute("data-filtering") === "true";
+
+    if (!isFiltering) {
+      //const filterTime = new Date().toLocaleString("en-GB", { hour12: false }).replace(",", "").replaceAll("/","-").replace(" ", "T"); // Optional: "en-GB" format without AM/PM
+      const now = new Date();
+
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      const filterTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+      console.log("Current time captured for filtering:", filterTime);
+
+      // Send the filter time to the /filter-pings route
+      $.ajax({
+        type: "POST",
+        url: "/filter-pings",
+        data: { filter_time: filterTime },
+        success: function (response) {
+          console.log("Pings filtered successfully:", response.message);
+
+          // Update the map iframe new filtered map
+          const iframe = document.getElementById("map-iframe");
+          if (iframe) {
+            iframe.src = response.map_path;
+          }
+
+          filterButton.innerHTML = "Revert Pings";
+          filterButton.setAttribute("data-filtering", "true");
+        },
+        error: function (error) {
+          console.error("Error filtering pings:", error);
+        },
+      });
+    } else {
+      console.log("Reverting to original pings...");
+      fetch("/api/revert", {
+        method: "POST",
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      });
+      /*const iframe = document.getElementById("map-iframe");
+      if (iframe) {
+        iframe.src = "/static/footprint.html";
+      }*/
+
+      filterButton.innerHTML = "Filter Pings";
+      filterButton.setAttribute("data-filtering", "false");
+    }
+  });
+
 
 // Handles the click event for the end search button.
 document.getElementById("end-search").addEventListener("click", function () {
