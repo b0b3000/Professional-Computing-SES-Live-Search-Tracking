@@ -79,13 +79,14 @@
 
             <!-- Search controls -->
             <div id="user-buttons">
+              <button id="help-btn" class="help-button" onclick="showTutorial()">?</button>
               <div id="button-container">
-                <button id="start-search" class="ready">Start Search</button>
-                <button id="end-search" class="disabled" disabled>
-                  End Search
-                </button>
+                <div id="start-end">
+                  <button id="start-search" class="ready">Start Search</button>
+                  <button id="end-search" class="disabled" disabled>End Search</button>
+                </div>
+                <button id="fetch-data-button">Fetch Latest GPS Data</button>                  
               </div>
-              <button id="fetch-data-button">Fetch Latest GPS Data</button>
             </div>
             <!-- Table container -->
             <div id="table-container">

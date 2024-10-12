@@ -55,10 +55,11 @@ h5 {
 }
 
 .title {
-  display: inline-flex; /* Horizontally align. */
+  display: flex; /* Horizontally align. */
   align-items: center;  /* Aligns logo.  */
   position: relative;
   justify-content: center;
+  flex-shrink: 1;
   height: 100%; /* Ensures the title block takes up the full height of the header. */
 }
 
@@ -137,23 +138,48 @@ header::after {
   content: "";
   position: absolute;
   top: 0;
-  height: 75px; /* Match the fixed height of the header. */
-  background-image: url('../images/check.png'); /* Checkered image. */
-  background-size: contain; /* Ensures the image scales correctly. */
-  background-repeat: repeat; /* Repeats image. */
+  height: 75px; /* Match the fixed height of the header */
+  background-image: url('../images/check.png'); /* Checkered image */
+  background-repeat: repeat-x; /* Repeat image only horizontally */
+  background-size: 25% 100%; /* Ensures exactly 4 checks fit horizontally */
 }
 
-/* Adjusts the postion and width of the left checkered sides. */
+/* Left side configuration */
 header::before {
-  left: 0; 
-  width: 20%; 
-  background-position: 52% 0; /* Starts repeating from the center vertically. */
+  left: 0;
+  width: 20%; /* 20% width of the header */
+  background-position: left; /* Starts from the left edge */
 }
 
-/* Position on the right, right border width. */
+/* Right side configuration with flip */
 header::after {
-  right: 0; 
+  right: 0;
   width: 20%;
+  background-position: right; /* Starts from the right edge */
+  transform: scaleX(-1); /* Flip horizontally across the vertical axis */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1400px) {
+  header::before,
+  header::after {
+    background-size: 33.33% 100%; /* Ensure 3 checks fit horizontally */
+  }
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1000px) {
+  header::before,
+  header::after {
+    background-size: 50% 100%; /* Ensure 2 checks fit horizontally */
+  }
+}
+
+@media (max-width: 700px) {
+  header::before,
+  header::after {
+    background-size: 0% 0%; /* Only 1 check spans the entire area */
+  }
 }
 
 /* Flexbox container to align the map, search, and telemetry panels side by side. */
@@ -316,12 +342,23 @@ header::after {
   width: 100%;
 }
 
+#user-buttons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* Container styling to ensure the buttons take up half the width each. */
 #button-container {
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  height: auto;
+  flex-direction: column;
+  width: 90%;
+}
+
+#start-end {
+  display: flex;
+  gap: 0px; /* Ensures the Start and End buttons are next to each other without a gap */
 }
 
 #start-search,
@@ -342,6 +379,12 @@ header::after {
   font-size: 18px; 
   font-weight: 500; 
   text-transform: uppercase; 
+}
+
+#user-buttons #help-btn {
+  position: absolute;
+  left: -50px;
+  top: 40px;
 }
 
 #start-search {
@@ -462,7 +505,7 @@ header::after {
   
 }
 .help-button:hover {
-  background-color: #ff9a30; /* Slight color change on hover */
+  background-color: #f27201; /* Slight color change on hover */
 }
 
 #HistoricalData {
