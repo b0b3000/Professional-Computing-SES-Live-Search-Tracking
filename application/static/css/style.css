@@ -55,10 +55,11 @@ h5 {
 }
 
 .title {
-  display: inline-flex; /* Horizontally align. */
+  display: flex; /* Horizontally align. */
   align-items: center;  /* Aligns logo.  */
   position: relative;
   justify-content: center;
+  flex-shrink: 1;
   height: 100%; /* Ensures the title block takes up the full height of the header. */
 }
 
