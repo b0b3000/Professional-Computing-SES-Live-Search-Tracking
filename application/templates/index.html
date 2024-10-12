@@ -39,6 +39,19 @@
         </p>
         <button id="got-it-button" onclick="hideBox(1)">Got it!</button>
       </div>
+      <div id="tutorial-box-search" class="tutorial-box" style="top: 10px; left: 0;">
+        <p><b>To begin a search:</b><br><br>
+          <ul>
+            <li>Select the relevant base stations in the left-hand panel.</li>
+            <li>Click the 'Start Search' button.</li>
+            <li>While a search is running, the map can be updated by clicking the 'Fetch latest GPS data' button.</li>
+            <li>When a search is complete, click 'End Search'.</li>
+            <li>GPX data for this search will populate the 'Download GPX Files' table.</li>
+            <li>This search will also become available in the 'Historical Data' tab (this may require refreshing the page).</li>
+          </ul><br>
+        </p>
+        <button id="got-it-button" onclick="hideBox('search')">Got it!</button>
+      </div>
 
     </div>
   </div>
@@ -79,7 +92,7 @@
 
             <!-- Search controls -->
             <div id="user-buttons">
-              <button id="help-btn" class="help-button" onclick="showTutorial()">?</button>
+              <button id="help-search-btn" class="help-search-button" onclick="showSearchTutorial()">?</button>
               <div id="button-container">
                 <div id="start-end">
                   <button id="start-search" class="ready">Start Search</button>

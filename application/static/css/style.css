@@ -73,16 +73,24 @@ h5 {
 }
 .tutorial-box {
   position: relative;
-  background-color: rgba(214, 218, 223, 0.8);
+  background-color: rgba(214, 218, 223, 0.9);
   color: rgb(106, 102, 102);
   padding: 5px;
   border-radius: 5px;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
   width: 100%; /* Make it take full width of the wrapper */
-  height: 100px; /* Adjust height */
+  height: auto; /* Adjust height */
   box-sizing: border-box; /* Ensure padding is included in total height/width */
   display: none; /* Hidden*/
 }
+
+.tutorial-box ul {
+  text-align: left; /* Left align the list content */
+  margin-left: 10px;
+  padding-left: 25px; /* Optional: Add padding for better spacing */
+  margin: 0; /* Reset margin */
+}
+
 
 #tutorial-box-1 {
   display: none; 
@@ -111,7 +119,7 @@ h5 {
 }
 
 #got-it-button {
-  background-color: #f5841e; 
+  background-color: #f57f00; 
   border: none; 
   color: white; 
   padding: 6px 5px;
@@ -122,7 +130,7 @@ h5 {
 }
 
 #got-it-button:hover {
-  background-color: #ff9a30; 
+  background-color: #f27201; 
 }
 
 /* Logo spacing, size, ratio*/
@@ -381,7 +389,7 @@ header::after {
   text-transform: uppercase; 
 }
 
-#user-buttons #help-btn {
+#user-buttons #help-btn, #help-search-btn {
   position: absolute;
   left: -50px;
   top: 40px;
@@ -487,7 +495,7 @@ header::after {
   
 }
 
-.help-button {
+.help-button,.help-search-button {
   background-color: #f5841e;
   color: white;
   border: none;

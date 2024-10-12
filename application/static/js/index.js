@@ -299,6 +299,10 @@ document.getElementById("end-search").addEventListener("click", function () {
 });
 // Js for tutorial Boxes Historical Data
 // Show the tutorial boxes
+function showSearchTutorial() {
+  document.getElementById('tutorial-box-search').style.display = 'block';
+}
+
 function showTutorial() {
   document.getElementById('tutorial-box-1').style.display = 'block';
   document.getElementById('tutorial-box-2').style.display = 'block';
