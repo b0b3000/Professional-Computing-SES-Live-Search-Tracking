@@ -61,7 +61,7 @@ Contained in this folder is:
 └── to_gpx.py                       # Converts GeoJSON to GPX
 ```
 
-![Alt text](static/images/Resource_Organisation?raw=true "Resource Organisation")
+![Alt text](application/static/images/Resource_Organisation?raw=true "Resource Organisation")
 
 ## License
 
