@@ -169,9 +169,7 @@ def get_nodes(interface, latest_data):
         print("\nNo GPS data found for tracker. Please check GPS lock.")
         return 0
     
-    # If it is new, save it, along with other data from the tracker.
-    logging.info("Received GPS data is new, saving")
-    print("\nReceived GPS data is new, saving.")
+    # Parses data from the Meshtastic ping into a dictionary.
     battLevel = tracker['deviceMetrics']['batteryLevel']
     times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")
     new_data = {"name": TRACKER_ID, "time": times, "lat": coords[0], "long": coords[1], 
@@ -183,14 +181,18 @@ def get_nodes(interface, latest_data):
         pass
 
     # Checks that the GPS data is new.
+    # If it is now new, continue running without saving.
     if coords == [latest_data['lat'], latest_data['long']] and times == latest_data['time']:
         logging.info("Received GPS data matches old GPS data, not saving.")
         logging.info(f"OLD DATA: {str(tracker)}")
         print("Received GPS data matches old GPS data, not saving.")
         print(f"OLD DATA: {str(tracker)}")
         return 0
-
-    return new_data
+    # If it is new, saves the data and moves on to upload it.
+    else:
+        logging.info("Received GPS data is new, saving")
+        print("\nReceived GPS data is new, saving.")
+        return new_data
     
     # ---------------------------------------------------------------------------------
 
