@@ -61,6 +61,12 @@ Contained in this folder is:
 └── to_gpx.py                       # Converts GeoJSON to GPX
 ```
 
+## Resource Organisation
+
+This project contains a complex arrangement of interconnected resources, both cloud-based and physical.
+We have provided a diagram to help visualise the flow of data between these, and demonstrate how this facilitates the system.
+
+![Alt text](application/static/images/Resource_Organisation.drawio.png?raw=true "Resource Organisation")
 
 ## License
 

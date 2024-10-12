@@ -1,13 +1,13 @@
 # STT Hardware Documentation
 
 The purpose of this document is to provide a concise and readable guide on how to configure the hardware required for the Search Team Trackers project. Included in this document is the following:
-- LoRa/Meshtastic Device Configuration
+- **LoRa/Meshtastic Device Configuration**
 
-- Base Station Configuration
+- **Base Station Configuration**
 
-- Tracker Device User Guide
+- **Tracker Device User Guide**
 
-<br><br>
+<br>
 
 # LoRa/Meshtastic Device Configuration
 
@@ -51,7 +51,7 @@ Configuration assumes that the Meshtastic device has followed the "[Getting Star
 
 - For ease of use, we recommend using the Meshtastic App for configuration.
 
-#### Meshtastic App
+#### Meshtastic Mobile App
 
 - Open the Meshtastic app and connect a LoRa device (either via USB or Bluetooth).
 
@@ -63,13 +63,23 @@ Configuration assumes that the Meshtastic device has followed the "[Getting Star
 
 - The device is now connected to the mobile device. The other tabs of the app will now be populated with relevant information.
 
+#### Meshtastic Web App
+
+- Open the Meshtastic web application found [here](https://client.meshtastic.org/).
+
+- With the device serially connected to your computer, select the "+" symbol on the sidebar, then select "Serial".
+
+- Select the serial port that you are using and then the device connected to it.
+
+- This will populate the sidebar with an icon for your new device, in which all the configuration settings are contained.
+
 ### Channel Configuration:
 
 In order for Meshtastic devices to be able to communicate with each other, they need to be configured to share a mutual channel. A Meshtastic device can be connected to multiple channels, with some channels being reserved for specific purposes.
 
 A channel primarily consists of a `Channel Name`, and a Pre-Shared Key (`PSK`). By default, Meshtastic devices are connected to a public channel named "LongFast", which utilises the PSK '`AQ==`'.
 
-The scope of this project does not require any communication with devices that we do not control, and so we opt to remove this public "LongFast" channel from each device.
+Whilst you can absolutely continue to use the public "LongFast" channel, the scope of this project does not require any communication with devices that we do not control, and so we opt to remove this public "LongFast" channel from each device.
 
 In configuring these devices, our aim is to create two channels:
 
@@ -77,7 +87,7 @@ In configuring these devices, our aim is to create two channels:
 
 - A primary channel which is used to capture position and telemetry broadcasts.
 
-#### Meshtastic App
+#### Meshtastic Apps
 
 - With a Meshtastic device connected, navigate to `Radio configuration` using `⋮` in the top right.
 
@@ -91,7 +101,7 @@ In configuring these devices, our aim is to create two channels:
 
 - Once configured, we can select `save`, and then select `send`.
 
-This process will need to be repeated for each device.
+This process needed to be repeated for each device.
 
   ### Device Position Configuration:
 
@@ -99,7 +109,7 @@ Devices on a shared network will periodically broadcast their position and telem
 
 In order to generate more granular tracking data, it is recommended that the `GPS update interval` and `position broadcast interval` are changed from their default setting. 
 
-#### Meshtastic App
+#### Meshtastic Apps
 
 - With a Meshtastic device connected, navigate to `Radio configuration` using `⋮` in the top right.
 
@@ -121,7 +131,7 @@ In order to generate more granular tracking data, it is recommended that the `GP
 
 - The connected Meshtastic device will then reboot - completing this process.
 
-<br><br>
+<br>
 
 # Base Station Configuration
 
@@ -155,6 +165,8 @@ Connect the following to your base station:
 
 - If necessary, go to the Settings and change the password so you know it.
 
+- For future connections, you can do this headless. When you are connected to the same network as the base station, run `nmap <network_IP>/28` to find its IP address (provided you already know the name and password).
+
 - On your external PC run `ssh username@ipaddr` using the username and IP of the RaspPi, entering the password for the Raspberry Pi when prompted.
 
 
@@ -164,7 +176,7 @@ Connect the following to your base station:
 ```
 > mkdir Trackers
 > python3 -m venv /home/[username]/Trackers/venv
-> source /venv/bin/activate
+> source venv/bin/activate
 ```
 
 - Get the requirements.txt file from Github, move it into the `Trackers` and run `pip install -r requirements.txt` to install required packages.
@@ -176,7 +188,7 @@ Connect the following to your base station:
 #### **LoRa/Meshtastic Device Physical Connection**
 - Connect a preconfigured LoRa/Meshtastic device (setup in `CLIENT` mode) to RaspberryPi via the USB-A port, this will act as the **base station**. Ensure that this device boots up and stays on with no power issues.
 
-- Connect a second preconfigured LoRa device (setup in `TRACKER` mode and equipped with a GPS module) into an adequate power supply (5V), this will be the **tracker**. Ensure that this device boots up and stays on with no power issues, and that it has established a GPS lock. **If a GPS lock is not established, the base station code will exit with an error status.**
+- Connect a second preconfigured LoRa device (optional: setup in `TRACKER` mode and equipped with a GPS module) into an adequate power supply (5V), this will be the **tracker**. Ensure that this device boots up and stays on with no power issues, and that it has established a GPS lock. **If a GPS lock is not established, the base station code will exit with an error status.**
 	
 - You may have to take the tracker outdoors to establish the GPS lock, after which, you can take it back inside to continue the setup.
 
@@ -187,11 +199,19 @@ Connect the following to your base station:
 
 - Note the global variables in the Python file `TRACKER_ID`, `TRACKER_LONG_NAME`, `BASE_ID`, `BASE_LONG_NAME`, `CONN_STRING`.
 
-- When the code runs for the first time you will be able to find these details in the nodes summary printout, enter them into the code and run it again.
+- You can run just this code to find all nodes connected to the serially connected device, note various details and change the above global variables.
 
-- This documentation is continued in `technical_documentation.md`
+```Python
+import meshtastic.serial_interface
+interface = meshtastic.serial_interface.SerialInterface()
+nodes = interface.nodes
+for tracker_data in nodes.values():
+    print(tracker_data)
+```
 
-<br><br>
+- Further information on the details of running the code is included in `technical_documentation.md`
+
+<br>
 
 # Tracker Device User Guide
 

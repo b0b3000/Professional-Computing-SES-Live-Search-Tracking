@@ -12,4 +12,4 @@ search_data
 *.gpx
 application/static/footprint.html
 application/static/historical_map.html
-
+base.log

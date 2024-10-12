@@ -4,10 +4,11 @@ import traceback
 import json
 import folium
 from azure.storage.blob import BlobServiceClient
+from config import Config
 
 all_coordinates = []    # Global list to store all coordinates.
 
-default_coord_avg = -31.9775, 115.8163    # Changes the default map centring location.
+default_coord_avg = Config.MAP_DEFAULT_COORDS[0], Config.MAP_DEFAULT_COORDS[1]    # Changes the default map centring location.
 
 
 def assign_colour(initial_coord):

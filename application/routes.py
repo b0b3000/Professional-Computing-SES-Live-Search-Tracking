@@ -16,6 +16,8 @@ from azure.storage.blob import BlobServiceClient
 from datetime import datetime
 import historical_database
 from to_gpx import convert_json_to_gpx_string
+from config import Config
+
 
 STORAGE_CONNECTION_STRING = get_key.get_blob_storage_key()
 
@@ -37,8 +39,8 @@ def index():
             - historical_searches (list): Historical search data.
     """
     # Initialises the active map and the historical map.
-    active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
-    historical_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
+    active_map = folium.Map(location=Config.MAP_DEFAULT_COORDS, control_scale=True, zoom_start=Config.MAP_DEFAULT_ZOOM)
+    historical_map = folium.Map(location=Config.MAP_DEFAULT_COORDS, control_scale=True, zoom_start=Config.MAP_DEFAULT_ZOOM)
     
     # Fetches names of available base stations from Azure (for live searches).
     blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
@@ -53,6 +55,7 @@ def index():
 
     try:    # Fetches historical searches for the scrollable list.
         historical_searches = get_presentable_historical_data(base_stations)
+        print(historical_searches[0])
 
     except Exception as e:
         print(f"Error fetching historical searches: {e}")
@@ -96,10 +99,10 @@ def update_map():
     container_names = data.get("containers")
     if not container_names:
         return jsonify({"error": "No containers selected"}), 400
-
-    active_map = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
-    print(session["footprint"])
+      
+    active_map = folium.Map(location=Config.MAP_DEFAULT_COORDS, control_scale=True, zoom_start=Config.MAP_DEFAULT_ZOOM)
     active_map_save_path = os.path.join(os.path.dirname(__file__), session["footprint"])
+
     
     telemetry_data, all_blobs = retrieve_from_containers(active_map, STORAGE_CONNECTION_STRING, container_names, active_map_save_path)
 
@@ -183,6 +186,7 @@ def end_search():
         # blob_service_client.delete_container(blob_name)
 
         try:
+            print(type(blob_content))
             if isinstance(blob_content, bytes):
                 decoded_content = blob_content.decode("utf-8")
             else:
@@ -254,7 +258,7 @@ def render_map():
     gps_points = json.loads(gps_data[base_station])
 
     # Initialises map and plots the GPS points onto it.
-    m = folium.Map(location=(-31.9775, 115.8163), control_scale=True, zoom_start=17)
+    m = folium.Map(location=Config.MAP_DEFAULT_COORDS, control_scale=True, zoom_start=Config.MAP_DEFAULT_ZOOM)
     map_save_path = os.path.join(os.path.dirname(__file__), "static/historical_map.html")
     historical_data_to_map(m, gps_points, map_save_path)
     m.save(map_save_path)
@@ -408,7 +412,7 @@ def get_presentable_historical_data(selected_base_stations, start_date="2024-01-
             row[2].strftime("%H:%M:%S"),  # Converts time to string.
             row[3].strftime("%H:%M:%S"),  # Converts time to string.
             row[4].strftime("%Y-%m-%d"),  # Converts date to string.
-            f"<a href='/download/{filename}' download='{filename}'>Download Data</a>"    # Download link.
+            f"<a href='/download/{filename}' download='{filename}'>Download Data</a>",    # Download link.
             f"<button id='display-historical-button'>Display</button>",    # Button.
             row[5]    # GPS data.
         )

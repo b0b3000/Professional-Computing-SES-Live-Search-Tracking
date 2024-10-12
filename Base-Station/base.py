@@ -1,34 +1,33 @@
 """
 Python program that runs on the RaspberryPi, connected to a base station.
-See RaspberryPi setup documentation in this directory's README.md.
+See the techincal and hardware documentation in the root directory.
 See requirements.txt
 
 Fred's TODO:
 TODO 1: Comment out all print statements when finished.
 
-Known Issues:
-ISSUE 1: 
-
 Written by Fred Leman.
 """
 
-import meshtastic.serial_interface
-from azure.storage.blob import BlobServiceClient
-from datetime import datetime
-import sys
 import time
 import traceback
 import json
 import logging
+from datetime import datetime
+import meshtastic.serial_interface
+from azure.storage.blob import BlobServiceClient
 
 logger = logging.getLogger(__name__)
 
-# Change these variables for different base stations.
+# Global variables to be changed for different base stations/running conditions.
 BASE_STATION_ID = '!7c5cb2a0'
 BASE_STATION_LONG_NAME = 'base-3200-c'
 TRACKER_ID = '!33679a4c'
 TRACKER_LONG_NAME = 'fredtastic'
-CONN_STRING = "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;AccountKey=;EndpointSuffix=core.windows.net"
+CONN_STRING = (
+    "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;"
+    "AccountKey=;EndpointSuffix=core.windows.net"
+)
 POLL_RATE_SECONDS = 30
 
 
@@ -110,15 +109,14 @@ def run_base_station():
                 with open(BASE_STATION_LONG_NAME, "w") as f:
                     f.write(json.dumps(json_upload))
                 container_client.upload_blob(name=BASE_STATION_LONG_NAME, data=str(json_upload), overwrite=True)
-                logging.info(f"Uploaded total: {str(json_upload)}")
-                print("\nUploaded total: " + str(json_upload) + "\n")
+                # logging.info(f"Uploaded total: {str(json_upload)}")      # Comment this in to view total upload.
+                # print("\nUploaded total: " + str(json_upload) + "\n")    # Comment this in to view total upload.
                 latest_data = new_data      # Updates latest_data for future changes reference.
 
             time.sleep(POLL_RATE_SECONDS)
 
-    except Exception as e:
+    except Exception:
         # Catches any unexpected error in running the entire code while looping.
-        # TODO: Create a log file that stores crash data and current variables.
         print("Encountered an unexpected error, shutting down...")
         interface.close()
         logging.fatal(traceback.format_exc)
@@ -163,20 +161,12 @@ def get_nodes(interface, latest_data):
 
     # ---------- Checks the tracker data received, if the GPS data is new returns it. ----------
     
-    # Check that GPS data was included in the tracker data.
+    # Checks that GPS data was included in the tracker data.
     try:
         coords = [tracker['position']['latitude'], tracker['position']['longitude']]
-    except KeyError as e:
+    except KeyError:
         logging.warning("No GPS data found for tracker. Please check GPS lock.")
         print("\nNo GPS data found for tracker. Please check GPS lock.")
-        return 0
-    
-    # Check that the GPS data is new.
-    if coords == [latest_data['lat'], latest_data['long']]:
-        logging.info("Received GPS data matches old GPS data, not saving.")
-        logging.info(f"OLD DATA: {str(tracker)}")
-        print("Received GPS data matches old GPS data, not saving.")
-        print(f"OLD DATA: {str(tracker)}")
         return 0
     
     # If it is new, save it, along with other data from the tracker.
@@ -191,6 +181,14 @@ def get_nodes(interface, latest_data):
         new_data["telemetry"]["altitude"] = tracker['position']['altitude']
     except KeyError:
         pass
+
+    # Checks that the GPS data is new.
+    if coords == [latest_data['lat'], latest_data['long']] and times == latest_data['time']:
+        logging.info("Received GPS data matches old GPS data, not saving.")
+        logging.info(f"OLD DATA: {str(tracker)}")
+        print("Received GPS data matches old GPS data, not saving.")
+        print(f"OLD DATA: {str(tracker)}")
+        return 0
 
     return new_data
     
@@ -241,7 +239,7 @@ def get_nodes_verbose(interface):
     logging.info("Processing tracker data...")
     print("\nProcessing tracker data...")
 
-    # Check that GPS data was included in the tracker data.
+    # Checks that GPS data was included in the tracker data.
     try:
         coords = [tracker['position']['latitude'], tracker['position']['longitude']]
     except KeyError as e:
@@ -249,7 +247,7 @@ def get_nodes_verbose(interface):
         print("\nNo GPS data found for tracker. Please check GPS lock.")
         return 0
     
-    # Save the GPS data, along with other data from the tracker.
+    # Saves the GPS data, along with other data from the tracker.
     logging.info("Received GPS data is new, saving.")
     print("\nReceived GPS data is new, saving.")
     battLevel = tracker['deviceMetrics']['batteryLevel']
@@ -272,15 +270,16 @@ def get_azure_key():
     # Sets connection string, where AccountName is the name of the Storage Account, 
     # and AccountKey is a valid Access Key to that account.
 
-    # Find the position where "AccountKey=" appears.
+    # Finds the position where "AccountKey=" appears.
     key_pos = CONN_STRING.find("AccountKey=") + len("AccountKey=")
 
     with open("keys.txt") as file:
         for line in file:
             if line.rstrip().startswith("key1:"):
                 key = line.rstrip().split("key1:", 1)[1]  # Extracts the key after "key1:".
-                # Insert the key after "AccountKey=" in the connection string.
+                # Inserts the key after "AccountKey=" in the connection string.
                 return CONN_STRING[:key_pos] + key + CONN_STRING[key_pos:]
+    return None
 
 
 if __name__ == "__main__":
