@@ -531,7 +531,8 @@ header::after {
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
 }
-.help-button:hover {
+.help-button:hover,
+.help-search-button:hover {
   background-color: #f27201; /* Slight color change on hover */
 }
 
