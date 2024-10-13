@@ -7,11 +7,11 @@ The web application has been designed for volunteer State Emergency Service (SES
 
 This user guide provides step-by-step instructions on logging in and using the key features of the application.
 
-## User Manual
+# User Manual
 
 ### 1. Logging In
 - **Step 1**: Click on the provided link to access the login page.
-- **Step 2**: Enter your username and password in the respective fields.
+- **Step 2**: Enter your Microsoft username and password associated with your CSU account in the respective fields.
 - **Step 3**: Click the "Login" button to proceed.
 - **Step 4**: Upon successful login, you will be directed to the front page.
 
@@ -68,7 +68,7 @@ This page provides quick access to the data from completed searches. Users can l
 
 - **Help Button**: Displayed as a rounded orange question mark, this button provides a brief explanation of the features on the page.
 
-### 5. Step-by-Step User Journey
+#  Step-by-Step User Journey
 
 Follow this step-by-step guide to use the application's features:
 
@@ -82,7 +82,6 @@ Follow this step-by-step guide to use the application's features:
 8. Use the download links under **Download GPX Files** to download the GPX data for the selected base stations.
 
 #### Navigating Historical Searches:
-1. Refresh the page.
-2. Scroll through the table to find the desired base station data, or use the filter feature to narrow down the results.
-3. Click the **Display Data** button to show the data points on the Historical Map for verification.
-4. Press **Download Data** to download the associated GPX file for the base station.
+1. Scroll through the table to find the desired base station data, or use the filter feature to narrow down the results.
+2. Click the **Display Data** button to show the data points on the Historical Map for verification.
+3. Press **Download Data** to download the associated GPX file for the base station.
