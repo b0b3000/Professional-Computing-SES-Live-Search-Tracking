@@ -1,7 +1,7 @@
 # Project Technical Documentation
 
 This document includes:
-- Code Documentation: (Comments within code files), separate documentation explaining the purpose and functionality of each file, class, function, and critical logic. Including examples, dependencies, and any assumptions or limitations.
+- Code Documentation: (Comments within code files), separate documentation explaining the purpose and functionality of some complex files, classes, functions, and critical logic. Including examples, dependencies, and any assumptions or limitations.
 
 - System Architecture Documentation: Diagrams and explanations of the system's architecture. Data flow and key components for high-level understanding.
 
@@ -31,6 +31,7 @@ This document includes:
     - `azure.storage.blob` (Enables data upload to the Microsoft Azure cloud server).
     - Depends on the connected LoRa/Meshtastic client device, communicating with the paired tracker device.
     - Requires internet connection via WiFi or Ethernet, to upload data.
+    <br><br>
 
 - **Example Usage:** Technical staff connect a client device and Starlink to a Raspberry Pi, then run this file on the Raspberry Pi with the correct global variables. They give this and the connected tracker to a search team, the search team leaves this in their car and takes the tracker on the search. The tracker relays GPS coordinates to the client device which uploads this data to the cloud.
 
@@ -45,7 +46,7 @@ This document includes:
 
 ---
 
-### Web Application
+# Web Application
 
 The web application follows a standard Flask directory structure. For more information see [this link](https://flask.palletsprojects.com/en/2.3.x/tutorial/layout/).
 
@@ -53,56 +54,9 @@ The web application follows a standard Flask directory structure. For more infor
 
 <br>
 
-- **File Name:** `requirements.txt`
-
-- **Description:** Used when running the web application locally and when hosted, specifies the required packages for running the web application, along with their specific versions.
-
-<br>
-
----
-
-<br>
-
-- **File Name:** `.deployment`
-
-- **Description:** Used exclusively by the Azure cloud hosting service, specifies the configuration and application name.
-
-<br>
-
----
-
-<br>
-
-- **File Name:** `__init__.py`
-
-- **Description:** In initialising the Flask application, loads all routes from `routes.py`.
-
-<br>
-
----
-
-<br>
-
-- **File Name:** `app.py`
-
-- **Description:** Calls `app.run` function to start the web application.
-
-<br>
-
----
-
-<br>
-
-
 - **File Name:** `routes.py`
 
-- **Description:** Standard flask routes file that binds various app routes to HTTP functions and Python code. Further descriptions for each route found below.
-
-- **External Dependencies:** 
-    - Libraries: `flask`, `folium`, `azure.storage.blob`.
-    - Python Files: `retrieve_from_containers.py`, `get_key.py`, `historical_database.py`.
-
-- **Example Usage:** 
+- **Description:** Standard flask routes file that binds various app routes to HTTP functions and Python code. Has a variety of functions, handles most webapp backend.
 
 - **Key Routes:**
     - `'/'` - Initialises the Folium map, finds and displays all container names.
@@ -130,11 +84,8 @@ Alternatively, retrieves the key and password from local key/password txt files,
 - **File Name:** `historical_database.py`
 
 - **Description:** Facilitates upload and download of data to and from cloud database
-
-- **External Dependencies:** 
-    - `pyodbc` Provides drivers and connection functions for server hosted database
-
-- **Key Classes and Functions:**
+    - `pyodbc` Provides drivers and connection functions for server hosted database<br><br>
+- **Key Functions:**
     - `get_historical_searches()` - 
     - `upload_search_data()` - 
     - `connect_database()` - 
@@ -147,43 +98,29 @@ Alternatively, retrieves the key and password from local key/password txt files,
 
 - **File Name:** `retrieve_from_containers.py`
 
-- **Description:** The web application imports and uses this Python file to download all GPS data from the containers held in the Azure storage blob. The data is then translated onto a Folium map HTML file labelled `footprint.html` that is stored within the `/application/static/` directory, which is embedded directly onto the main page of the web application.
-
-- **External Dependencies:** 
-    - `folium` (For creating the Folium map with the data).
-    - `azure.storage.blob` (For downloading from Azure storage blob).
+- **Description:** The web application imports and uses this Python file to download all GPS data from the containers held in the Azure storage blob. The data is then translated onto a Folium map HTML file labelled stored within the `/application/static/` directory, which is embedded directly onto the main page of the web application.
 
 - **Example Usage:** The web application runs this file every time the user reloads the page, it pulls all the current GPS data from searches onto the Folium map and returns it.
 
 - **Key Classes and Functions:**
     - `retrieve_from_containers()` - Establishes connection with storage container, iterates through containers retrieving their data and calls `mapify()` on each, then uses the returning data to add the GPS trail onto the Folium map.
     - `mapify()` - Translates GPS data from container into TimestampedGEOJson format.
+    <br><br>
 
 - **Assumptions:** Data in the containers has been correctly uploaded by the base station and is error free.
 
-<br>
-
----
-
-<br>
-
-- **File Name:** `index.js`
-
-- **Description:** Handles various button clicks and navigations on the web app and calls flask routes accordingly.
-
-<br>
 
 ---
 
 # System Architecture Documentation
 
-System architecture documentation here.
+## Cloud System Design
 
-# Microsoft Peripherals Documentation
+The system is a complex one, with a combination of cloud-based software & resources, and hardware devices running headless code. The following diagram explains how all our resources interact
 
-This Flask web application is designed to visualize GPS data on a map. Data is pulled from Azure cloud server. 
+![Resource Organisation](/application/static/images/Resource_Organisation.drawio.png?raw=true "Resource Organisation")
 
-# Local Web-App Deployment
+## Local Web-App Deployment
 
 This guide will walk you through the steps to set up and run the application on your local machine, rather than hosting it through an Azure web application as intended. This may be useful for development or testing purposes.
 
@@ -222,4 +159,87 @@ Option 2: Run the app directly using Python:
 ```bash
 python run.py
 ```
+
+# Azure Peripherals
+
+## CSU Tenant Reesource Group: 'CITS3200_4'
+
+These resources should not need to be altered upon delivering of the project to the Communications Support Unit. These are already deployed in a resource group within the tenant, and therefore can be managed/altered if desired by CSU administrators.
+
+### Web Application: 'cits32004Mesh'
+
+- **URL**: cits32004mesh-h5apbbfzdvb5acbf.australiaeast-01.azurewebsites.net
+- **Setup**: 
+    - Publish: Code
+    - Runtime Stack: Python 3.9 (most compatible with our Flask dependencies) 
+    - Operating System: Linux
+    - Deployment: Set to the desired account, repository and branch if forking existing repository
+    <br><br>
+
+- **Authentication**:   Organisation based authentication is a key feature of our web app. It is pre-configured to allow access to only CSU tenant Microsoft identities through leverage of Entra ID. To amend this, in the Web App open `Settings>Authentication`, and edit/remove the entry: <br>
+Identity Provider: ` Microsoft(Cits3200-Meshtastic)`.<br>
+To remove this requirement, near `Authentication Settings` select `Edit`, and set `App Service Authentication` to **Disabled**
+
+- **Deployment**: To modify the deployment source, open `Deployment Center`. Select `Settings`, and `Disconnect`. Following this, add your desired deployment source and build settings (Python 3.9 recommended). 
+    - Ensure you set the identity settings in accordance with the managed identity.
+
+### Managed Identity: 'CITS3200_4_UA'
+
+- **Role Assignments**: This identity has the role assignment of 'Website Contributor', a role which allows the web application all required functionality. Modify this in `Azure role assignments` settings if required.
+
+- **Associated Resources**: For now this is just the web application: cits32004Mesh. This is assigned in the Deployment Center of the Web Application.
+
+### Key Vault: 'cits32004keys'
+
+- **Vault URI**: https://cits32004keys.vault.azure.net/
+
+- **Access Control**: The key vault uses **Access Policy** access control rather than the default **Role-Based** system. This can be configured in `Settings>Access Configuration>Permission Model`.
+
+- **Policies**: The aforementioned web application and managed identity are added as Principals for access policies to the vault. These policies should most importantly grant access to view *secrets* and *passwords*. 
+
+- **Secrets**: 
+    - The storage connection key should be stored as a secret titled **BlobStorageConnectionString**
+    - The database connection password should be stored as a secret titled **historicalDatabasePassword**
+
+- If you decide to make a new Key Vault, set the **VAULT_NAME** constant in `get_key.py` to match its name.
+
+## Resources Requiring Setup (IMPORTANT)
+
+Due to ease of development, subscription constraints and security reasons, some resources were configured outside the CSU tenant during development. As such, these resources will need to be re-created within the CSU tenant by an administrator for proper system functionality
+
+### Historical Search Database
+
+- **SQL Database Server**: Before a cloud-hosted database can be setup, a server should be set up to host it. 
+    - **Setup**: 
+        - Set `Authentication Method` to *Use SQL Authentication*.
+        - Set up a **username** and **password** for database access
+            - Set the **USERNAME** constant in `historical_database.py` to the set database connection username
+            - Save the **password** in the appropriate secret in the key vault (see above)
+        - In `Firewall Rules` set *Allow Azure services and resources to access this server* to **Yes**
+    - **Security**
+        - Open `Security>Networking`
+        - Under `Public Network Access`, we opted to select **Selected Networks**, and below in `Firewall Rules` add a rule allowing all IPs from *0.0.0.0* to *255.255.255.255* access to the database, as group members were connecting to the database from a range of IP addresses. However, this can be configured to your preference.
+        - Ensure under `Exceptions`, *Allow Azure services and resources access* is selected.
+    - In the **Overview** screen, find the *Server Name* and set the **SERVER** constant in `historical_database.py` to match the server name. <br><br>
+- **SQL Database**
+    - **Setup**: 
+        - In your SQL Database Server, select `Create Database`.
+        - Set the **DATABASE** constant in `historical_database.py` to the set database name
+        - In `Networking`, set *Allow Azure services and resources to access this server* to **Yes**.
+    -**Table Configuration**:
+        - Select `Query Editor`, and login with the credentials created earlier under `SQL Server Authentication`
+        - Create the search_history table using the following query:
+        `CREATE TABLE search_history(
+            session_id VARCHAR(100),
+            base_station VARCHAR(100),
+            start_time TIME,
+            end_time TIME,
+            gpx_data TEXT,
+            search_date DATE,
+            gps_JSON NVARCHAR(MAX)
+        );`
+
+### Blob Storage Container
+
+
 

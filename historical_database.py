@@ -6,9 +6,9 @@ import get_key
 import datetime
 
 TIMEOUT = 30
-SERVER = 'cits3200server.database.windows.net'
-DATABASE = 'cits3200DB'
-USERNAME = 'cits3200group4'
+SERVER = 'cits3200server.database.windows.net' # MODIFY THIS WHEN CREATING A NEW SQL DB SERVER
+DATABASE = 'cits3200DB' # MODIFY THIS WHEN CREATING A NEW SQL DB
+USERNAME = 'cits3200group4' 
 PASSWORD = get_key.get_db_password()
 DRIVER_VERSION = "ODBC Driver 18 for SQL Server"
 
