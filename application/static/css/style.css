@@ -291,8 +291,8 @@ header::after {
 .search-running-animation::before {
   content: "";
   position: absolute;
-  width: 25%;
-  height: 250%;
+  width: 22.5%;
+  height: 275%;
   background-color: #94d096;
   box-shadow: 0 0 40px #94d096;
   animation: animate 12s linear infinite;
