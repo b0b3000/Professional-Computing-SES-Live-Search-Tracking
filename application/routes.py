@@ -24,7 +24,7 @@ STORAGE_CONNECTION_STRING = get_key.get_blob_storage_key()
 
 @app.route("/")
 def index():
-    """Default view for home page of web inteface. 
+    """Default view for home page of web interface. 
 
         Performs several "start-up" functions; rendering a default Folium map, connecting to
         the Azure storage container and retrieving container names, and retrieving historical
