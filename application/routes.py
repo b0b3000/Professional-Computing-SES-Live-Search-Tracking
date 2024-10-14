@@ -344,7 +344,7 @@ def create_filtered_map(filter_time):
 def filter_pings():
     """
     Filter pings stored in the database before a given time. (this is the time user clicks on filter button)
-    This will create a foloium map with only the pings that occur after the specified time.
+    This will create a folium map with only the pings that occur after the specified time.
     """
     filter_time_str = request.form.get('filter_time') # time given will be the time that filter button is clicked
     if not filter_time_str:
