@@ -1,12 +1,7 @@
-"""
-Python program that runs on the RaspberryPi, connected to a base station.
+"""Python program that runs on the RaspberryPi, connected to a base station Meshtastic.
+
 See the techincal and hardware documentation in the root directory.
 See requirements.txt
-
-Fred's TODO:
-TODO 1: Comment out all print statements when finished.
-
-Written by Fred Leman.
 """
 
 import time
@@ -21,9 +16,9 @@ logger = logging.getLogger(__name__)
 
 # Global variables to be changed for different base stations/running conditions.
 BASE_STATION_ID = '!7c5cb2a0'
-BASE_STATION_LONG_NAME = 'base-3200-c'
-TRACKER_ID = '!33679a4c'
-TRACKER_LONG_NAME = 'fredtastic'
+BASE_STATION_LONG_NAME = 'base-3200'
+TRACKER_ID = '!84887b30'
+TRACKER_LONG_NAME = 'VK6AJP - M1'
 CONN_STRING = (
     "DefaultEndpointsProtocol=https;AccountName=cits3200testv1;"
     "AccountKey=;EndpointSuffix=core.windows.net"
@@ -32,7 +27,10 @@ POLL_RATE_SECONDS = 30
 
 
 def run_base_station():
-    """Performs startup operations."""
+    """Performs startup operations and runs the base station.
+    
+    Uses the global variables above as arguments.
+    """
     logging.basicConfig(filename='base.log', level=logging.INFO)
     logger.info('Started')
 
@@ -131,6 +129,7 @@ def get_nodes(interface, latest_data):
     Keyword arguments:
         interface -- The Meshtastic serial interface that interacts with devices.
         latest_data -- The most recently received data from the tracker.
+        
     Return: 0 if the data is the same as most recent data, or returns the new data if it is different.
     """
 
@@ -171,12 +170,18 @@ def get_nodes(interface, latest_data):
     
     # Parses data from the Meshtastic ping into a dictionary.
     battLevel = tracker['deviceMetrics']['batteryLevel']
+    snr = tracker['snr']
     times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")
     new_data = {"name": TRACKER_ID, "time": times, "lat": coords[0], "long": coords[1], 
-                "telemetry": {"battery": battLevel, "altitude": " "}, "longname": BASE_STATION_LONG_NAME}
-
-    try:        # Method to fix altitude bug.
+                "telemetry": {"battery": battLevel, "altitude": " ", "PDOP": "", "SNR": snr}, "longname": BASE_STATION_LONG_NAME}
+    
+    # Ensures that the telemetry exists, to avoid KeyErrors.
+    try:
         new_data["telemetry"]["altitude"] = tracker['position']['altitude']
+    except KeyError:
+        pass
+    try:
+        new_data["telemetry"]["PDOP"] = tracker['position']['PDOP']
     except KeyError:
         pass
 
@@ -198,7 +203,7 @@ def get_nodes(interface, latest_data):
 
 
 def get_nodes_verbose(interface):
-    """The same as get_nodes(), except runs basic setup and prints results verbosely"""
+    """The same as get_nodes(), except runs basic setup and prints results verbosely."""
 
     # ---------- Checks serial connection has been maintained ---------- 
 
@@ -253,12 +258,18 @@ def get_nodes_verbose(interface):
     logging.info("Received GPS data is new, saving.")
     print("\nReceived GPS data is new, saving.")
     battLevel = tracker['deviceMetrics']['batteryLevel']
+    snr = tracker['snr']
     times = datetime.fromtimestamp(tracker['position']['time']).strftime("%Y-%m-%dT%H:%M:%S")
     new_data = {"name": TRACKER_ID, "time": times, "lat": coords[0], "long": coords[1], 
-                "telemetry": {"battery": battLevel, "altitude": " "}, "longname": BASE_STATION_LONG_NAME}
+                "telemetry": {"battery": battLevel, "altitude": " ", "PDOP": "", "SNR": snr}, "longname": BASE_STATION_LONG_NAME}
 
-    try:        # Ensures that the telemetry exists, to avoid KeyErrors.
+    # Ensures that the telemetry exists, to avoid KeyErrors.
+    try:
         new_data["telemetry"]["altitude"] = tracker['position']['altitude']
+    except KeyError:
+        pass
+    try:
+        new_data["telemetry"]["PDOP"] = tracker['position']['PDOP']
     except KeyError:
         pass
 
