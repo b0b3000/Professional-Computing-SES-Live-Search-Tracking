@@ -173,7 +173,6 @@ def get_historical_searches(start_date=None, end_date=None, base_stations=None):
     Returns:
         list: Base stations between the start and end dates, as rows from the database.
     """
-
     try:
         with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
             cursor = conn.cursor()
@@ -223,17 +222,18 @@ def get_all_searches():
         return None
 
     return results
-  
+
+
 def get_pings_after_time(session_id, base_station, filter_time):
-    """
-    Retrieve pings from the database for a specific base station and session after a given time.
-    Returns empty list if we encounter errors or if we simply have no pings.
+    """Retrieves pings from the database for a specific base station and session after a given time.
+    
+    Returns an empty list if we encounter errors or if we simply have no pings.
     """
     try:
         with pyodbc.connect(get_database_url(), timeout=TIMEOUT) as conn:
             cursor = conn.cursor()
 
-            # select pings after a specific time for a given session and base station
+            # Selects pings after a specific time for a given session and base station.
             query = """
             SELECT gps_JSON 
             FROM search_history 
@@ -252,11 +252,6 @@ def get_pings_after_time(session_id, base_station, filter_time):
                 print(decoded_data[-1])
                 for i, ping in enumerate(decoded_data):
                     ping_time = datetime.datetime.strptime(list(ping.values())[0]['time'], '%Y-%m-%dT%H:%M:%S')
-
-                    #print(ping_time)
-                    #print(filter_time)
-                    #print(type(ping_time))
-                    #print(type(filter_time))
                     if ping_time > filter_time:
                         print("REACHED CURRENT POINT")
                         decoded_data = decoded_data[i:]
@@ -268,6 +263,7 @@ def get_pings_after_time(session_id, base_station, filter_time):
                 return decoded_data
             else:
                 return []
+
     except Exception as e:
         print(f"Error in get_pings_after_time: {e}")
         return []
