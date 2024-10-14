@@ -180,8 +180,9 @@ function displayTelemetryData(telemetryData) {
       <hr>
       <p><strong>Coordinates:</strong> ${entry.lat}, ${entry.lon}</p>
       <hr>
-      <p><strong>Battery Level:</strong> ${entry.telemetry.battery}%</p>
-      <p><strong>Altitude:</strong> ${entry.telemetry.altitude}</p>
+      ${Object.keys(entry.telemetry).map(key => `
+        <p><strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${entry.telemetry[key]}</p>
+      `).join('')}
     `;
 
     telemetryContent.appendChild(card);
