@@ -314,6 +314,6 @@ Due to ease of development, subscription constraints and security reasons, some 
     - Select `Storage Account`.
     - Fill in your desired subscription, titles, and settings for the storage account.
     - Once it is created, on the storage account main screen, navigate to `Security + Networking`, then to `Access Keys`.
-    - Here you can find key1 and key2, copy either of the hidden keys for them under the `Key` heading, and paste it into the `keys.txt` file mentioned above.
+    - Here you can find key1 and key2, copy either of the hidden keys for them under the `Key` heading, save it in the appropriate secret in the key vault (see above).
     - Additionally, for each base station you run, you should copy this key into the `keys.txt` file in that base stations `Trackers` directory where the `base.py` code is being run.
     - This will enable the base station to upload, and the web app to download from the Blob Storage Container.
