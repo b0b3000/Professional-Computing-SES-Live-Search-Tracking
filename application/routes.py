@@ -62,7 +62,6 @@ def index():
 
     # Saves both maps.
     session["footprint"] = "static/footprint.html"
-    session["filter_time"] = None
     active_map_save_path = os.path.join(os.path.dirname(__file__), session["footprint"])
     active_map.save(active_map_save_path)
     historical_map_save_path = os.path.join(os.path.dirname(__file__), "static/historical_map.html")
