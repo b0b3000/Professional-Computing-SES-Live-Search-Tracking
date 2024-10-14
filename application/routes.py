@@ -62,7 +62,7 @@ def index():
 
     # Saves both maps.
     session["footprint"] = "static/footprint.html"
-    session["filer_time"] = None
+    session["filter_time"] = None
     active_map_save_path = os.path.join(os.path.dirname(__file__), session["footprint"])
     active_map.save(active_map_save_path)
     historical_map_save_path = os.path.join(os.path.dirname(__file__), "static/historical_map.html")
@@ -102,9 +102,7 @@ def update_map():
     active_map = folium.Map(location=Config.MAP_DEFAULT_COORDS, control_scale=True, zoom_start=Config.MAP_DEFAULT_ZOOM)
     active_map_save_path = os.path.join(os.path.dirname(__file__), session["footprint"])
 
-    
     telemetry_data, all_blobs = retrieve_from_containers(active_map, STORAGE_CONNECTION_STRING, container_names, active_map_save_path)
-
 
     session["base_stations"] = list(all_blobs.keys())    # Updates session-specific GPS data
     # Replaces existing row in the database.
@@ -122,7 +120,6 @@ def update_map():
 
     # Returns a response indicating where the updated map is saved, and telemetry data from selected containers.
     return jsonify({
-        #"map_path": url_for("static", filename=session["footprint"]),
         "map_path": session["footprint"],
         "telemetry_data": telemetry_data
     })
