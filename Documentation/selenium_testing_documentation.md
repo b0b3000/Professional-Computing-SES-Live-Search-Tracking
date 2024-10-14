@@ -1,4 +1,4 @@
-# Selenium Testing Documentation
+# STT Selenium Testing Documentation
 
 ## Overview
 
