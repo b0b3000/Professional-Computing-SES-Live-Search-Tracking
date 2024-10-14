@@ -195,7 +195,7 @@ Connect the following to your base station:
 
 #### **Run Code**
 
-- Run the Python code using `python3 base.py`
+- Run the Python code using `python3 base.py`.
 
 - Note the global variables in the Python file `TRACKER_ID`, `TRACKER_LONG_NAME`, `BASE_ID`, `BASE_LONG_NAME`, `CONN_STRING`.
 
@@ -209,7 +209,7 @@ for tracker_data in nodes.values():
     print(tracker_data)
 ```
 
-- Further information on the details of running the code is included in `technical_documentation.md`
+- Further information on the details of running the code is included in `technical_documentation.md`.
 
 <br>
 

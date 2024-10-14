@@ -1,11 +1,11 @@
-# Project Technical Documentation
+# STT Technical Documentation
 
 This document includes:
-- Code Documentation: (Comments within code files), separate documentation explaining the purpose and functionality of some complex files, classes, functions, and critical logic. Including examples, dependencies, and any assumptions or limitations.
+- **Code Documentation**: Explains the purpose and functionality of some of the more complex code files, classes, functions, and critical logic. Includes examples, dependencies, and any assumptions or limitations.
 
-- System Architecture Documentation: Diagrams and explanations of the system's architecture. Data flow and key components for high-level understanding.
+- **System Architecture Documentation**: Diagrams and explanations of the system's architecture. Data flow and key components for high-level understanding.
 
-- Microsoft Azure Peripherals Documentation: Guide on how to setup and integrate the various Microsoft Azure tools that are integral to the running of the project.
+- **Microsoft Azure Peripherals Documentation**: Guide on how to setup and integrate the various Microsoft Azure tools that are integral to the running of the project.
 
 **Project Name:** SES Live Search.
 
@@ -31,14 +31,14 @@ This document includes:
     - `azure.storage.blob` (Enables data upload to the Microsoft Azure cloud server).
     - Depends on the connected LoRa/Meshtastic client device, communicating with the paired tracker device.
     - Requires internet connection via WiFi or Ethernet, to upload data.
-    <br><br>
+    <br>
 
 - **Example Usage:** Technical staff connect a client device and Starlink to a Raspberry Pi, then run this file on the Raspberry Pi with the correct global variables. They give this and the connected tracker to a search team, the search team leaves this in their car and takes the tracker on the search. The tracker relays GPS coordinates to the client device which uploads this data to the cloud.
 
 - **Key Classes and Functions:**
-    - `run_base_station()` - Firstly establishes a connection with the cloud server, then with the tracker device. Runs a 60 second loop at the end of which it calls the next function.
-    - `get_nodes()` - Called every 60 seconds, using LoRa from the client device it checks the location of the tracker device and uploads that, along with all previous locations, to the cloud server.
-    - `get_nodes_verbose()` - Called only at the start of the first 60 second loop, performs relatively the same actions as `get_nodes()`, but with more verbose output in the terminal.
+    - `run_base_station()` - Firstly establishes a connection with the cloud server, then with the tracker device. Runs a 30 second loop at the end of which it calls the next function.
+    - `get_nodes()` - Called every 30 seconds, using LoRa from the client device it checks the location of the tracker device and uploads that, along with all previous locations, to the cloud server.
+    - `get_nodes_verbose()` - Called only at the start of the first 30 second loop, performs relatively the same actions as get_nodes(), but with more verbose output in the terminal.
 
 - **Assumptions:** The technical team will edit the global variables at the top of this file to correlate with the tracker/base pair's ID and long name.
 
@@ -46,7 +46,7 @@ This document includes:
 
 ---
 
-# Web Application
+### Web Application
 
 The web application follows a standard Flask directory structure. For more information see [this link](https://flask.palletsprojects.com/en/2.3.x/tutorial/layout/).
 
@@ -56,13 +56,37 @@ The web application follows a standard Flask directory structure. For more infor
 
 - **File Name:** `routes.py`
 
-- **Description:** Standard flask routes file that binds various app routes to HTTP functions and Python code. Has a variety of functions, handles most webapp backend.
+- **Description:** This Flask application serves as the backend for a web-based GPS tracking system, interacting with Azure Blob Storage and a historical database. The system supports real-time GPS tracking, historical search visualization, data filtering, and data export in GPX format. The primary user interface is an HTML page that displays an active map and a historical map, with data sourced from Azure Blob containers and the historical database.
 
-- **Key Routes:**
-    - `'/'` - Initialises the Folium map, finds and displays all container names.
-    - `'/api/update-map'` - Uses `retrieve_from_containers.py` to update the Folium map.
-    - `'/api/start-search'` - Allows user to manually begin a search, all data from this search is saved in the data path.
-    - `'/api/end-search'` - Allows user to manually end a search, data stops being collected and is packaged into a GPX file.
+- **External Dependencies:**
+
+    - Flask (Used for routing and rendering templates).
+    - folium (For rendering and saving maps in HTML format).
+    - azure.storage.blob (Manages interaction with Azure Blob Storage containers).
+    - get_key (Retrieves the Azure storage connection string securely).
+    - historical_database (Handles historical search data storage and retrieval).
+    - retrieve_from_containers (Used to fetch live GPS data from the Azure Blob containers).
+    - to_gpx (Converts JSON GPS data to GPX format for export).
+    - datetime (For timestamp management). <br>
+
+- **Example Usage:** A search team runs the application on a web interface where they can view both live and historical GPS data, stored in Azure Blob containers and a database. The team can start a new search session, track live GPS data on the map, end the session, and download GPS data in GPX format for further analysis.
+
+- **Key Classes and Functions:**
+
+    - `index()` - Renders the home page of the web interface, displaying both the active and historical maps. Retrieves active Azure container names, historical search data, and base station data from the database.
+    - `update_map()` - Called when the user requests new data. Fetches GPS data from the specified containers, updates the map, and stores the data in the database.
+    - `start_search()` - Initializes a new search session by generating a unique session ID and storing session-related metadata in Flask’s session storage.
+    - `end_search()` - Ends the current search session, converts GPS data to GPX format, and uploads the data to the database. Cleans up session data after the search concludes.
+    - `render_map()` - Retrieves GPS data for a specific session and base station, renders it on a Folium map, and saves the map to an HTML file.
+    - `download_gpx()` - Serves GPX files for download based on the user’s selection.
+    - `submit_date()` - Filters historical search data by date range and base stations, returning the filtered data in JSON format.
+    - `create_filtered_map()` - Creates a map that includes only the GPS pings that occurred after a user-specified filter time.
+    - `filter_pings()` - Filters pings based on a timestamp and updates the map with only the relevant data points.
+    - `get_presentable_historical_data()` - Retrieves and formats historical search data for display in the user interface. Also generates download links for GPX files.
+    - `revert()` - Resets the map to its unfiltered state by reverting to the default "footprint" map.
+
+- **Assumptions:**
+    - Flask session management is used to track user sessions and store data between requests.
 
 <br>
 
@@ -73,22 +97,7 @@ The web application follows a standard Flask directory structure. For more infor
 - **File Name:** `get_key.py`
 
 - **Description:** Retrieves the Azure storage key and database password from the Azure key vault.
-Alternatively, retrieves the key and password from local key/password txt files, if app ran locally.
-
-<br>
-
----
-
-<br>
-
-- **File Name:** `historical_database.py`
-
-- **Description:** Facilitates upload and download of data to and from cloud database
-    - `pyodbc` Provides drivers and connection functions for server hosted database<br><br>
-- **Key Functions:**
-    - `get_historical_searches()` - 
-    - `upload_search_data()` - 
-    - `connect_database()` - 
+Alternatively, retrieves the key and password from local key/password .txt files, if the app is ran locally.
 
 <br>
 
@@ -98,25 +107,73 @@ Alternatively, retrieves the key and password from local key/password txt files,
 
 - **File Name:** `retrieve_from_containers.py`
 
-- **Description:** The web application imports and uses this Python file to download all GPS data from the containers held in the Azure storage blob. The data is then translated onto a Folium map HTML file labelled stored within the `/application/static/` directory, which is embedded directly onto the main page of the web application.
+- **Description:** This module contains functions for retrieving data from Azure storage containers. It handles the conversion of raw data into GeoJSON format, displays the data on a Folium map, and saves the updated map. The module also includes functionality to assign colors based on coordinates and center the map based on available GPS data.
 
-- **Example Usage:** The web application runs this file every time the user reloads the page, it pulls all the current GPS data from searches onto the Folium map and returns it.
+- **External Dependencies:**
+    - azure.storage.blob: Used to connect to and interact with Azure Blob Storage.
+    - folium: A library for creating interactive maps.
+    - json: For parsing and manipulating JSON data.
+    - traceback: To handle and report exceptions.
+    - config: Used to access configuration values such as default map coordinates.
 
-- **Key Classes and Functions:**
-    - `retrieve_from_containers()` - Establishes connection with storage container, iterates through containers retrieving their data and calls `mapify()` on each, then uses the returning data to add the GPS trail onto the Folium map.
-    - `mapify()` - Translates GPS data from container into TimestampedGEOJson format.
-    <br><br>
+- **Example Usage:** This module is primarily used for visualizing GPS data from base stations on a map. Technical staff can call `retrieve_from_containers()` with the required parameters to fetch data from Azure and update the Folium map. The updated map can then be saved for further analysis or visualization.
 
-- **Assumptions:** Data in the containers has been correctly uploaded by the base station and is error free.
+- **Key Functions:**
 
+    - `assign_colour(initial_coord)`: Assigns a color in hex format based on the last three digits of the fractional part of the given coordinate.
+    - `convert_to_geojson(data)`: Converts raw data taken from the Azure containers into GeoJSON format, extracting features, coordinates, and telemetry data.
+    - `center_and_zoom(m)`: Centers the Folium map based on the average of available coordinates and adjusts the zoom level.
+    - `process_data_to_map(data, map, telemetry_data=[])`: Draws GPS points and connecting lines on a Folium map for the provided dataset.
+    - `historical_data_to_map(m, gps_points, map_save_path)`: Displays historical GPS data on a Folium map and saves the updated map.
+    - `retrieve_from_containers(m, STORAGE_CONNECTION_STRING, active_containers, map_save_path)`: Fetches data from specified Azure storage containers and adds it to the live Folium map.
+
+- **Assumptions:**
+    - Each active container is expected to contain only one blob with the required GPS data.
+    - The GPS data is structured in a format that includes latitude, longitude, name, time, and telemetry information.
+
+<br>
 
 ---
+
+<br>
+
+- **File Name:** `historical_database.py`
+
+- **Description:** This module is responsible for handling interactions between the web application and the Azure SQL database. It includes functions for establishing database connections, uploading search data, retrieving historical search information, and fetching real-time GPS data from the search records. The SQL database stores search session data, which can be queried for either live or historical operations.
+
+- **External Dependencies:**
+    - pyodbc (The essential library for connecting to and querying SQL databases via ODBC).
+    - json (Used to serialize and deserialize GPS data in the database).
+    - get_key (Used to retrieve sensitive database credentials such as the password).
+    - datetime (Used for timestamp conversions when working with search data).
+
+- **Example Usage:** Technical staff use these functions to handle communication between the Flask web app and the Azure SQL database. For example, after a search session is completed, the `upload_search_data()` function is called to store the collected GPS data. During a live search, the `get_live_searches()` function is used to fetch and display current GPS data from the database in real time.
+
+- **Key Classes and Functions:**
+
+    - `get_database_url()` - Retrieves the Azure SQL database connection string using hardcoded values like server, database, and username.
+    - `connect_database()` - Establishes a connection to the database and returns a cursor object for executing SQL queries.
+    - `upload_search_data()` - Uploads search data (GPS coordinates, session start/end times, etc.) to the database. It either inserts new rows or updates existing records.
+    - `get_unique_base_stations()` - Returns a list of all unique base stations currently in the database.
+    - `get_live_searches()` - Retrieves live GPS data for a particular session ID and a set of base stations.
+    - `get_historical_searches()` - Fetches historical search data between a range of dates for the selected base stations.
+    - `get_all_searches()` - Fetches all stored search data in the database.
+    - `get_pings_after_time()` - Retrieves GPS pings that occurred after a specific time for a given search session and base station.
+
+- Assumptions:
+    - All search data, including GPS coordinates, is stored in JSON format in the database.
+
+<br>
+
+---
+
+<br>
 
 # System Architecture Documentation
 
 ## Cloud System Design
 
-The system is a complex one, with a combination of cloud-based software & resources, and hardware devices running headless code. The following diagram explains how all our resources interact
+The system is a complex one, with a combination of cloud-based software and resources, and hardware devices running headless code. The following diagram explains how all our resources interact.
 
 ![Resource Organisation](/application/static/images/Resource_Organisation.drawio.png?raw=true "Resource Organisation")
 
@@ -126,11 +183,15 @@ This guide will walk you through the steps to set up and run the application on 
 
 ### Setup: Changes to make to code to enable it to run locally
 
-1: Create a file 'keys.txt' in the root directory<br>
-2: In this file, add a line containing the storage container connection key of the form 'key1: {key}'<br>
-3: Add another line containing the database connection password of the form 'password: {password}'<br>
-4: Comment out the two functions in 'get_key.py' which access key/password from the Azure key vault<br>
-5: Uncomment the two functions in 'get_key.py' which access key/password locally. (More information can be found in get_key.py)<br>
+1. Create a file `keys.txt` in the root directory.
+
+2. In this file, add a line containing the storage container connection key of the form 'key1: {key}'
+
+3. Add another line containing the database connection password of the form 'password: {password}'
+
+4. Comment out the two functions in `get_key.py` which access key/password from the Azure key vault
+
+5. Uncomment the two functions in `get_key.py` which access key/password locally.
 
 ### Step 1: (Optional) Create and Activate a Python Virtual Environment
 
@@ -160,6 +221,8 @@ Option 2: Run the app directly using Python:
 python run.py
 ```
 
+<br>
+
 # Azure Peripherals
 
 ## CSU Tenant Reesource Group: 'CITS3200_4'
@@ -176,9 +239,11 @@ These resources should not need to be altered upon delivering of the project to 
     - Deployment: Set to the desired account, repository and branch if forking existing repository
     <br><br>
 
-- **Authentication**:   Organisation based authentication is a key feature of our web app. It is pre-configured to allow access to only CSU tenant Microsoft identities through leverage of Entra ID. To amend this, in the Web App open `Settings>Authentication`, and edit/remove the entry: <br>
-Identity Provider: ` Microsoft(Cits3200-Meshtastic)`.<br>
-To remove this requirement, near `Authentication Settings` select `Edit`, and set `App Service Authentication` to **Disabled**
+- **Authentication**:   Organisation based authentication is a key feature of our web app. It is pre-configured to allow access to only CSU tenant Microsoft identities through leverage of Entra ID. To amend this, in the Web App open `Settings>Authentication`, and edit/remove the entry:
+
+    Identity Provider: `Microsoft(Cits3200-Meshtastic)`.
+
+    To remove this requirement, near `Authentication Settings` select `Edit`, and set `App Service Authentication` to **Disabled**.
 
 - **Deployment**: To modify the deployment source, open `Deployment Center`. Select `Settings`, and `Disconnect`. Following this, add your desired deployment source and build settings (Python 3.9 recommended). 
     - Ensure you set the identity settings in accordance with the managed identity.
@@ -205,22 +270,25 @@ To remove this requirement, near `Authentication Settings` select `Edit`, and se
 
 ## Resources Requiring Setup (IMPORTANT)
 
-Due to ease of development, subscription constraints and security reasons, some resources were configured outside the CSU tenant during development. As such, these resources will need to be re-created within the CSU tenant by an administrator for proper system functionality
+Due to ease of development, subscription constraints and security reasons, some resources were configured outside the CSU tenant during development. As such, these resources will need to be re-created within the CSU tenant by an administrator for proper system functionality.
 
 ### Historical Search Database
 
 - **SQL Database Server**: Before a cloud-hosted database can be setup, a server should be set up to host it. 
     - **Setup**: 
         - Set `Authentication Method` to *Use SQL Authentication*.
-        - Set up a **username** and **password** for database access
-            - Set the **USERNAME** constant in `historical_database.py` to the set database connection username
-            - Save the **password** in the appropriate secret in the key vault (see above)
-        - In `Firewall Rules` set *Allow Azure services and resources to access this server* to **Yes**
+        - Set up a **username** and **password** for database access.
+            - Set the **USERNAME** constant in `historical_database.py` to the set database connection username.
+            - Save the **password** in the appropriate secret in the key vault (see above).
+        - In `Firewall Rules` set *Allow Azure services and resources to access this server* to **Yes**.
     - **Security**
-        - Open `Security>Networking`
+        - Open `Security>Networking`.
         - Under `Public Network Access`, we opted to select **Selected Networks**, and below in `Firewall Rules` add a rule allowing all IPs from *0.0.0.0* to *255.255.255.255* access to the database, as group members were connecting to the database from a range of IP addresses. However, this can be configured to your preference.
         - Ensure under `Exceptions`, *Allow Azure services and resources access* is selected.
-    - In the **Overview** screen, find the *Server Name* and set the **SERVER** constant in `historical_database.py` to match the server name. <br><br>
+    - In the **Overview** screen, find the *Server Name* and set the **SERVER** constant in `historical_database.py` to match the server name.
+
+<br>
+
 - **SQL Database**
     - **Setup**: 
         - In your SQL Database Server, select `Create Database`.
@@ -241,5 +309,11 @@ Due to ease of development, subscription constraints and security reasons, some 
 
 ### Blob Storage Container
 
-
-
+- **Setup**:
+    - When logged in to your Azure account, on the main page click `Create a resource`.
+    - Select `Storage Account`.
+    - Fill in your desired subscription, titles, and settings for the storage account.
+    - Once it is created, on the storage account main screen, navigate to `Security + Networking`, then to `Access Keys`.
+    - Here you can find key1 and key2, copy either of the hidden keys for them under the `Key` heading, and paste it into the `keys.txt` file mentioned above.
+    - Additionally, for each base station you run, you should copy this key into the `keys.txt` file in that base stations `Trackers` directory where the `base.py` code is being run.
+    - This will enable the base station to upload, and the web app to download from the Blob Storage Container.
