@@ -1,4 +1,4 @@
-"""This module contains functions for retrieveing data from the Azure storage containers."""
+"""This module contains functions for retrieving data from the Azure storage containers."""
 
 import traceback
 import json
