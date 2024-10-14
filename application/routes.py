@@ -178,10 +178,14 @@ def end_search():
 
     # Translates all blobs into GPX strings and stores them in a dictionary.
     gpx_data_dict = {}
+    
+    # Establish connection to blob storage to delete containers after search is ended.
+    blob_service_client = BlobServiceClient.from_connection_string(STORAGE_CONNECTION_STRING)
+
     for blob_name, blob_content in json_gps_data.items():
 
-        # TODO: Comment this back in to delete containers after a search is ended.
-        # blob_service_client.delete_container(blob_name)
+        # Comment the below line out to keep containers in Azure storage after a search is ended.
+        blob_service_client.delete_container(blob_name)
 
         try:
             if isinstance(blob_content, bytes):
